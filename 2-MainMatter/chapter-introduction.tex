@@ -31,21 +31,77 @@
 % \section{Welcome to the \novathesis\ Template}
 % \label{sec:if_you_use_this_template}
 
-This first chapter serves as a brief introduction to the internship, the problems to be solved and the proposed solutions.
+This first chapter serves as a brief introduction to the internship conducted within the scope of \gls{CDA} at \gls{GMV}
+It outlines the problems to be solved and the proposed solutions.
 
 \section{Context and Motivation}
 
+\gls{GNSS} are a family of satellite-based positioning systems, usually refered as a constellation, that provide geolocation and time information to a \gls{GPS} receiver anywhere on Earth.
+There are several different \gls{GNSS} constellations in operation today, including the United States' \gls{GPS}, Russia's \gls{GLONASS}, the European Union's \gls{Galileo}\cite{europaGalileo}, and China's \gls{BeiDou}.
+These systems consist of a network of satellites that transmit signals to receivers, which then use the signals to determine their location.
+\\
+As reliance on \gls{GNSS} technology grows, so does the need for accurate and reliable testing and validation of \gls{GNSS} receivers and the systems
+that are built around them. \cite{europaWhatGNSS}
+\\
+\\
+As per \cite{insidegnssVerificationTesting}, a signal simulator/generator is a tool used to "simulate \gls{GNSS} signals that are transmitted by navigation satellites, and
+received by an antenna". \gls{GNSS} simulators are essential for testing and validating \gls{GNSS} receivers as they serve as an easy to use signal source, as they enable
+engineers to create a controlled testing environment, thus allowing the testing of receivers under various repeatable scenarios.
+Signal simulators also provide the ability to simulate signals without the need of outdoor tests or long waits for satellites to be in a desired position.\cite{spirentWhatGNSSGPS}
+\\
+\\
 
 
 \section{Problem}
 %\label{sec:a_bit_of_history}
+The key challenge for a signal generator is providing capacity to coherently simulate the complex signals received from multiple GNSS constellations, 
+a generator must usually ensure: Accuracy, Precision, Stability, Range and Resolution.\cite{insidegnssVerificationTesting}
+Without these capabilities, the effectiveness of the signal generator is significantly compromised, leading to potential failures in real-world applications.
+Thus without the proper tooling, engineers are constrained to a manual and more costly testing process, that not only is unable or hard to support
+automated testing but also increases the time and effort required to validate GNSS receivers.\cite{spirentWhatGNSSGPS} Furthermore, the almost
+bare-metal nature of hardware communication and low-level approach to existing API's demands careful design to ensure reliability and real-time performance.
+
+\section{Proposed Work}
+
+The internship aims to develop an interface that closes the gap by designing an easy-to-use C++ tool for the programmatic control of a \gls{GNSS} signal generator.
+This interface will abstract the complexities of hardware communication and provide a more user-friendly environment for engineers to design and execute their tests.
+The internship can be split into three key phases:
+
+\emph{Phase 1 SDR Control:} 
+
+In this phase, the focus will be on developing the \gls{SDR} control interface.
+This will involve creating a C++ API that allows users to interact with the GNSS signal generator at a high level, without needing to understand the low-level details of the hardware.
+The API will provide functions for configuring the signal generator, starting and stopping signal generation, and monitoring the status of the generator.
+
+\emph{Phase 2 Parameter Management:}
+
+In this phase, the focus will be on developing a parameter management system that allows users to easily configure and manage the various parameters of the GNSS signal generator.
+This will enable users to quickly and efficiently set up their test scenarios, without having to manually adjust each parameter through low-level API calls.
+
+\emph{Phase 3 RS-485 communication:}
+
+In this phase, the focus will be on developing the \gls{RS485} communication interface for the GNSS signal generator.
+This will involve creating an API that allows users to interact with external equipment via the \gls{RS485} interface.
+The API will provide functions for interface configuration, command dispatch and response handling.
+
+\subsection{Objectives}
+
+The main objectives of this internship are:
+
+\begin{itemize}
+    \item Acquire working knowledge of the target \gls{SDR} hardware architecture and its interface.
+    \item Understand \gls{RS485} communication protocol and its application in instrument control.
+    \item Implement C++ modules for \gls{SDR} control via the vendor API.
+    \item Develop interfaces for parameter management and test scenario configuration.
+    \item Implement \gls{RS485} communication layer for exchange of commands and data with external equipment.
+    \item Validate the overall system functionality through functional and performance testing.
+    \item Produce technical documentation and a final report for the developed interfaces and modules.
+\end{itemize}
 
 &\ntindex[Template]{}
 
 %The \gls{novathesis} template was born at the \gls{DI} of  \gls{FCT} of \gls{NOVA}, Portugal.  But the user base grew… initially grew to other Departments of NOVA FCT, then to other Schools of NOVA, and later to other Schools of other Universities.  Currently more than~25 Schools are natively supported by the \gls{novathesis} template.  The full list of supported Schools can be founf at the
 %\href{https://github.com/joaomlourenco/novathesis}{Project's GitHub page}.
-
-\gls{GNSS} are a family of satellite-based positioning systems that provide geolocation and time information to a GPS receiver anywhere on Earth. These systems consist of a network of satellites that transmit signals to receivers, which then use the signals to determine their location.
 
 % (see Tables~\ref{tab:supported_schools_NOVA University Lisbon}, \ref{tab:supported_schools_University of Lisbon}, \ref{tab:supported_schools_University of Minho}, \ref{tab:supported_schools_Instituto Politécnico de Lisboa}, \ref{tab:supported_schools_Instituto Politécnico de Setúbal}, and \ref{tab:supported_schools_Other Universities/Schools/Degrees}).
 %
