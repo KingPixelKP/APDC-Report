@@ -23,6 +23,8 @@ Similar offerings exist from other vendors such as Rohde \& Schwarz \cite{rohdeS
 
 \section{Open-Source GNSS Signal Generation Tools}
 
+\textbf{REVIEW}
+
 In contrast to commercial solutions, several open-source tools have emerged that leverage \gls{SDR} hardware to generate \gls{GNSS} signals at a fraction of the cost.
 
 \textbf{GPS-SDR-SIM} \cite{gpsSdrSim} is a widely adopted open-source GPS signal simulator. It generates GPS L1 C/A baseband signal streams as digitised I/Q samples, which can then be transmitted via \gls{SDR} hardware such as HackRF or ADALM-Pluto. The tool accepts a user-defined trajectory specified as a CSV file containing Earth-Centred Earth-Fixed (ECEF) positions, or as an NMEA GGA stream, and uses a GPS broadcast ephemeris file to compute pseudoranges and Doppler shifts for satellites in view. Despite its usefulness, GPS-SDR-SIM has notable limitations: it is restricted to GPS L1 C/A signals, operates primarily in an offline batch mode generating pre-computed I/Q sample files, and provides no programmatic API for runtime parameter control.
@@ -68,4 +70,4 @@ The work developed during this internship directly addresses this gap, providing
 
 \section{Conclusion}
 
-This chapter surveyed the state of the art in \gls{GNSS} signal generation, covering commercial simulators, open-source tools, and hardware vendor APIs. The analysis identified a gap between low-level hardware access and the need for a flexible, programmatically controllable signal generation interface. This gap motivates the development described in the following chapters.
+This chapter introduce the state of the art in \gls{GNSS} signal generation, covering commercial simulators, open-source tools, and hardware vendor APIs. The analysis identified a gap between low-level hardware access and the need for a flexible, programmatically controllable signal generation interface. This gap motivates the development described in the following chapters.
