@@ -23,23 +23,21 @@ Similar offerings exist from other vendors such as Rohde \& Schwarz \cite{rohdeS
 
 \section{Open-Source GNSS Signal Generation Tools}
 
-\textbf{REVIEW}
+In contrast to commercial solutions, several open-source tools have emerged that leverage \gls{SDR} hardware to compute and produce \gls{GNSS} baseband signals at a fraction of the cost. It is important to note that these tools operate exclusively at the \emph{signal computation} layer: they accept scenario parameters such as receiver position and satellite ephemeris data, and produce pre-computed \gls{I/Q} sample files as output. The transmission of those samples to physical \gls{RF} hardware is outside their scope and must be handled separately.
 
-In contrast to commercial solutions, several open-source tools have emerged that leverage \gls{SDR} hardware to generate \gls{GNSS} signals at a fraction of the cost.
+\textbf{GPS-SDR-SIM} \cite{gpsSdrSim} is a widely adopted open-source \gls{GPS} signal simulator. It generates \gls{GPS} L1 C/A baseband signal streams as digitised \gls{I/Q} samples, which can then be transmitted via \gls{SDR} hardware such as HackRF or ADALM-Pluto. The tool accepts a user-defined trajectory specified as a CSV file containing \gls{ECEF} positions, or as an NMEA GGA stream, and uses a \gls{GPS} broadcast ephemeris file to compute pseudoranges and Doppler shifts for satellites in view. GPS-SDR-SIM operates in an offline batch mode, producing a pre-computed \gls{I/Q} sample file that must subsequently be fed to a hardware transmitter. It provides no programmatic API for runtime parameter control, and has no built-in support for professional-grade \gls{SDR} hardware.
 
-\textbf{GPS-SDR-SIM} \cite{gpsSdrSim} is a widely adopted open-source GPS signal simulator. It generates GPS L1 C/A baseband signal streams as digitised I/Q samples, which can then be transmitted via \gls{SDR} hardware such as HackRF or ADALM-Pluto. The tool accepts a user-defined trajectory specified as a CSV file containing Earth-Centred Earth-Fixed (ECEF) positions, or as an NMEA GGA stream, and uses a GPS broadcast ephemeris file to compute pseudoranges and Doppler shifts for satellites in view. Despite its usefulness, GPS-SDR-SIM has notable limitations: it is restricted to GPS L1 C/A signals, operates primarily in an offline batch mode generating pre-computed I/Q sample files, and provides no programmatic API for runtime parameter control.
+\textbf{Galileo-SDR-SIM} \cite{galileoSdrSim} extends the GPS-SDR-SIM concept to the Galileo E1B/C signal, generating Galileo baseband signal streams for transmission via \gls{SDR} platforms such as the USRP B210. While it demonstrates the feasibility of open-source multi-constellation signal computation, it shares the same architectural limitation: it is a standalone offline tool that produces \gls{I/Q} sample files, with no structured interface for integration into larger software systems and no support for hardware beyond its target consumer \gls{SDR} platforms.
 
-\textbf{Galileo-SDR-SIM} \cite{galileoSdrSim} extends the GPS-SDR-SIM concept to the Galileo E1B/C signal, generating Galileo baseband signal streams for transmission via \gls{SDR} platforms such as the USRP B210. While it demonstrates the feasibility of open-source multi-constellation simulation, it remains a standalone command-line tool with limited runtime configurability and no structured interface for integration into larger software systems.
+\textbf{GNSS-SDR} \cite{gnssSdr} is an open-source \gls{GNSS} receiver framework rather than a signal generator. It is designed for signal reception and processing, not generation, and therefore does not address the use case of the present work. Its architecture is nonetheless instructive, demonstrating how modular \gls{SDR}-based \gls{GNSS} software can be structured.
 
-\textbf{GNSS-SDR} \cite{gnssSdr} is an open-source \gls{GNSS} receiver framework rather than a signal generator. It is designed for signal reception and processing, not generation, and therefore does not directly address the use case of the present work. Its architecture is nonetheless instructive, demonstrating how modular \gls{SDR}-based \gls{GNSS} software can be structured.
-
-A common limitation across all open-source tools is their focus on specific \gls{SDR} hardware platforms such as HackRF, ADALM-Pluto, or USRP devices. None provide support for professional-grade hardware such as DekTec \gls{SDR} cards, nor do they expose a structured, remotely accessible API for programmatic control.
+A common limitation across all open-source tools is the absence of any transmission abstraction layer. These tools solve the signal computation problem well, but the \gls{I/Q} files they produce have no path to professional-grade hardware without significant additional engineering effort. None provide support for DekTec \gls{SDR} cards, nor do they expose a structured, remotely accessible API for programmatic control of the transmission process.
 
 \section{Hardware Vendor APIs}
 
-DekTec produces a range of professional \gls{SDR} hardware, including the DTA-2115 and DTA-2116 PCIe cards used in this internship. These cards are capable of high-quality, high-bandwidth RF signal generation and are well suited for professional signal simulation applications.
+DekTec produces a range of professional \gls{SDR} hardware, including the DTA-2115 and DTA-2116 PCIe cards used in this internship. These cards are capable of high-quality, high-bandwidth \gls{RF} signal transmission and are well suited for professional signal simulation applications.
 
-DekTec provides the DTAPI, a C++ library for interfacing with their hardware. While functional and comprehensive in its coverage of hardware capabilities, the DTAPI is a low-level interface that exposes hardware primitives directly. Configuring a device requires a detailed understanding of internal hardware parameters, correct sequencing of API calls, and careful management of device state. There is no existing higher-level abstraction layer for \gls{GNSS} use cases, nor any remote control interface built on top of the DTAPI. Developers must therefore deal with low-level concerns such as FIFO management, DMA buffer sizing, and modulation flag composition directly, which increases both development time and the risk of subtle bugs.
+DekTec provides the DTAPI, a C++ library for interfacing with their hardware. While functional and comprehensive in its coverage of hardware capabilities, the DTAPI is a low-level interface that exposes hardware primitives directly. Configuring a device requires a detailed understanding of internal hardware parameters, correct sequencing of API calls, and careful management of device state. There is no existing higher-level abstraction layer for \gls{GNSS} use cases built on top of the DTAPI, nor any interface that connects the output of \gls{I/Q} generation tools to the hardware transmission pipeline. Developers must therefore deal with low-level concerns such as FIFO management, DMA buffer sizing, and modulation flag composition directly, which increases both development time and the risk of subtle bugs.
 
 \section{Summary and Identified Gap}
 
@@ -47,27 +45,27 @@ Table~\ref{tab:sota_comparison} summarises the key characteristics of the survey
 
 \begin{table}[h]
 \centering
-\caption{Comparison of existing GNSS signal generation solutions.}
+\caption{Comparison of existing GNSS signal generation and transmission solutions.}
 \label{tab:sota_comparison}
 \begin{tabular}{|l|c|c|c|c|}
     \hline
-    \textbf{Solution} & \textbf{Multi-constellation} & \textbf{Programmatic API} & \textbf{Open Source} & \textbf{DekTec Support} \\
+    \textbf{Solution} & \textbf{File Playback} & \textbf{Programmatic API} & \textbf{Open Source} & \textbf{DekTec Support} \\
     \hline
-    Spirent GSS7000   & \checkmark & Limited  & \texttimes & \texttimes \\
-    GPS-SDR-SIM       & \texttimes & \texttimes & \checkmark & \texttimes \\
-    Galileo-SDR-SIM   & \texttimes & \texttimes & \checkmark & \texttimes \\
-    GNSS-SDR          & \checkmark & \texttimes & \checkmark & \texttimes \\
+    Spirent GSS7000   & N/A        & Limited        & \texttimes & \texttimes \\
+    GPS-SDR-SIM       & \texttimes & \texttimes     & \checkmark & \texttimes \\
+    Galileo-SDR-SIM   & \texttimes & \texttimes     & \checkmark & \texttimes \\
+    GNSS-SDR          & \texttimes & \texttimes     & \checkmark & \texttimes \\
     DekTec DTAPI      & \checkmark & Low-level only & \texttimes & \checkmark \\
     \hline
-    \textbf{This work} & \checkmark & \checkmark & \texttimes & \checkmark \\
+    \textbf{This work} & \checkmark & \checkmark    & \texttimes & \checkmark \\
     \hline
 \end{tabular}
 \end{table}
 
-The survey reveals a clear gap in the existing landscape: no available solution combines support for professional DekTec hardware with a clean, high-level programmatic interface suitable for integration into automated testing workflows. Commercial simulators are closed and costly; open-source tools target consumer \gls{SDR} hardware and lack runtime configurability; and the DekTec DTAPI, while powerful, requires significant low-level expertise to use correctly.
+The survey reveals a clear gap in the existing landscape. Open-source signal computation tools such as GPS-SDR-SIM produce \gls{I/Q} sample files but provide no mechanism to transmit them through professional-grade hardware. The DekTec DTAPI provides the necessary hardware access but exposes only low-level primitives, with no higher-level interface suited to \gls{GNSS} workflows and no connection to upstream signal generation tools. Commercial simulators address both layers in a single integrated system, but are closed, expensive, and not designed for programmatic integration into custom workflows.
 
-The work developed during this internship directly addresses this gap, providing a C++ abstraction layer over the DTAPI, exposed through a \gls{gRPC} interface, enabling programmatic and remotely accessible control of \gls{GNSS} signal generation on professional-grade hardware.
+The work developed during this internship directly addresses this gap. By providing a C++ abstraction layer over the DTAPI, exposed through a \gls{gRPC} interface, it bridges the \gls{I/Q} file output of open-source signal generators and the transmission capabilities of professional DekTec hardware, enabling programmatic and remotely accessible control of \gls{GNSS} signal transmission.
 
 \section{Conclusion}
 
-This chapter introduce the state of the art in \gls{GNSS} signal generation, covering commercial simulators, open-source tools, and hardware vendor APIs. The analysis identified a gap between low-level hardware access and the need for a flexible, programmatically controllable signal generation interface. This gap motivates the development described in the following chapters.
+This chapter has surveyed the state of the art in \gls{GNSS} signal generation and transmission, covering commercial simulators, open-source signal computation tools, and hardware vendor APIs. The analysis identified a gap at the boundary between the \gls{I/Q} generation layer and the hardware transmission layer: no existing open solution connects these two concerns on professional-grade hardware through a clean programmatic interface. This gap motivates the development described in the following chapters.
