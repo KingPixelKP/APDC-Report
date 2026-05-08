@@ -21,6 +21,8 @@ The Spirent GSS7000 is one of the most prominent examples of a commercial \gls{G
 
 Similar offerings exist from other vendors such as Rohde \& Schwarz \cite{rohdeSchwarzSMBV100B} and Keysight Technologies \cite{keysightN7609B}, which provide high-fidelity \gls{GNSS} signal generation equipment. These systems share the same fundamental limitations: they are expensive, closed-source, and not designed for flexible programmatic control by third-party software. They are typically operated through vendor-specific graphical interfaces, making automated testing pipelines difficult to implement without additional integration effort.
 
+\textcolor{Red}{Can i talk about streamxpress here?
+
 \section{Open-Source GNSS Signal Generation Tools}
 
 In contrast to commercial solutions, several open-source tools have emerged that leverage \gls{SDR} hardware to compute and produce \gls{GNSS} baseband signals at a fraction of the cost. It is important to note that these tools operate exclusively at the \emph{signal computation} layer: they accept scenario parameters such as receiver position and satellite ephemeris data, and produce pre-computed \gls{I/Q} sample files as output. The transmission of those samples to physical \gls{RF} hardware is outside their scope and must be handled separately.
