@@ -1,4 +1,4 @@
-%!TEX root = ../template.tex
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz3%!TEX root = ../template.tex
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% chapter1.tex
 %% NOVA thesis document file
@@ -21,7 +21,8 @@ It provides an interface for configuring the \gls{SDR} parameters, such as
 frequency, rf-control, and sampling rate, as well as handling data transmission
 and reception.
 
-\section{Objective and Motivation}
+\section{Obje
+  ctive and Motivation}
 
 One of the main problems in this internship, whilst developing the \gls{SDR}
 control, was the lack of an easy to use interface. Whilst \gls{DTAPI}, the
@@ -50,3 +51,20 @@ components of the system. To note that an undesired, but useful nonetheless,
 feature of this architecture is that it allows users to create \textit{bash}
 scripts that can interact with the system through the client executable, which
 can be useful for quick testing and automation purposes.
+
+% Design choices
+\textcolor{Red}{Review}
+It is also relevant to note some of the design choices made during the
+implementation of the \gls{SDR} control system. The most impactful one is the
+use of \gls{gRPC} mor three main reasons: it has proven itself in terms of
+reliability and performance, it provides a clear and strongly typed interface
+for communication between the server and clients, and allows for reflection,
+the latter being one of the most useful feautures during development, as it not
+only allows for easy debugging and testing, but also allows the user to easily
+discover the available commands and their parameters, which is especially
+useful for users that are not familiar with the system.
+
+% Limitations
+
+\section{Architecture Diagram}
+
