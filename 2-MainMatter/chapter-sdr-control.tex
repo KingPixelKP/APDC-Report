@@ -63,8 +63,12 @@ useful for users that are not familiar with the system. Another quite relevant,
 but no as impactful design choice was the use of errors as values instead of
 the traditional approach of using exceptions. This aided not only in making a
 more concise interface, but also avoids some of the performance pitfalls of
-exceptions. \textcolor{Red}{could also talk about xmake instead of cmake, maybe
-  the pimpl idiom in device and channel}
+exceptions. Other quite impactfull decision that deviates from the norm was the
+build system used, usually the default buildsystem is CMake, a powerfull yet
+complex tool, though the project uses XMake, a more modern and user-friendly
+build system, which allows for a more concise and easier to maintain build
+configuration, as well as an extremely easy to use package manager and faster
+build times due to its caching mechanism.
 
 % Limitations
 
