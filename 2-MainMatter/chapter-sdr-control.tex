@@ -36,15 +36,15 @@ signals, or by providing synchronization mechanisms between devices.
 
 The \gls{SDR} control system was implemented using a modular approach, with
 separate components responsible for device management, signal playback,
-synchronization, etc.. A design goal internship was to integrate this system
-with other components, \textcolor{Red}{that will not be described here due to
-  the scope of this report and their proprietary nature}, to provide a complete
-solution for \gls{GNSS} signal generation and transmission. Thus the system was
-designed with a client server architecture, where the control system acts as a
-server that listens for commands from client applications and executes them
-accordingly. The communication between the server and clients is handled
-through a \gls{gRPC} interface, which allows for remote procedure calls and
-provides a structured way to manage the interactions between the different
+synchronization, etc.. A design goal of the internship was to integrate this
+system with other components, \textcolor{Red}{that will not be described here
+  due to the scope of this report and their proprietary nature}, to provide a
+complete solution for \gls{GNSS} signal generation and transmission. Thus the
+system was designed with a client server architecture, where the control system
+acts as a server that listens for commands from client applications and
+executes them accordingly. The communication between the server and client is
+handled through a \gls{gRPC} interface, which allows for remote procedure calls
+and provides a structured way to manage the interactions between the different
 components of the system. To note that an undesired, but useful nonetheless,
 feature of this architecture is that it allows users to create \textit{bash}
 scripts that can interact with the system through the client executable, which
@@ -55,8 +55,8 @@ It is also relevant to note some of the design choices made during the
 implementation of the \gls{SDR} control system. The most impactful one is the
 use of \gls{gRPC} for three main reasons: it has proven itself in terms of
 reliability and performance, it provides a clear and strongly typed interface
-for communication between the server and clients, and allows for reflection,
-the latter being one of the most useful feautures during development, as it not
+for communication between the server and client, and allows for reflection, the
+latter being one of the most useful feautures during development, as it not
 only allows for easy debugging and testing, but also allows the user to easily
 discover the available commands and their parameters, which is especially
 useful for users that are not familiar with the system. Another quite relevant,
@@ -65,10 +65,10 @@ the traditional approach of using exceptions. This aided not only in making a
 more concise interface, but also avoids some of the performance pitfalls of
 exceptions. Other quite impactfull decision that deviates from the norm was the
 build system used, usually the default buildsystem is CMake, a powerfull yet
-complex tool, though the project uses XMake, a more modern and user-friendly
+complex tool, though XMake was chosen, XMake is a more modern and user-friendly
 build system, which allows for a more concise and easier to maintain build
 configuration, as well as an extremely easy to use package manager and faster
-build times due to its caching mechanism.
+build times, when compared to CMake and Ninja, due to its caching mechanism.
 
 % Limitations
 
@@ -76,14 +76,22 @@ build times due to its caching mechanism.
 Some of the limitations of the current implementation of the \gls{SDR} control
 system are also related to the client server architecture. One of the main
 limitations is that it introduces some latency in the communication between the
-server and clients, which can be an issue for real-time applications.
+server and client, due to a client being created on binary boot, which can be an
+issue for real-time applications, to note that this is only a problem due to the client being a \gls{CLI}.
 Additionally, whilst on purpose the coupling between the system and \gls{gRPC}
-is notable.Another limitation is that the current implementation does not
+is notable. Another limitation is that the current implementation does not
 support all the features of the \gls{SDR} hardware, though this cant really be
 considered a problem as those feature are outside the scope of this internship
 and can be easily added in the future if needed.
 
 \section{Architecture Diagram}
+Diagram \ref{fig:sdr-control-architecture} illustrates the architecture of the
+\gls{SDR} control system, showing the main components and their interactions.
+The diagram highlights the client-server architecture, the use of \gls{gRPC}
+for communication, and the integration with the \gls{DTAPI} library for
+hardware control. It also includes annotations that provide additional context
+and explanations for the design choices made in the implementation of the
+system.
 
 \begin{figure}[htbp]
   \centering
@@ -91,3 +99,7 @@ and can be easily added in the future if needed.
   \caption{SDR Control System Architecture}
   \label{fig:sdr-control-architecture}
 \end{figure}
+
+
+\section{Functionality and Use Cases}
+\textcolor{Red}{Talk about the functionality of the system and some use cases, maybe with some examples of how to use it.}
