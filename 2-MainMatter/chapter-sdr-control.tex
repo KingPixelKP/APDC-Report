@@ -63,6 +63,9 @@ the latter being one of the most useful feautures during development, as it not
 only allows for easy debugging and testing, but also allows the user to easily
 discover the available commands and their parameters, which is especially
 useful for users that are not familiar with the system.
+Another quite relevant, but no as impactful design choice was the use of errors as
+values instead of the traditional approach of using exceptions. This aided not only in making a more concise
+interface, but also avoids some of the performance pitfalls of exceptions.
 
 % Limitations
 
