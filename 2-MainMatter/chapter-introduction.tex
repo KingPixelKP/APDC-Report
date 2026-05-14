@@ -31,8 +31,9 @@
 % \section{Welcome to the \novathesis\ Template}
 % \label{sec:if_you_use_this_template}
 
-This first chapter serves as a brief introduction to the internship conducted within the scope of \gls{CDA} at \gls{GMV}
-It outlines the problems to be solved and the proposed solutions.
+This first chapter serves as a brief introduction to the internship conducted
+within the scope of \gls{CDA} at \gls{GMV} It outlines the problems to be
+solved and the proposed solutions.
 
 \section{Context and Motivation}
 
@@ -40,14 +41,21 @@ It outlines the problems to be solved and the proposed solutions.
 There are several different \gls{GNSS} constellations in operation today, including the United States' \gls{GPS}, Russia's \gls{GLONASS}, the European Union's \gls{Galileo}\cite{europaGalileo}, and China's \gls{BeiDou}.
 These systems consist of a network of satellites that transmit signals to receivers, which then use the signals to determine their location.
 
-As reliance on \gls{GNSS} technology grows, so does the need for accurate and reliable testing and validation of \gls{GNSS} receivers and the systems
-that are built around them. \cite{europaWhatGNSS}
+As reliance on \gls{GNSS} technology grows, so does the need for accurate and
+reliable testing and validation of \gls{GNSS} receivers and the systems that
+are built around them. \cite{europaWhatGNSS}
 
-As per \cite{insidegnssVerificationTesting}, a signal simulator/generator is a tool used to "simulate \gls{GNSS} signals that are transmitted by navigation satellites, and
-received by an antenna". \gls{GNSS} simulators are essential for testing and validating \gls{GNSS} receivers as they serve as an easy to use signal source, they enable
-engineers to create a controlled testing environment, thus allowing the testing of receivers under various repeatable scenarios.
-Signal simulators also provide the ability to simulate signals without the need of outdoor tests or long waits for satellites to be in a desired position \cite{spirentWhatGNSSGPS}, 
-simulators may also aid in the testing new types of \gls{GNSS} signals to be used in newer versioins of existing systems.
+As per \cite{insidegnssVerificationTesting}, a signal simulator/generator is a
+tool used to "simulate \gls{GNSS} signals that are transmitted by navigation
+satellites, and received by an antenna". \gls{GNSS} simulators are essential
+for testing and validating \gls{GNSS} receivers as they serve as an easy to use
+signal source, they enable engineers to create a controlled testing
+environment, thus allowing the testing of receivers under various repeatable
+scenarios. Signal simulators also provide the ability to simulate signals
+without the need of outdoor tests or long waits for satellites to be in a
+desired position \cite{spirentWhatGNSSGPS}, simulators may also aid in the
+testing new types of \gls{GNSS} signals to be used in newer versioins of
+existing systems.
 
 \gls{SDR} is a radio communication paradigm in which signal components usually implemented in hardware, are instead implemented through software.
 This approach offers greater flexibility and adaptability, as it allows the same hardware to be modulated in different ways without requiring physical changes to the hardware itself.\cite{gnuradioRadio} \cite{wikipediaSoftwaredefinedRadio} [ix--x]\cite{SDRandGalileo}
@@ -59,81 +67,111 @@ This protocol will enable reliable data exchange between the GNSS signal generat
 
 \section{Problem}
 %\label{sec:a_bit_of_history}
-The key challenge for a signal generator is providing capacity to coherently simulate the complex signals received from multiple GNSS constellations, 
-a generator must usually ensure: Accuracy, Precision, Stability, Range and Resolution.\cite{insidegnssVerificationTesting}
-Without these capabilities, the effectiveness of the signal generator is significantly compromised, leading to potential failures in real-world applications.
-Thus without the proper tooling, engineers are constrained to a manual and more costly testing process, that not only is unable or hard to support
-automated testing but also increases the time and effort required to validate GNSS receivers.\cite{spirentWhatGNSSGPS} Furthermore, the almost
-bare-metal nature of hardware communication and low-level approach to existing API's demands careful design to ensure reliability and real-time performance.
+The key challenge for a signal generator is providing capacity to coherently
+simulate the complex signals received from multiple GNSS constellations, a
+generator must usually ensure: Accuracy, Precision, Stability, Range and
+Resolution.\cite{insidegnssVerificationTesting} Without these capabilities, the
+effectiveness of the signal generator is significantly compromised, leading to
+potential failures in real-world applications. Thus without the proper tooling,
+engineers are constrained to a manual and more costly testing process, that not
+only is unable or hard to support automated testing but also increases the time
+and effort required to validate GNSS receivers.\cite{spirentWhatGNSSGPS}
+Furthermore, the almost bare-metal nature of hardware communication and
+low-level approach to existing API's demands careful design to ensure
+reliability and real-time performance.
 
 \section{Proposed Work}
 
-The internship aims to develop an interface that closes the gap by designing an easy-to-use C++ tool for the programmatic control of a \gls{GNSS} signal generator. \textcolor{Red}{Change the generator here to generator and transmitter}
-This interface will abstract the complexities of hardware communication and provide a more user-friendly environment for engineers to design and execute their tests.
-The internship can be split into three key phases:
+The internship aims to develop an interface that closes the gap by designing an
+easy-to-use C++ tool for the programmatic control of a \gls{GNSS} signal
+generator and a transmitter. This interface will abstract the complexities of
+hardware communication and provide a more user-friendly environment for
+engineers to design and execute their tests. The internship can be split into
+three key phases:
 
-\emph{Phase 1 SDR Control:} 
+\emph{Phase 1 SDR Control:}
 
 In this phase, the focus will be on developing the \gls{SDR} control interface.
-This will involve creating a C++ API that allows users to interact with the GNSS signal generator \textcolor{Red}{And transmitter} at a high level, without needing to understand the low-level details of the hardware.
-The API will provide functions for configuring the signal generator, starting and stopping signal generation, and monitoring the status of the generator. \textcolor{Red}{it shall also provide functions to control the transmitter, such as starting and stopping transmission, and monitoring the status of the devices.}
+This will involve creating a C++ API that allows users to interact with the
+GNSS signal generator \textcolor{Red}{And transmitter} at a high level, without
+needing to understand the low-level details of the hardware. The API will
+provide functions for configuring the signal generator, starting and stopping
+signal generation, and monitoring the status of the generator.
+\textcolor{Red}{it shall also provide functions to control the transmitter,
+    such as starting and stopping transmission, and monitoring the status of the
+    devices.}
 
 \emph{Phase 2 Parameter Management:}
 
-In this phase, the focus will be on developing a parameter management system that allows users to easily configure and manage the various parameters of the GNSS signal generator \textcolor{Red}{and transmitter}.
-This will enable users to quickly and efficiently set up their test scenarios, without having to manually adjust each parameter through low-level API calls.
+In this phase, the focus will be on developing a parameter management system
+that allows users to easily configure and manage the various parameters of the
+GNSS signal generator \textcolor{Red}{and transmitter}. This will enable users
+to quickly and efficiently set up their test scenarios, without having to
+manually adjust each parameter through low-level API calls.
 
 \emph{Phase 3 RS-485 communication:}
 
-In this phase, the focus will be on developing the \gls{RS485} communication interface for the GNSS signal generator.
-This will involve creating an API that allows users to interact with external equipment via the \gls{RS485} interface.
-The API will provide functions for interface configuration, command dispatch and response handling.
+In this phase, the focus will be on developing the \gls{RS485} communication
+interface for the GNSS signal generator. This will involve creating an API that
+allows users to interact with external equipment via the \gls{RS485} interface.
+The API will provide functions for interface configuration, command dispatch
+and response handling.
 
 \section{Objectives}
 
 The main objectives of this internship are:
 
 \begin{itemize}
-    \item Acquire working knowledge of the target \gls{SDR} hardware architecture and its interface.
-    \item Understand \gls{RS485} communication protocol and its application in instrument control.
+    \item Acquire working knowledge of the target \gls{SDR} hardware architecture and its
+          interface.
+    \item Understand \gls{RS485} communication protocol and its application in instrument
+          control.
     \item Implement C++ modules for \gls{SDR} control via the vendor API.
     \item Develop interfaces for parameter management and test scenario configuration.
-    \item Implement \gls{RS485} communication layer for exchange of commands and data with external equipment.
-    \item Validate the overall system functionality through functional and performance testing.
-    \item Produce technical documentation and a final report for the developed interfaces and modules.
+    \item Implement \gls{RS485} communication layer for exchange of commands and data
+          with external equipment.
+    \item Validate the overall system functionality through functional and performance
+          testing.
+    \item Produce technical documentation and a final report for the developed interfaces
+          and modules.
 \end{itemize}
 
 \section{Work Plan \& Schedule}
 
-Table \ref{tab:work_plan_schedule} outlines the proposed work plan and schedule for the internship, detailing the key phases, tasks, durations, and corresponding dates for each phase of the project.
+Table \ref{tab:work_plan_schedule} outlines the proposed work plan and schedule
+for the internship, detailing the key phases, tasks, durations, and
+corresponding dates for each phase of the project.
 \begin{table}[h]
-\centering
-\caption{Work Plan \& Schedule for the Internship.}
-\label{tab:work_plan_schedule}
-\begin{tabular}{|p{3cm}|p{8cm}|c|c|}
-    \hline
-    \multicolumn{4}{|c|}{\textbf{Work Plan \& Schedule}} \\
-    \hline
-    Phase & Task & Duration & Dates \\
-    \hline
-    Onboarding and Studying & Introduction to the signal generator architecture; study of SDR APIs; RS-485 protocol fundamentals; review of existing codebase and tooling at GMVIS Skysoft & 3 weeks & Mar 11 - Mar 31 \\
-    \hline
-    \gls{SDR} Control Modules & Development of C++ API for SDR control; implementation of signal generation functions; integration with vendor API and unit testing & 4 weeks & Apr 01 - Apr 28 \\
-    \hline
-    Parameter Management & Development of parameter management system; implementation of user-friendly configuration interface; integration with SDR control modules & 4 weeks & Apr 29 - May 26 \\
-    \hline
-    \gls{RS485} Communication & Design and Implement of an \gls{RS485} communication layer for exchange of commands and data with external equipment & 3 weeks & May 27 - Jun 16 \\
-    \hline
-    Integration, Testing \& Documentation & Integration of all components; system testing and validation; preparation of user manuals and technical documentation & 5 weeks & Jun 17 - Jul 17 \\   
-    \hline
-\end{tabular}
+    \centering
+    \caption{Work Plan \& Schedule for the Internship.}
+    \label{tab:work_plan_schedule}
+    \begin{tabular}{|p{3cm}|p{8cm}|c|c|}
+        \hline
+        \multicolumn{4}{|c|}{\textbf{Work Plan \& Schedule}}                                                                                                                                                                              \\
+        \hline
+        Phase                                 & Task                                                                                                                                                         & Duration & Dates           \\
+        \hline
+        Onboarding and Studying               & Introduction to the signal generator architecture; study of SDR APIs; RS-485 protocol fundamentals; review of existing codebase and tooling at GMVIS Skysoft & 3 weeks  & Mar 11 - Mar 31 \\
+        \hline
+        \gls{SDR} Control Modules             & Development of C++ API for SDR control; implementation of signal generation functions; integration with vendor API and unit testing                          & 4 weeks  & Apr 01 - Apr 28 \\
+        \hline
+        Parameter Management                  & Development of parameter management system; implementation of user-friendly configuration interface; integration with SDR control modules                    & 4 weeks  & Apr 29 - May 26 \\
+        \hline
+        \gls{RS485} Communication             & Design and Implement of an \gls{RS485} communication layer for exchange of commands and data with external equipment                                         & 3 weeks  & May 27 - Jun 16 \\
+        \hline
+        Integration, Testing \& Documentation & Integration of all components; system testing and validation; preparation of user manuals and technical documentation                                        & 5 weeks  & Jun 17 - Jul 17 \\
+        \hline
+    \end{tabular}
 \end{table}
 
 \section{Conclusion}
 
-This chapter as thus introduced some of the context and motivation for the work carried out throughout the internship. 
-The objectives and work plan were made clear, providing a roadmap for the development of the SDR control system and its integration with external equipment.
-The possible challenges due to the complexity of the SDR architecture and the RS-485 communication protocol were also acknowledged.
+This chapter as thus introduced some of the context and motivation for the work
+carried out throughout the internship. The objectives and work plan were made
+clear, providing a roadmap for the development of the SDR control system and
+its integration with external equipment. The possible challenges due to the
+complexity of the SDR architecture and the RS-485 communication protocol were
+also acknowledged.
 
 %&\ntindex[Template]{}
 
@@ -400,7 +438,7 @@ The possible challenges due to the complexity of the SDR architecture and the RS
 %       \degreeName{All MSc Programs}{MSc}{https://estudar.esenf.pt/mestrados}
 %     }\\
 % \end{ntUniversity}
-    
+
 %\subsection{Your Time is Precious}
 %\label{sub:time_is_money}
 %
