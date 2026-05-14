@@ -14,10 +14,39 @@
 \prependtographicspath{{\DIRFIGURES/Covers/}}
 \textcolor{Red}{Change this to SDR Facade or Interface}
 
-This chapter describes the software defined radio \gls{SDR} control system used in this internship. The \gls{SDR} control system is responsible for managing the communication between the \gls{SDR} hardware and the software applications that utilize it. It provides an interface for configuring the \gls{SDR} parameters, such as frequency, rf-control, and sampling rate, as well as handling data transmission and reception.
+This chapter describes the \gls{SDR} control system used in this internship.
+The \gls{SDR} control system is responsible for managing the communication
+between the \gls{SDR} hardware and the software applications that utilize it.
+It provides an interface for configuring the \gls{SDR} parameters, such as
+frequency, rf-control, and sampling rate, as well as handling data transmission
+and reception.
 
-\section{SDR Control Architecture}
+\section{Objective and Motivation}
 
+One of the main problems in this internship, whilst developing the \gls{SDR}
+control, was the lack of an easy to use interface. Whilst \gls{DTAPI}, the
+\gls{SDR} control library used in this internship, provides a powerful set of
+instructions to control the \gls{SDR} hardware, its interface is not
+user-friendly and does not offer a clean way to manage the \gls{SDR}
+parameters. To address this issue, the \gls{SDR} control system was designed to
+provide a more intuitive and user-friendly interface for managing parameters
+and operations, either by providing easy to use abstractions to transmit
+signals, or by providing synchronization mechanisms between devices.
 
+\section{Design and Implementation}
 
-
+The \gls{SDR} control system was implemented using a modular approach, with
+separate components responsible for device management, signal playback,
+synchronization, etc.. A design goal internship was to integrate this system
+with other components, \textcolor{Red}{that will not be described here due to
+    the scope of this report and their proprietary nature}, to provide a complete
+solution for \gls{GNSS} signal generation and transmission. Thus the system was
+designed with a client server architecture, where the control system acts as a
+server that listens for commands from client applications and executes them
+accordingly. The communication between the server and clients is handled
+through a \gls{gRPC} interface, which allows for remote procedure calls and
+provides a structured way to manage the interactions between the different
+components of the system. To note that an undesired, but useful nonetheless,
+feature of this architecture is that it allows users to create \textit{bash}
+scripts that can interact with the system through the client executable, which
+can be useful for quick testing and automation purposes.
