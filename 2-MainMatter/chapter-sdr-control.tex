@@ -21,8 +21,7 @@ It provides an interface for configuring the \gls{SDR} parameters, such as
 frequency, rf-control, and sampling rate, as well as handling data transmission
 and reception.
 
-\section{Obje
-  ctive and Motivation}
+\section{Objective and Motivation}
 
 One of the main problems in this internship, whilst developing the \gls{SDR}
 control, was the lack of an easy to use interface. Whilst \gls{DTAPI}, the
@@ -61,12 +60,25 @@ for communication between the server and clients, and allows for reflection,
 the latter being one of the most useful feautures during development, as it not
 only allows for easy debugging and testing, but also allows the user to easily
 discover the available commands and their parameters, which is especially
-useful for users that are not familiar with the system.
-Another quite relevant, but no as impactful design choice was the use of errors as
-values instead of the traditional approach of using exceptions. This aided not only in making a more concise
-interface, but also avoids some of the performance pitfalls of exceptions.
+useful for users that are not familiar with the system. Another quite relevant,
+but no as impactful design choice was the use of errors as values instead of
+the traditional approach of using exceptions. This aided not only in making a
+more concise interface, but also avoids some of the performance pitfalls of
+exceptions. \textcolor{Red}{could also talk about xmake instead of cmake, maybe
+    the pimpl idiom in device and channel}
 
 % Limitations
+
+\textcolor{Red}{Review}
+Some of the limitations of the current implementation of the \gls{SDR} control
+system are also related to the client server architecture. One of the main
+limitations is that it introduces some latency in the communication between the
+server and clients, which can be an issue for real-time applications.
+Additionally, whilst on purpose the coupling between the system and \gls{gRPC}
+is notable.Another limitation is that the current implementation does not
+support all the features of the \gls{SDR} hardware, though this cant really be
+considered a problem as those feature are outside the scope of this internship
+and can be easily added in the future if needed.
 
 \section{Architecture Diagram}
 
