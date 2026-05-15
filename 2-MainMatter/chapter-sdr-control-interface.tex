@@ -11,10 +11,9 @@
 \label{cha:sdr-control}
 
 \prependtographicspath{{\DIRFIGURES/Covers/}}
-\textcolor{Red}{Change this to SDR Control/Interface}
 
-This chapter describes the \gls{SDR} control system used in this internship.
-The \gls{SDR} control system is responsible for managing the communication
+This chapter describes the \gls{sdr-control-system} used in this internship.
+The \gls{sdr-control-system} is responsible for managing the communication
 between the \gls{SDR} hardware and the software applications that utilize it.
 It provides an interface for configuring the \gls{SDR} parameters, such as
 Frequency, \gls{RF}-control, and Sampling Rate, as well as handling data
@@ -22,21 +21,22 @@ transmission.
 
 \section{Objective and Motivation}
 
-One of the main problems in this internship, whilst developing the \gls{SDR}
-control, was the lack of an easy to use interface. Whilst
+One of the main problems in this internship, whilst developing the
+\gls{sdr-control-system}, was the lack of an easy to use interface. Whilst
 \gls{DTAPI}\footnote{\gls{DTAPI} is a C++ library developed by DekTec it allows
-  developers to interface with DekTec devices}, the \gls{SDR} control library
-used in this internship, provides a powerful set of instructions to control the
-\gls{SDR} hardware, its interface is not user-friendly and does not offer a
-clean way to manage the \gls{SDR} parameters. To address this issue, the
-\gls{SDR} control system was designed to provide a more intuitive and
+  developers to interface with DekTec devices, DTA-2115B and DTA-2116 in the
+  scope of this internship}, the \gls{sdr-control-system} library used in this
+internship, provides a powerful set of instructions to control the \gls{SDR}
+hardware, its interface is not user-friendly and does not offer a clean way to
+manage the \gls{SDR} parameters. To address this issue, the
+\gls{sdr-control-system} was designed to provide a more intuitive and
 user-friendly interface for managing parameters and operations, either by
 providing easy to use abstractions to transmit signals, or by providing
 synchronization mechanisms between devices.
 
 \section{Design and Implementation}
 
-The \gls{SDR} control system was implemented using a modular approach, with
+The \gls{sdr-control-system} was implemented using a modular approach, with
 separate components responsible for device management, signal playback,
 synchronization, etc.. A design goal of the internship was to integrate this
 system with other components, \textcolor{Red}{that will not be described here
@@ -54,7 +54,7 @@ can be useful for quick testing and automation purposes.
 
 % Design choices
 It is also relevant to note some of the design choices made during the
-implementation of the \gls{SDR} control system. The most impactful one is the
+implementation of the \gls{sdr-control-system}. The most impactful one is the
 use of \gls{gRPC} for three main reasons: it has proven itself in terms of
 reliability and performance, it provides a clear and strongly typed interface
 for communication between the server and client, and allows for reflection, the
@@ -72,13 +72,13 @@ is a more modern and user-friendly build system, which allows for a more
 concise and easier to maintain build configuration, as well as an extremely
 easy to use package manager and faster build times, when compared to CMake and
 Ninja\footnote{Ninja is a small build system with a focus on
-  speed.\cite{ninja-build}}, due to its caching mechanism\cite{xmake}.
+  speed.\cite{ninja-build}}, due to its caching
+mechanism\cite{xmake}\cite{xmake-cache}.
 
 % Limitations
 
 \textcolor{Red}{Review}
-Some of the limitations of the current implementation of the \gls{SDR} control
-system are related to the client server architecture. One of the main
+Some of the limitations of the current implementation of the \gls{sdr-control-system} are related to the client server architecture. One of the main
 limitations is that it introduces some latency in the communication between the
 server and client, due to a client being created on binary boot, which can be an
 issue for real-time applications, to note that this is only a problem due to the client being a \gls{CLI}.
@@ -90,7 +90,7 @@ and can be easily added in the future if needed.
 
 \section{Architecture Diagram}
 Diagram \ref{fig:sdr-control-architecture} illustrates the architecture of the
-\gls{SDR} control system, showing the main components and their interactions.
+\gls{sdr-control-system}, showing the main components and their interactions.
 The diagram highlights the client-server architecture, the use of \gls{gRPC}
 for communication, and the integration with the \gls{DTAPI} library for
 hardware control. It also includes annotations that provide additional context
@@ -105,9 +105,9 @@ system.
 \end{figure}
 
 \section{Functionality and Use Cases}
-This section will brief some of the main functionalities of the \gls{SDR}
-control system, as well as some use cases that demonstrate how the system can
-be used in practice. The main functionalities of the system include:
+This section will brief some of the main functionalities of the
+\gls{sdr-control-system}, as well as some use cases that demonstrate how the
+system can be used in practice. The main functionalities of the system include:
 \begin{itemize}
   \item \textbf{Device management:} the system allows for the management of multiple \gls{SDR} devices, including the ability to list available devices, select a device for use, and monitor device status.
   \item \textbf{Channel configuration:} the system provides an interface for configuring the parameters of the \gls{SDR} channels, such as frequency, sampling rate, and modulation type, etc..
