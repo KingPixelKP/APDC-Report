@@ -11,26 +11,28 @@
 \label{cha:sdr-control}
 
 \prependtographicspath{{\DIRFIGURES/Covers/}}
-\textcolor{Red}{Change this to SDR Facade or Interface}
+\textcolor{Red}{Change this to SDR Control/Interface}
 
 This chapter describes the \gls{SDR} control system used in this internship.
 The \gls{SDR} control system is responsible for managing the communication
 between the \gls{SDR} hardware and the software applications that utilize it.
 It provides an interface for configuring the \gls{SDR} parameters, such as
-frequency, rf-control, and sampling rate, as well as handling data transmission
-and reception.
+Frequency, \gls{RF}-control, and Sampling Rate, as well as handling data
+transmission.
 
 \section{Objective and Motivation}
 
 One of the main problems in this internship, whilst developing the \gls{SDR}
-control, was the lack of an easy to use interface. Whilst \gls{DTAPI}, the
-\gls{SDR} control library used in this internship, provides a powerful set of
-instructions to control the \gls{SDR} hardware, its interface is not
-user-friendly and does not offer a clean way to manage the \gls{SDR}
-parameters. To address this issue, the \gls{SDR} control system was designed to
-provide a more intuitive and user-friendly interface for managing parameters
-and operations, either by providing easy to use abstractions to transmit
-signals, or by providing synchronization mechanisms between devices.
+control, was the lack of an easy to use interface. Whilst
+\gls{DTAPI}\footnote{\gls{DTAPI} is a C++ library developed by DekTec it allows
+  developers to interface with DekTec devices}, the \gls{SDR} control library
+used in this internship, provides a powerful set of instructions to control the
+\gls{SDR} hardware, its interface is not user-friendly and does not offer a
+clean way to manage the \gls{SDR} parameters. To address this issue, the
+\gls{SDR} control system was designed to provide a more intuitive and
+user-friendly interface for managing parameters and operations, either by
+providing easy to use abstractions to transmit signals, or by providing
+synchronization mechanisms between devices.
 
 \section{Design and Implementation}
 
@@ -56,32 +58,34 @@ implementation of the \gls{SDR} control system. The most impactful one is the
 use of \gls{gRPC} for three main reasons: it has proven itself in terms of
 reliability and performance, it provides a clear and strongly typed interface
 for communication between the server and client, and allows for reflection, the
-latter being one of the most useful feautures during development, as it not
-only allows for easy debugging and testing, but also allows the user to easily
+latter being one of the most useful features during development, as it not only
+allows for easy debugging and testing, but also allows the user to easily
 discover the available commands and their parameters, which is especially
 useful for users that are not familiar with the system. Another quite relevant,
-but no as impactful design choice was the use of errors as values instead of
+but not as impactful design choice was the use of errors as values instead of
 the traditional approach of using exceptions. This aided not only in making a
 more concise interface, but also avoids some of the performance pitfalls of
-exceptions. Other quite impactfull decision that deviates from the norm was the
-build system used, usually the default buildsystem is CMake, a powerfull yet
-complex tool, though XMake was chosen, XMake is a more modern and user-friendly
-build system, which allows for a more concise and easier to maintain build
-configuration, as well as an extremely easy to use package manager and faster
-build times, when compared to CMake and Ninja, due to its caching mechanism.
+exceptions. Other quite impactful decision that deviates from the norm was the
+build system used, usually the default buildsystem is CMake\footnote{CMake is a
+  powerful yet complex build system.\cite{cmake}}, though XMake was chosen, XMake
+is a more modern and user-friendly build system, which allows for a more
+concise and easier to maintain build configuration, as well as an extremely
+easy to use package manager and faster build times, when compared to CMake and
+Ninja\footnote{Ninja is a small build system with a focus on
+  speed.\cite{ninja-build}}, due to its caching mechanism\cite{xmake}.
 
 % Limitations
 
 \textcolor{Red}{Review}
 Some of the limitations of the current implementation of the \gls{SDR} control
-system are also related to the client server architecture. One of the main
+system are related to the client server architecture. One of the main
 limitations is that it introduces some latency in the communication between the
 server and client, due to a client being created on binary boot, which can be an
 issue for real-time applications, to note that this is only a problem due to the client being a \gls{CLI}.
 Additionally, whilst on purpose the coupling between the system and \gls{gRPC}
 is notable. Another limitation is that the current implementation does not
 support all the features of the \gls{SDR} hardware, though this cant really be
-considered a problem as those feature are outside the scope of this internship
+considered a problem as those features are outside the scope of this internship
 and can be easily added in the future if needed.
 
 \section{Architecture Diagram}
@@ -100,6 +104,15 @@ system.
   \label{fig:sdr-control-architecture}
 \end{figure}
 
-
 \section{Functionality and Use Cases}
-\textcolor{Red}{Talk about the functionality of the system and some use cases, maybe with some examples of how to use it.}
+This section will brief some of the main functionalities of the \gls{SDR}
+control system, as well as some use cases that demonstrate how the system can
+be used in practice. The main functionalities of the system include:
+\begin{itemize}
+  \item \textbf{Device management:} the system allows for the management of multiple \gls{SDR} devices, including the ability to list available devices, select a device for use, and monitor device status.
+  \item \textbf{Channel configuration:} the system provides an interface for configuring the parameters of the \gls{SDR} channels, such as frequency, sampling rate, and modulation type, etc..
+  \item \textbf{Signal transmission:} the system allows for the transmission of signals through the \gls{SDR} hardware, including the ability to load \gls{I/Q} sample files and transmit them.
+  \item \textbf{Synchronization:} the system provides mechanisms for synchronizing multiple \gls{SDR} devices, which is essential for applications that require precise timing and coordination between devices, such as \gls{GNSS} signal simulation.
+\end{itemize}
+Some use cases that demonstrate the functionality of the system include:
+\textcolor{Red}{Show some use cases either through script examples or through a more detailed description of the use cases.}
