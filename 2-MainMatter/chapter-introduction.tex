@@ -59,11 +59,11 @@ existing systems.
 
 \gls{SDR} is a radio communication paradigm in which signal components usually implemented in hardware, are instead implemented through software.
 This approach offers greater flexibility and adaptability, as it allows the same hardware to be modulated in different ways without requiring physical changes to the hardware itself.\cite{gnuradioRadio} \cite{wikipediaSoftwaredefinedRadio} [ix--x]\cite{SDRandGalileo}
-\gls{SDR} platforms have been gaining popularity in recent years due to their versatility, and, in the scope of this internship, they provide an ideal foundation for developing a flexible and efficient GNSS signal generator. [ix--x]\cite{SDRandGalileo}
+\gls{SDR} platforms have been gaining popularity in recent years due to their versatility, and, in the scope of this internship, they provide an ideal foundation for developing a flexible and efficient GNSS signal generator and simulator. [ix--x]\cite{SDRandGalileo}
 
 \gls{RS485} is a standard for serial communication that is commonly used in industrial applications.
 It allows for long-distance communication and is resistant to electrical noise, making it ideal for use in environments where electromagnetic interference is present.\cite{wikipediaRS485}
-This protocol will enable reliable data exchange between the GNSS signal generator and external devices, ensuring accurate and timely communication.
+This protocol will enable reliable data exchange between the GNSS signal generator and external devices, a controller for example, ensuring accurate and timely communication.
 
 \section{Problem}
 %\label{sec:a_bit_of_history}
@@ -93,12 +93,14 @@ three key phases:
 
 In this phase, the focus will be on developing the \gls{SDR} control interface.
 This will involve creating a C++ API that allows users to interact with the
-GNSS signal generator and transmitter at a high level, without needing to
-understand the low-level details of the hardware. The API will provide
-functions for configuring the signal generator, starting and stopping signal
-generation, and monitoring the status of the generator it shall also provide
-functions to control the transmitter, such as starting and stopping
-transmission, and monitoring the status of the devices, etc..
+GNSS signal generator and transmitter \textcolor{Red}{Only transmitter} at a
+high level, without needing to understand the low-level details of the
+hardware. The API will provide functions for configuring the signal generator
+\textcolor{Red}{Only transmitter}, starting and stopping signal generation
+\textcolor{Red}{transmission}, and monitoring the status of the generator
+\textcolor{Red}{Transmitters (devices)} it shall also provide functions to
+control the transmitter, such as starting and stopping transmission, and
+monitoring the status of the devices, etc.. \textcolor{Red}{Remove}
 
 \emph{Phase 2 Parameter Management:}
 
@@ -121,18 +123,18 @@ and response handling.
 The main objectives of this internship are:
 
 \begin{itemize}
-    \item Acquire working knowledge of the target \gls{SDR} hardware architecture and its
-          interface.
-    \item Understand \gls{RS485} communication protocol and its application in instrument
-          control.
-    \item Implement C++ modules for \gls{SDR} control via the vendor API.
-    \item Develop interfaces for parameter management and test scenario configuration.
-    \item Implement \gls{RS485} communication layer for exchange of commands and data
-          with external equipment (the \gls{GNSS} signal generator).
-    \item Validate the overall system functionality through functional and performance
-          testing.
-    \item Produce technical documentation and a final report for the developed interfaces
-          and modules.
+      \item Acquire working knowledge of the target \gls{SDR} hardware architecture and its
+            interface.
+      \item Understand \gls{RS485} communication protocol and its application in instrument
+            control.
+      \item Implement C++ modules for \gls{SDR} control via the vendor API.
+      \item Develop interfaces for parameter management and test scenario configuration.
+      \item Implement \gls{RS485} communication layer for exchange of commands and data
+            with external equipment (the \gls{GNSS} signal generator).
+      \item Validate the overall system functionality through functional and performance
+            testing.
+      \item Produce technical documentation and a final report for the developed interfaces
+            and modules.
 \end{itemize}
 
 \section{Work Plan \& Schedule}
@@ -141,30 +143,30 @@ Table \ref{tab:work_plan_schedule} outlines the proposed work plan and schedule
 for the internship, detailing the key phases, tasks, durations, and
 corresponding dates for each phase of the project.
 \begin{table}[htbp]
-    \centering
-    \caption{Work Plan \& Schedule for the Internship.}
-    \label{tab:work_plan_schedule}
-    \begin{tabular}{|p{3cm}|p{8cm}|c|c|}
-        \hline
-        \multicolumn{4}{|c|}{\textbf{Work Plan \& Schedule}}                                                                                                                                                                              \\
-        \hline
-        Phase                                 & Task                                                                                                                                                         & Duration & Dates           \\
-        \hline
-        Onboarding and Studying               & Introduction to the signal generator architecture; study of SDR APIs; RS-485 protocol fundamentals; review of existing codebase and tooling at GMVIS Skysoft & 3 weeks  & Mar 11 - Mar 31 \\
-        \hline
-        \gls{SDR} Control Modules             & Development of C++ API for SDR control; implementation of signal generation functions; integration with vendor API and unit testing                          & 4 weeks  & Apr 01 - Apr 28 \\
-        \hline
-        Parameter Management                  & Development of parameter management system; implementation of user-friendly configuration interface; integration with SDR control modules                    & 4 weeks  & Apr 29 - May 26 \\
-        \hline
-        \gls{RS485} Communication             & Design and Implement of an \gls{RS485} communication layer for exchange of commands and data with external equipment                                         & 3 weeks  & May 27 - Jun 16 \\
-        \hline
-        Integration, Testing \& Documentation & Integration of all components; system testing and validation; preparation of user manuals and technical documentation                                        & 5 weeks  & Jun 17 - Jul 17 \\
-        \hline
-    \end{tabular}
+      \centering
+      \caption{Work Plan \& Schedule for the Internship.}
+      \label{tab:work_plan_schedule}
+      \begin{tabular}{|p{3cm}|p{8cm}|c|c|}
+            \hline
+            \multicolumn{4}{|c|}{\textbf{Work Plan \& Schedule}}                                                                                                                                                                              \\
+            \hline
+            Phase                                 & Task                                                                                                                                                         & Duration & Dates           \\
+            \hline
+            Onboarding and Studying               & Introduction to the signal generator architecture; study of SDR APIs; RS-485 protocol fundamentals; review of existing codebase and tooling at GMVIS Skysoft & 3 weeks  & Mar 11 - Mar 31 \\
+            \hline
+            \gls{SDR} Control Modules             & Development of C++ API for SDR control; implementation of signal generation functions; integration with vendor API and unit testing                          & 4 weeks  & Apr 01 - Apr 28 \\
+            \hline
+            Parameter Management                  & Development of parameter management system; implementation of user-friendly configuration interface; integration with SDR control modules                    & 4 weeks  & Apr 29 - May 26 \\
+            \hline
+            \gls{RS485} Communication             & Design and Implement of an \gls{RS485} communication layer for exchange of commands and data with external equipment                                         & 3 weeks  & May 27 - Jun 16 \\
+            \hline
+            Integration, Testing \& Documentation & Integration of all components; system testing and validation; preparation of user manuals and technical documentation                                        & 5 weeks  & Jun 17 - Jul 17 \\
+            \hline
+      \end{tabular}
 \end{table}
 
-\textcolor{Red}{Can this be removed?}
 \section{Conclusion}
+\textcolor{Red}{Can this be removed?}
 
 This chapter as thus introduced some of the context and motivation for the work
 carried out throughout the internship. The objectives and work plan were made

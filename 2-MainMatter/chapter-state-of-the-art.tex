@@ -11,11 +11,11 @@
 \chapter{State of the Art}
 \label{cha:state_of_the_art}
 
-This chapter surveys the existing landscape of \gls{GNSS} signal generation
-tools and related software interfaces, establishing the context in which the
-work of this internship was conducted. The goal is to identify the strengths
-and limitations of existing solutions and motivate the need for the developed
-system.
+This chapter surveys the existing landscape of \gls{GNSS} signal generation and
+simulation tools and related software interfaces, establishing the context in
+which the work of this internship was conducted. The goal is to identify the
+strengths and limitations of existing solutions and motivate the need for the
+developed system.
 
 \section{Commercial GNSS Signal Simulators}
 
@@ -24,9 +24,9 @@ professional receiver testing and validation. These systems are purpose-built,
 highly capable, and widely used in aerospace, automotive, and defence
 industries.
 
-The Spirent GSS7000 is one of the most prominent examples of a commercial
-\gls{GNSS} simulator. It supports simultaneous coherent signal generation
-across multiple constellations, including \gls{GPS}, \gls{GLONASS},
+The \textbf{Spirent GSS7000} is one of the most prominent examples of a
+commercial \gls{GNSS} simulator. It supports simultaneous coherent signal
+generation across multiple constellations, including \gls{GPS}, \gls{GLONASS},
 \gls{Galileo}, and \gls{BeiDou}, with up to 256 channels flexibly allocated
 across constellations \cite{spirentGSS7000}\cite{spirentGSS7000Federal}. The
 system is controlled via Spirent's SimGEN software, which provides
@@ -79,17 +79,19 @@ DTA-2115 and DTA-2116 PCIe cards used in this internship. These cards are
 capable of high-quality, high-bandwidth \gls{RF} signal transmission and are
 well suited for professional signal simulation applications.
 
-DekTec provides the DTAPI, a C++ library for interfacing with their hardware.
-While functional and comprehensive in its coverage of hardware capabilities,
-the DTAPI is a low-level interface that exposes hardware primitives directly.
-Configuring a device requires a detailed understanding of internal hardware
-parameters, correct sequencing of API calls, and careful management of device
-state. There is no existing higher-level abstraction layer for \gls{GNSS} use
-cases built on top of the DTAPI, nor any interface that connects the output of
-\gls{I/Q} generation tools to the hardware transmission pipeline. Developers
-must therefore deal with low-level concerns such as FIFO management, DMA buffer
-sizing, and modulation flag composition directly, which increases both
-development time and the risk of subtle bugs.
+DekTec provides the \gls{DTAPI}, a C++ library for interfacing with their
+hardware. While functional and comprehensive in its coverage of hardware
+capabilities, the \gls{DTAPI} is a low-level interface that exposes hardware
+primitives directly. Configuring a device requires a detailed understanding of
+internal hardware parameters, correct sequencing of API calls, and careful
+management of device state. Some tools do exist like TSDuck\cite{ts-duck},
+though it does not focus on \gls{GNSS} signal transmission. There are no
+existing higher-level abstraction layers for \gls{GNSS} use cases built on top
+of the \gls{DTAPI}, at least none that are open-source, nor any interface that
+connects the output of \gls{I/Q} generation tools to the hardware transmission
+pipeline. Developers must therefore deal with low-level concerns such as FIFO
+management, DMA buffer sizing, and modulation flag composition directly, which
+increases both development time and the risk of subtle bugs.
 
 \section{Summary and Identified Gap}
 
@@ -108,7 +110,7 @@ surveyed solutions.
         GPS-SDR-SIM        & \texttimes             & \texttimes                & \checkmark           & \texttimes              \\
         Galileo-SDR-SIM    & \texttimes             & \texttimes                & \checkmark           & \texttimes              \\
         GNSS-SDR           & \texttimes             & \texttimes                & \checkmark           & \texttimes              \\
-        DekTec DTAPI       & \checkmark             & Low-level only            & \texttimes           & \checkmark              \\
+        DekTec \gls{DTAPI} & \checkmark             & Low-level only            & \texttimes           & \checkmark              \\
         \hline
         \textbf{This work} & \checkmark             & \checkmark                & \texttimes           & \checkmark              \\
         \hline
@@ -118,18 +120,18 @@ surveyed solutions.
 The survey reveals a clear gap in the existing landscape. Open-source signal
 computation tools such as GPS-SDR-SIM produce \gls{I/Q} sample files but
 provide no mechanism to transmit them through professional-grade hardware. The
-DekTec DTAPI provides the necessary hardware access but exposes only low-level
-primitives, with no higher-level interface suited to \gls{GNSS} workflows and
-no connection to upstream signal generation tools. Commercial simulators
-address both layers in a single integrated system, but are closed, expensive,
-and not designed for programmatic integration into custom workflows.
+DekTec \gls{DTAPI} provides the necessary hardware access but exposes only
+low-level primitives, with no higher-level interface suited to \gls{GNSS}
+workflows and no connection to upstream signal generation tools. Commercial
+simulators address both layers in a single integrated system, but are closed,
+expensive, and not designed for programmatic integration into custom workflows.
 
 The work developed during this internship directly addresses this gap. By
-providing a C++ abstraction layer over the DTAPI, exposed through a \gls{gRPC}
-interface, it bridges the \gls{I/Q} file output of open-source signal
-generators and the transmission capabilities of professional DekTec hardware,
-enabling programmatic and remotely accessible control of \gls{GNSS} signal
-transmission.
+providing a C++ abstraction layer over the \gls{DTAPI}, exposed through a
+\gls{gRPC} interface, it bridges the \gls{I/Q} file output of open-source
+signal generators and the transmission capabilities of professional DekTec
+hardware, enabling programmatic and remotely accessible control of \gls{GNSS}
+signal transmission.
 
 \section{Conclusion}
 \textcolor{Red}{Remove?}
