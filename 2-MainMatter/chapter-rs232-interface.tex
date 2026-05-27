@@ -1,40 +1,39 @@
 \typeout{NT FILE chapter-rs485-interface.tex}%
-\chapter{RS485 Interface}
-\label{cha:rs485-interface}
+\chapter{RS232 Interface}
+\label{cha:rs232-interface}
 
-This chapter describes the \gls{rs485-interface} used in this internship.
-First, the \gls{RS485} standard will be introduced, followed by a description
+This chapter describes the \gls{rs232-interface} used in this internship.
+First, the \gls{RS232} standard will be introduced, followed by a description
 of the specific implementation used in this project.
 
-\section{RS485 Standard}
+\section{RS232 Standard}
 \textcolor{Red}{Review}
-\gls{RS485} is a standard for serial communication that defines the electrical characteristics
-of the drivers and receivers used in a multi-point communication system. It is widely used in
-industrial and commercial applications due to its robustness and ability to support long-distance communication.
-The \gls{RS485} standard allows for up to 32 devices to be connected on a single bus, with a maximum cable length
-of 1200 meters. It uses differential signaling, which helps to reduce noise and improve signal integrity over long distances
-\cite{wikipediaRS485}\cite{wang2026rs485}.
+\gls{RS232} is a standard for serial communication that defines the electrical characteristics
+of the drivers and receivers used in a point-to-point communication system. It is widely used in
+industrial and commercial applications due to its simplicity and reliability. The \gls{RS232} standard allows for a single device to be connected on a single bus, with a maximum cable length
+of 300 meters.  \textcolor{Red}{Remove} It uses differential signaling, which helps to reduce noise and improve signal integrity over long distances
+\cite{wikipediaRS232}\cite{wang2026rs232}.
 
 \section{Objective and Motivation}
 \textcolor{Red}{Review}
-As mentioned above \gls{RS485} is widely used in industrial and commercial
-applications due to its robustness and ability to support long-distance
-communication. The objective of the interface developed in this internship is
+As mentioned above \gls{RS232} is widely used in industrial and commercial
+applications due to its simplicity and reliability. The objective of the interface developed in this internship is
 to provide a system that can be easily integrated with a \gls{GNSS} signal
 generator, allowing for remote control and monitoring of the signal generation
 process. Thus, it was decided that the interface should be able to support a
 flexible way to declare protocols for both transmission and reception.
 
 \section{Design and Implementation}
-The \gls{rs485-interface} was implemented through the use of an event-driven
-architecture, where the system listens for incoming data on the \gls{RS485} bus
+\textcolor{Red}{Review}
+The \gls{rs232-interface} was implemented through the use of an event-driven
+architecture, where the system listens for incoming data on the \gls{RS232} bus
 and processes it accordingly. The interface is designed so that a user may only
 need to declare C++ structs that represent protocol's messages, and a
 corresponding handler function that will be called when a message of that type
 is received. This allows a user to easily define new protocols and handle them
 without needing to modify the core of the system, thus providing a flexible way
 to manage different communication needs. Unlike the \gls{sdr-control-system},
-the \gls{rs485-interface} does not use \gls{gRPC} for reflection, as that would
+the \gls{rs232-interface} does not use \gls{gRPC} for reflection, as that would
 add unnecessary overhead to the system, it istead uses the boost-pfr
 library\footnote{''Boost.PFR is a C++14 library basic reflection'' It provides
     an easy to use reflection mechanism\cite{boost-pfr}} to achieve a similar
@@ -43,7 +42,7 @@ messages being sent and received, without the need for manual parsing or
 serialization. This design choice allows for a more efficient and streamlined
 communication process, while still providing the flexibility needed to support
 different protocols. In confomity with the choices made in
-\gls{sdr-control-system}, the \gls{rs485-interface} also uses errors as values
+\gls{sdr-control-system}, the \gls{rs232-interface} also uses errors as values
 and the XMake build system. Another relevant design choice was to leave the
 library as basic as possible, this could be changed in the future of course,
 but for now the library offers only necessary components to read, write and
@@ -53,8 +52,8 @@ library, if needed.
 
 \section{Architecture Diagram}
 \textcolor{Red}{Review}
-Diagram \ref{fig:rs485-interface-architecture} illustrates the architecture of
-the \gls{rs485-interface}, showing the main components and their interactions.
+Diagram \ref{fig:rs232-interface-architecture} illustrates the architecture of
+the \gls{rs232-interface}, showing the main components and their interactions.
 This type of architecture allows for a clear separation of concerns, with each
 component responsible for a specific aspect of the system, and provides clear
 way for a register new protocols and handlers without needing to modify the
@@ -63,10 +62,10 @@ communication needs.
 
 \begin{figure}[htbp]
     \centering
-    \input{2-MainMatter/rs485-interface-architecture.tex}
-    \caption{RS485 Interface Architecture}
-    \label{fig:rs485-interface-architecture}
+    \input{2-MainMatter/rs232-interface-architecture.tex}
+    \caption{RS232 Interface Architecture}
+    \label{fig:rs232-interface-architecture}
 \end{figure}
 
 \section{Functionality and Use Cases}
-\textcolor{Red}{TODO}
+\textcolor{Red}{TODO} 

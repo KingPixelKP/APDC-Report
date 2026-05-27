@@ -61,8 +61,8 @@ existing systems.
 This approach offers greater flexibility and adaptability, as it allows the same hardware to be modulated in different ways without requiring physical changes to the hardware itself.\cite{gnuradioRadio} \cite{wikipediaSoftwaredefinedRadio} [ix--x]\cite{SDRandGalileo}
 \gls{SDR} platforms have been gaining popularity in recent years due to their versatility, and, in the scope of this internship, they provide an ideal foundation for developing a flexible and efficient GNSS signal generator and simulator. [ix--x]\cite{SDRandGalileo}
 
-\gls{RS485} is a standard for serial communication that is commonly used in industrial applications.
-It allows for long-distance communication and is resistant to electrical noise, making it ideal for use in environments where electromagnetic interference is present.\cite{wikipediaRS485}
+\gls{RS232} is a standard for serial communication that is commonly used in industrial applications.
+It allows for long-distance communication and is resistant to electrical noise, making it ideal for use in environments where electromagnetic interference is present.\cite{wikipediaRS232}
 This protocol will enable reliable data exchange between the GNSS signal generator and external devices, a controller for example, ensuring accurate and timely communication.
 
 \section{Problem}
@@ -110,11 +110,11 @@ GNSS signal generator and transmitter. This will enable users to quickly and
 efficiently set up their test scenarios, without having to manually adjust each
 parameter through low-level API calls.
 
-\emph{Phase 3 RS-485 communication:}
+\emph{Phase 3 RS-232 communication:}
 
-In this phase, the focus will be on developing the \gls{RS485} communication
+In this phase, the focus will be on developing the \gls{RS232} communication
 interface for the GNSS signal generator. This will involve creating an API that
-allows users to interact with external equipment via the \gls{RS485} interface.
+allows users to interact with external equipment via the \gls{RS232} interface.
 The API will provide functions for interface configuration, command dispatch
 and response handling.
 
@@ -125,11 +125,11 @@ The main objectives of this internship are:
 \begin{itemize}
       \item Acquire working knowledge of the target \gls{SDR} hardware architecture and its
             interface.
-      \item Understand \gls{RS485} communication protocol and its application in instrument
+      \item Understand \gls{RS232} communication protocol and its application in instrument
             control.
       \item Implement C++ modules for \gls{SDR} control via the vendor API.
       \item Develop interfaces for parameter management and test scenario configuration.
-      \item Implement \gls{RS485} communication layer for exchange of commands and data
+      \item Implement \gls{RS232} communication layer for exchange of commands and data
             with external equipment (the \gls{GNSS} signal generator).
       \item Validate the overall system functionality through functional and performance
             testing.
@@ -152,13 +152,13 @@ corresponding dates for each phase of the project.
             \hline
             Phase                                 & Task                                                                                                                                                         & Duration & Dates           \\
             \hline
-            Onboarding and Studying               & Introduction to the signal generator architecture; study of SDR APIs; RS-485 protocol fundamentals; review of existing codebase and tooling at GMVIS Skysoft & 3 weeks  & Mar 11 - Mar 31 \\
+            Onboarding and Studying               & Introduction to the signal generator architecture; study of SDR APIs; \gls{RS232} protocol fundamentals; review of existing codebase and tooling at GMVIS Skysoft & 3 weeks  & Mar 11 - Mar 31 \\
             \hline
             \gls{SDR} Control Modules             & Development of C++ API for SDR control; implementation of signal generation functions; integration with vendor API and unit testing                          & 4 weeks  & Apr 01 - Apr 28 \\
             \hline
             Parameter Management                  & Development of parameter management system; implementation of user-friendly configuration interface; integration with SDR control modules                    & 4 weeks  & Apr 29 - May 26 \\
             \hline
-            \gls{RS485} Communication             & Design and Implement of an \gls{RS485} communication layer for exchange of commands and data with external equipment                                         & 3 weeks  & May 27 - Jun 16 \\
+            \gls{RS232} Communication             & Design and Implement of an \gls{RS232} communication layer for exchange of commands and data with external equipment                                         & 3 weeks  & May 27 - Jun 16 \\
             \hline
             Integration, Testing \& Documentation & Integration of all components; system testing and validation; preparation of user manuals and technical documentation                                        & 5 weeks  & Jun 17 - Jul 17 \\
             \hline
@@ -172,7 +172,7 @@ This chapter as thus introduced some of the context and motivation for the work
 carried out throughout the internship. The objectives and work plan were made
 clear, providing a roadmap for the development of the SDR control system and
 its integration with external equipment. The possible challenges due to the
-complexity of the SDR architecture and the RS-485 communication protocol were
+complexity of the SDR architecture and the RS-232 communication protocol were
 also acknowledged.
 
 %&\ntindex[Template]{}

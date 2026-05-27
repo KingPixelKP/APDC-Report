@@ -25,7 +25,7 @@ EDITOR ?= mate
 #————————————————————————————————————————————————————————————————————————————
 # Prevents the “each line is a new shell” pitfall and simplifies variable flow
 SHELL := /bin/sh
-.SHELLFLAGS := -eu -c -o pipefail
+.SHELLFLAGS := -eu -c 
 #————————————————————————————————————————————————————————————————————————————
 # Define commans
 GREP := grep -F
