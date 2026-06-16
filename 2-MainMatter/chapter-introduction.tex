@@ -6,638 +6,234 @@
 %% Chapter with introduction
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\typeout{NT FILE chapter1.tex}%
-
 \chapter{Introduction}
 \label{cha:introduction}
 
-\prependtographicspath{{\DIRFIGURES/Covers/}}
-
-%% epigraph configuration
-%\epigraphfontsize{\small\itshape}
-%\setlength\epigraphwidth{12.5cm}
-%\setlength\epigraphrule{0pt}
-%
-%\includegraphics[width=0.1\linewidth]{\DIRIMAGES/novathesis-insignia}\hfill
-%\includegraphics[width=0.875\linewidth]{\DIRIMAGES/novathesis-text}
-%
-%\noindent This is the \gls{novathesis} \LaTeX\ template \ntindex[Template!]{Version} \novathesisversion\ from   {Template!date}\novathesisdate.
-%
-%\epigraph{
-%  This work is licensed under the \href{https://www.latex-project.org/lppl/lppl-1-3c/}{\LaTeX\ Project Public License v1.3c}.
-%  To view a copy of this \ntindex[Template!]{license}, visit the \href{https://www.latex-project.org/lppl/}{LaTeX project public license}.
-%}
-
-% \section{Welcome to the \novathesis\ Template}
-% \label{sec:if_you_use_this_template}
-
 This first chapter serves as a brief introduction to the internship conducted
-within the scope of \gls{CDA} at \gls{GMV} It outlines the problems to be
-solved and the proposed solutions.
+within the scope of \gls{CDA} at \gls{GMV}. It outlines the context and
+motivation for the work carried out, the problem being addressed, the proposed
+solution, and the objectives defined for the internship.
 
 \section{Context and Motivation}
 
-\gls{GNSS} are a family of satellite-based positioning systems, usually referred as a constellation, that provide geolocation and time information to a receiver anywhere on Earth.
-There are several different \gls{GNSS} constellations in operation today, including the United States' \gls{GPS}, Russia's \gls{GLONASS}, the European Union's \gls{Galileo}\cite{europaGalileo}, and China's \gls{BeiDou}.
-These systems consist of a network of satellites that transmit signals to receivers, which then use the signals to determine their location.
+\gls{GNSS} are a family of satellite-based positioning systems, usually
+referred to as constellations, that provide geolocation and time information to
+a receiver anywhere on Earth. There are several different \gls{GNSS}
+constellations in operation today, including the United States' \gls{GPS},
+Russia's \gls{GLONASS}, the European Union's \gls{Galileo}\cite{europaGalileo},
+and China's \gls{BeiDou}. These systems consist of a network of satellites that
+transmit signals to receivers, which then use those signals to determine their
+location.
 
 As reliance on \gls{GNSS} technology grows, so does the need for accurate and
-reliable testing and validation of \gls{GNSS} receivers and the systems that
-are built around them. \cite{europaWhatGNSS}
+reliable testing and validation of \gls{GNSS} receivers and the systems built
+around them.\cite{europaWhatGNSS} A signal simulator is a tool used to
+reproduce the \gls{GNSS} signals that would otherwise be transmitted by
+navigation satellites and received by an
+antenna.\cite{insidegnssVerificationTesting} Such simulators are essential for
+testing and validating \gls{GNSS} receivers: they serve as a controlled and
+repeatable signal source, enabling engineers to test receivers under a wide
+range of scenarios without requiring outdoor tests or waiting for satellites to
+reach a desired orbital position.\cite{spirentWhatGNSSGPS}
 
-As per \cite{insidegnssVerificationTesting}, a signal simulator/generator is a
-tool used to "simulate \gls{GNSS} signals that are transmitted by navigation
-satellites, and received by an antenna". \gls{GNSS} simulators are essential
-for testing and validating \gls{GNSS} receivers as they serve as an easy to use
-signal source, they enable engineers to create a controlled testing
-environment, thus allowing the testing of receivers under various repeatable
-scenarios. Signal simulators also provide the ability to simulate signals
-without the need of outdoor tests or long waits for satellites to be in a
-desired position \cite{spirentWhatGNSSGPS}, simulators may also aid in the
-testing new types of \gls{GNSS} signals to be used in newer versioins of
-existing systems.
+\gls{SDR} is a radio communication paradigm in which components traditionally
+implemented in hardware are instead realised in software. This approach offers
+greater flexibility and adaptability, as the same hardware platform can be
+configured for different signal types without requiring physical
+modifications.\cite{gnuradioRadio}\cite{wikipediaSoftwaredefinedRadio} In the
+context of this internship, \gls{SDR} hardware provides the transmission
+layer for \gls{GNSS} signal simulation: pre-computed \gls{I/Q} sample files,
+produced by signal generation tools, are streamed to \gls{SDR} hardware for
+transmission as \gls{RF} signals.
 
-\gls{SDR} is a radio communication paradigm in which signal components usually implemented in hardware, are instead implemented through software.
-This approach offers greater flexibility and adaptability, as it allows the same hardware to be modulated in different ways without requiring physical changes to the hardware itself.\cite{gnuradioRadio} \cite{wikipediaSoftwaredefinedRadio} [ix--x]\cite{SDRandGalileo}
-\gls{SDR} platforms have been gaining popularity in recent years due to their versatility, and, in the scope of this internship, they provide an ideal foundation for developing a flexible and efficient GNSS signal generator and simulator. [ix--x]\cite{SDRandGalileo}
+Controlling such hardware programmatically, however, requires interfacing with
+low-level vendor APIs that expose hardware primitives directly, demanding
+careful sequencing of calls, manual state management, and detailed knowledge of
+hardware internals. Bridging this gap — between the high-level intent of an
+engineer setting up a test scenario and the low-level reality of the hardware
+API — is the central motivation for the work developed in this internship.
 
-\gls{RS232} is a standard for serial communication that is commonly used in industrial applications.
-It allows for long-distance communication and is resistant to electrical noise, making it ideal for use in environments where electromagnetic interference is present.\cite{wikipediaRS232}
-This protocol will enable reliable data exchange between the GNSS signal generator and external devices, a controller for example, ensuring accurate and timely communication.
+Additionally, \gls{RS232} is a standard for serial communication widely used in
+industrial and laboratory instrumentation. In the context of this internship,
+it provides the communication channel between the developed system and external
+equipment, enabling remote command dispatch and status
+monitoring.\cite{wikipediaRS232}
 
 \section{Problem}
-%\label{sec:a_bit_of_history}
-The key challenge for a signal generator is providing capacity to coherently
-simulate the complex signals received from multiple GNSS constellations, a
-generator must usually ensure: Accuracy, Precision, Stability, Range and
-Resolution.\cite{insidegnssVerificationTesting} Without these capabilities, the
-effectiveness of the signal generator is significantly compromised, leading to
-potential failures in real-world applications. Thus without the proper tooling,
-engineers are constrained to a manual and more costly testing process, that not
-only is unable or hard to support automated testing but also increases the time
-and effort required to validate GNSS receivers.\cite{spirentWhatGNSSGPS}
-Furthermore, the almost bare-metal nature of hardware communication and
-low-level approach to existing API's demands careful design to ensure
-reliability and real-time performance.
+
+The \gls{DTAPI}, the C++ library provided by DekTec for interfacing with their
+\gls{SDR} hardware, is a powerful but low-level interface. Configuring a device
+requires precise sequencing of API calls, manual management of device state,
+and direct handling of hardware-level concerns such as FIFO buffer
+sizing, DMA configuration, and modulation parameter composition.
+Without a higher-level abstraction, engineers are required to interact with
+these low-level details directly, which significantly increases development
+effort, the risk of subtle bugs, and the barrier to integrating \gls{SDR}
+hardware into automated test workflows.
+
+Furthermore, no existing open-source solution connects the output of \gls{GNSS}
+signal generation tools to professional-grade \gls{SDR} hardware through a
+clean, programmatic interface. This forces engineers into manual, error-prone
+workflows that are difficult to automate and hard to integrate into larger
+systems.
 
 \section{Proposed Work}
 
-The internship aims to develop an interface that closes the gap by designing an
-easy-to-use C++ tool for the programmatic control of a \gls{GNSS} signal
-generator. This interface will abstract the complexities of hardware
-communication and provide a more user-friendly environment for engineers to
-design and execute their tests. \textcolor{Red}{Major note that the objectives
-      displayed bellow evolved throughout the internship, and the final objectives
-      were a result of the evolution of the scope of the project.} The internship can
-be split into three key phases:
+The internship aimed to address this gap by developing a C++ abstraction layer
+over the \gls{DTAPI}, exposed through a \gls{gRPC} interface, to enable
+programmatic and remotely accessible control of \gls{SDR} hardware for
+\gls{GNSS} signal transmission. A secondary objective was the development of an
+\gls{RS232} communication layer for integration with external equipment.
 
-\emph{Phase 1 \gls{SDR} Control:}
+It should be noted that the scope of the internship evolved throughout its
+duration, as described in \autoref{sec:scope-evolution}. The phases outlined
+below reflect the original plan; the actual work carried out is documented in
+\autoref{sec:workplan}.
 
-In this phase, the focus will be on developing the \gls{SDR} control interface.
-This will involve creating a C++ API that allows users to interact with the
-GNSS signal generator at a high level, without needing to understand the
-low-level details of the hardware. The API will provide functions for
-configuring the signal generator, starting and stopping signal generation, and
-monitoring the status of the generator, monitor the state of devices.
+\emph{Phase 1 --- \gls{SDR} Control:}
 
-\emph{Phase 2 Parameter Management:}
+Development of a C++ API abstracting the \gls{DTAPI}, providing high-level
+functions for device management, signal transmission, and multi-device
+synchronisation, without requiring knowledge of hardware internals.
 
-In this phase, the focus will be on developing a parameter management system
-that allows users to easily configure and manage the various parameters of the
-GNSS signal generator. This will enable users to quickly and efficiently set up
-their test scenarios, without having to manually adjust each parameter through
-low-level API calls.
+\emph{Phase 2 --- Parameter Management:}
 
-\emph{Phase 3 RS-232 communication:}
+Development of a parameter management system enabling users to configure and
+manage \gls{SDR} transmission parameters efficiently, without resorting to
+direct low-level API calls.
 
-In this phase, the focus will be on developing the \gls{RS232} communication
-interface for the GNSS signal generator. This will involve creating an API that
-allows users to interact with external equipment via the \gls{RS232} interface.
-The API will provide functions for interface configuration, command dispatch
-and response handling.
+\emph{Phase 3 --- \gls{RS232} Communication:}
+
+Design and implementation of an \gls{RS232} communication layer for exchange of
+commands and data with external equipment, including interface configuration,
+command dispatch, and response handling.
 
 \section{Objectives}
 
-The main objectives of this internship are:
+The main objectives of this internship were:
 
 \begin{itemize}
-      \item Acquire working knowledge of the target \gls{SDR} hardware architecture and its
-            interface.
-      \item Understand \gls{RS232} communication protocol and its application in instrument
-            control.
-      \item Implement C++ modules for \gls{SDR} control via the vendor API.
-      \item Develop interfaces for parameter management and test scenario configuration.
-      \item Implement \gls{RS232} communication layer for exchange of commands and data
-            with external equipment (the \gls{GNSS} signal generator).
-      \item Validate the overall system functionality through functional and performance
-            testing.
-      \item Produce technical documentation and a final report for the developed interfaces
-            and modules.
+    \item Acquire working knowledge of the target \gls{SDR} hardware
+          architecture and its vendor API.
+    \item Understand the \gls{RS232} communication standard and its application
+          in instrument control.
+    \item Implement C++ modules for \gls{SDR} control via the \gls{DTAPI},
+          exposing a clean and programmatic interface through \gls{gRPC}.
+    \item Develop a parameter management interface for test scenario
+          configuration.
+    \item Implement an \gls{RS232} communication layer for exchange of commands
+          and data with external equipment.
+    \item Validate the overall system functionality through functional and
+          integration testing.
+    \item Produce technical documentation and a final report covering the
+          developed interfaces and modules.
 \end{itemize}
 
 \section{Work Plan \& Schedule}
+\label{sec:workplan}
 
-Table \ref{tab:work_plan_schedule} outlines the proposed work plan and schedule
-for the internship, detailing the key phases, tasks, durations, and
-corresponding dates for each phase of the project. Table
-\ref{tab:actual_work_plan_schedule} outlines the actual timeline of the
-internship, detailing the key phases, tasks, durations, and corresponding dates
-for each phase of the project. The actual timeline may differ from the proposed
-work plan due to unforeseen challenges, changes in project scope, or other
-factors that may arise during the course of the internship. The actual timeline
-will be updated and documented as the internship progresses to reflect any
-adjustments made to the original plan. Note that even though not displayed
-between each implementation phase there were testing and review periods of
-code. \textcolor{Red}{TODO}
+Table~\ref{tab:work_plan_schedule} outlines the originally proposed work plan
+for the internship. Table~\ref{tab:actual_work_plan_schedule} reflects the
+actual timeline, which deviated from the original plan due to changes in
+project scope described in \autoref{sec:scope-evolution}. Note that
+between each implementation phase there were continuous testing and code review
+periods not explicitly represented in either table.
+
 \begin{table}[htbp]
-      \centering
-      \caption{Work Plan \& Schedule for the Internship.}
-      \label{tab:work_plan_schedule}
-      \begin{tabular}{|p{3cm}|p{8cm}|c|c|}
-            \hline
-            \multicolumn{4}{|c|}{\textbf{Work Plan \& Schedule}}                                                                                                                                                                                         \\
-            \hline
-            Phase                                 & Task                                                                                                                                                                    & Duration & Dates           \\
-            \hline
-            Onboarding and Studying               & Introduction to the signal generator architecture; study of \gls{SDR} APIs; \gls{RS232} protocol fundamentals; review of existing codebase and tooling at GMVIS Skysoft & 3 weeks  & Mar 11 - Mar 31 \\
-            \hline
-            \gls{\gls{SDR}} Control Modules       & Development of C++ API for \gls{SDR} control; implementation of signal generation functions; integration with vendor API and unit testing                               & 4 weeks  & Apr 01 - Apr 28 \\
-            \hline
-            Parameter Management                  & Development of parameter management system; implementation of user-friendly configuration interface; integration with \gls{SDR} control modules                         & 4 weeks  & Apr 29 - May 26 \\
-            \hline
-            \gls{RS232} Communication             & Design and Implement of an \gls{RS232} communication layer for exchange of commands and data with external equipment                                                    & 3 weeks  & May 27 - Jun 16 \\
-            \hline
-            Integration, Testing \& Documentation & Integration of all components; system testing and validation; preparation of user manuals and technical documentation                                                   & 5 weeks  & Jun 17 - Jul 17 \\
-            \hline
-      \end{tabular}
-\end{table}
-\begin{table}
-      \centering
-      \caption{Actual Work Plan \& Schedule for the Internship.}
-      \label{tab:actual_work_plan_schedule}
-      \begin{tabular}{|p{3cm}|p{8cm}|c|c|}
-            \hline
-            \multicolumn{4}{|c|}{\textbf{Actual Work Plan \& Schedule}}                                                                                                                                                                                                                                                              \\
-            \hline
-            Phase                                                   & Task                                                                                                                                                                                                                              & Duration & Dates           \\
-            \hline
-            Onboarding and Studying                                 & Introduction to the signal generator architecture; study of \gls{SDR} APIs; \gls{RS232} protocol fundamentals; review of existing codebase and tooling at GMVIS Skysoft                                                           & 1 weeks  & Mar 11 - Mar 17 \\
-            \hline
-            \gls{\gls{SDR}} Control Modules \& Parameter Management & Development of C++ API for \gls{SDR} control; implementation of signal generation functions; integration with vendor API and unit testing                                                                                         & 8 weeks  & Mar 18 - May 2  \\
-            \hline
-            \gls{RS232} Communication                               & Design and Implement of an \gls{RS232} communication layer for exchange of commands and data with external equipment                                                                                                              & 1 weeks  & May 3 - May 9   \\
-            \hline
-            Basic Documentation \& Tooling                          & Writing of basic documentation for both code and devices that will be used for testing, installation scripts both for code and drivers used to monitor testing devices and scripts used for testing and validation of the system. & 4 weeks  & May 10 - Jun 7  \\
-            \hline
-      \end{tabular}
+    \centering
+    \caption{Proposed Work Plan \& Schedule for the Internship.}
+    \label{tab:work_plan_schedule}
+    \begin{tabular}{|p{3cm}|p{8cm}|c|c|}
+        \hline
+        \multicolumn{4}{|c|}{\textbf{Proposed Work Plan \& Schedule}} \\
+        \hline
+        Phase & Task & Duration & Dates \\
+        \hline
+        Onboarding and Studying &
+        Introduction to the signal generator architecture; study of \gls{SDR}
+        APIs; \gls{RS232} protocol fundamentals; review of existing codebase
+        and tooling at \gls{GMV} &
+        3 weeks & Mar 11 -- Mar 31 \\
+        \hline
+        \gls{SDR} Control Modules &
+        Development of C++ API for \gls{SDR} control; implementation of signal
+        transmission functions; integration with vendor API and unit testing &
+        4 weeks & Apr 01 -- Apr 28 \\
+        \hline
+        Parameter Management &
+        Development of parameter management system; implementation of
+        configuration interface; integration with \gls{SDR} control modules &
+        4 weeks & Apr 29 -- May 26 \\
+        \hline
+        \gls{RS232} Communication &
+        Design and implementation of an \gls{RS232} communication layer for
+        exchange of commands and data with external equipment &
+        3 weeks & May 27 -- Jun 16 \\
+        \hline
+        Integration, Testing \& Documentation &
+        Integration of all components; system testing and validation;
+        preparation of technical documentation &
+        5 weeks & Jun 17 -- Jul 17 \\
+        \hline
+    \end{tabular}
 \end{table}
 
-\section{Conclusion}
-\textcolor{Red}{Can this be removed?}
-
-This chapter as thus introduced some of the context and motivation for the work
-carried out throughout the internship. The objectives and work plan were made
-clear, providing a roadmap for the development of the \gls{SDR} control system
-and its integration with external equipment. The possible challenges due to the
-complexity of the \gls{SDR} architecture and the RS-232 communication protocol
-were also acknowledged.
+\begin{table}[htbp]
+    \centering
+    \caption{Actual Work Plan \& Schedule for the Internship.}
+    \label{tab:actual_work_plan_schedule}
+    \begin{tabular}{|p{3cm}|p{8cm}|c|c|}
+        \hline
+        \multicolumn{4}{|c|}{\textbf{Actual Work Plan \& Schedule}} \\
+        \hline
+        Phase & Task & Duration & Dates \\
+        \hline
+        Onboarding and Studying &
+        Introduction to the signal generator architecture; study of \gls{SDR}
+        APIs; \gls{RS232} protocol fundamentals; review of existing codebase
+        and tooling at \gls{GMV} &
+        1 week & Mar 11 -- Mar 17 \\
+        \hline
+        \gls{SDR} Control \& Parameter Management &
+        Development of C++ API for \gls{SDR} control; implementation of signal
+        transmission functions; integration with vendor API; parameter
+        management interface &
+        8 weeks & Mar 18 -- May 2 \\
+        \hline
+        \gls{RS232} Communication &
+        Design and implementation of an \gls{RS232} communication layer for
+        exchange of commands and data with external equipment &
+        1 week & May 3 -- May 9 \\
+        \hline
+        Integration with Proprietary Systems \& Documentation &
+        Integration of developed components with existing proprietary systems
+        at \gls{GMV}; writing of technical documentation, installation scripts,
+        and validation tooling &
+        4 weeks & May 10 -- Jun 7 \\
+        \hline
+    \end{tabular}
+\end{table}
 
 \section{Scope Evolution}
+\label{sec:scope-evolution}
 
-This section focuses on exposing how the scope of the internship evolved and
-mutated over time, and how the initial objectives were adapted to the realities
-of the project. An unfortunate change that had to be made due to
-miscommunication between many parties was the protocol to be used for the
-communication with the external equipment, the advertised in the internship
-proposal was \gls{RS485}, but the actual protocol used by the external
-equipment was \gls{RS232}, this change was extremely minor and did not affect
-the overall scope of the project, but it did require a change in the
-implementation of the communication layer, as the \gls{RS232} protocol is a
-simpler protocol than \gls{RS485}.
+The scope of the internship evolved in two notable ways relative to the
+original plan.
 
-%&\ntindex[Template]{}
+The first was a minor protocol change: the serial communication interface was
+originally specified in the internship proposal as \gls{RS485}, but the
+external equipment in use at \gls{GMV} communicated over \gls{RS232}. This
+discrepancy arose from miscommunication between the involved parties and was
+identified early in the implementation phase. As \gls{RS232} and \gls{RS485}
+share similar framing and command structures, the impact on the implementation
+was minimal, requiring only adjustments to the physical layer configuration.
 
-%The \gls{novathesis} template was born at the \gls{DI} of  \gls{FCT} of \gls{NOVA}, Portugal.  But the user base grew… initially grew to other Departments of NOVA FCT, then to other Schools of NOVA, and later to other Schools of other Universities.  Currently more than~25 Schools are natively supported by the \gls{novathesis} template.  The full list of supported Schools can be founf at the
-%\href{https://github.com/joaomlourenco/novathesis}{Project's GitHub page}.
-
-% (see Tables~\ref{tab:supported_schools_NOVA University Lisbon}, \ref{tab:supported_schools_University of Lisbon}, \ref{tab:supported_schools_University of Minho}, \ref{tab:supported_schools_Instituto Politécnico de Lisboa}, \ref{tab:supported_schools_Instituto Politécnico de Setúbal}, and \ref{tab:supported_schools_Other Universities/Schools/Degrees}).
-%
-% \newenvironment{ntUniversity}[1]{
-%   \renewcommand\tabularxcolumn[1]{m{##1}}% for vertical centering text in X column
-%   % \renewcommand\cellgape{\Gape[1cm]}
-%   % \setcellgapes{20pt}
-%   % \makegapedcells
-%   % % \setlength{\extrarowheight}{20pt}
-%   % \renewcommand{\arraystretch}{2}
-%   \rowcolors{1}{}{GhostWhite}
-%     \xltabular{\linewidth}{cX}%
-%       \caption{#1's Schools supported by the \gls{novathesis} template\label{tab:supported_schools_#1}}\\
-%     \toprule%
-%     \rowcolor{Gainsboro}%
-%     & \Gape[1.5ex]{\thead[l]{#1}}\\
-%     \midrule%
-% }{%
-%     \bottomrule
-%     \endxltabular%
-% }
-%
-% \makeatletter
-% \newtoggle{coverspace}
-% \newcommand{\docCover}[1]{%
-%   \setlength{\fboxsep}{0pt}%
-%   \togglefalse{coverspace}%
-%     \Gape[1.5ex]{\begin{mcellbox}[cc]
-%     \@for\myi:=#1\do{%
-%       \fbox{\colorbox{White}{\includegraphics[align=c,width=1.5cm]{1up/\myi}}}%
-%         \ifx\@xfor@nextelement\@nnil
-%           % last iteration
-%         \else
-%           % not last iteration
-%           \iftoggle{coverspace}{\togglefalse{coverspace}\\\\[-14pt]}{\toggletrue{coverspace}~}%
-%         \fi
-%   }%
-%     \end{mcellbox}}
-% }
-% \makeatother
-% \newcommand{\schlName}[3]{\textbf{#1} (\href{#3}{#2})}
-% \newcommand{\degreeName}[3]{\newline\null\quad • #1 \href{#3}{(#2)}}
-%
-% \begin{ntUniversity}{NOVA University Lisbon}
-%   % {
-%   %     \docCover{nova-fct-phd-en,nova-fct-msc-en}
-%   % } &  {
-%   %   \schlName{NOVA School of Science and Technology}{NOVA FCT}{https://www.fct.unl.pt}
-%   %   \degreeName{All PhD Programs}{PhD}{https://www.fct.unl.pt/en/education/phd-programmes}
-%   %   \degreeName{All MSc Programs}{MSc}{https://www.fct.unl.pt/en/education/master-degrees}
-%   % }\\
-%   % {
-%   %     \docCover{nova-fcsh-phd-en,nova-fcsh-msc-en}
-%   % } &  {
-%   %   \schlName{NOVA School of Social Sciences and Humanities}{FCSH-NOVA}{https://www.fcsh.unl.pt}
-%   %   \degreeName{All PhD Programs}{PhD}{https://www.fcsh.unl.pt/cursos/\#doutoramentos}
-%   %   \degreeName{All MSc Programs}{MSc}{https://www.fcsh.unl.pt/cursos/\#mestrados}
-%   % }\\
-%   {
-%       \docCover{nova-ims-phd-en,nova-ims-msc-mmaa-en,%
-%                 nova-ims-msc-megi-en,nova-ims-msc-mgi-en,%
-%                 nova-ims-msc-mcsig-en,nova-ims-msc-mgt-en}
-%   } &  {
-%     \schlName{NOVA Information Management School}{NOVA-IMS}{https://www.novaims.unl.pt}
-%     \degreeName{All PhD Programs}{PhD}{https://www.novaims.unl.pt}
-%     \degreeName{Master's in Data Science and Advanced Analytics}{MMAA}{https://www.novaims.unl.pt/mdsaa-ba}
-%     \degreeName{Master's in in Statistics and Information Management}{MEGI}{https://www.novaims.unl.pt}
-%     \degreeName{Master's in Information Management}{MGI}{https://www.novaims.unl.pt}
-%     \degreeName{Master's in Geographic Information Systems and Science}{MCSIG}{https://www.novaims.unl.pt/unigis}
-%     \degreeName{Master's in Geospatial Technologies}{GeoTech}{https://www.novaims.unl.pt/geotech}
-%   }\\
-%   % {
-%   %     \docCover{nova-ensp-phd-en,nova-ensp-msc-en}
-%   % } &  {
-%   %   \schlName{National School of Public Heath}{ENSP-NOVA}{https://www.ensp.unl.pt}
-%   %   \degreeName{All PhD Programs}{PhD}{https://www.ensp.unl.pt/courses/phds}
-%   %   \degreeName{All MSc Programs}{MSc}{https://www.ensp.unl.pt/courses/masters}
-%   % }\\
-%   % {
-%   %     \docCover{nova-itqb-phd-green-en,nova-itqb-msc-green-en,%
-%   %               nova-itqb-phd-gray-en,nova-itqb-msc-gray-en}
-%   % } & {
-%   %   \schlName{Instituto de Tecnologia Química e Biológica}{ITQB-NOVA}{https://www.itqb.unl.pt}
-%   %   \degreeName{All PhD Programs}{PhD}{https://www.itqb.unl.pt/education/PhD\%20Programs}
-%   %   \degreeName{All MSc Programs}{MSc}{https://www.itqb.unl.pt/education/masters-courses}
-%   % }\\
-% \end{ntUniversity}
-%
-% \begin{ntUniversity}{University of Lisbon}
-%   {
-%     \docCover{ulisboa-ist-phd-en,ulisboa-ist-msc-en}
-%   } & {
-%     \schlName{Instituto Superior Técnico}{IST-UL}{https://tecnico.ulisboa.pt}
-%     \degreeName{All PhD Programs}{PhD}{https://tecnico.ulisboa.pt/en/education/courses/phd-programmes/}
-%     \degreeName{All MSc Programs}{MSc}{https://tecnico.ulisboa.pt/en/education/courses/masters-programmes}
-%   }\\
-%   {
-%     \docCover{ulisboa-fc-phd-en,ulisboa-fc-msc-en}
-%   } & {
-%     \schlName{Faculdade de Ciências}{FCUL}{https://ciencias.ulisboa.pt}
-%     \degreeName{All PhD Programs}{PhD}{https://ciencias.ulisboa.pt/en/educational-offer/}
-%     \degreeName{All MSc Programs}{MSc}{https://ciencias.ulisboa.pt/en/educational-offer/}
-%   }\\
-%   {
-%     \docCover{ulisboa-fmv-phd-en,ulisboa-fmv-msc-en}
-%   } & {
-%     \schlName{Faculdade de Medicina Veterinária}{FMV-UL}{https://www.fmv.ulisboa.pt}
-%     \degreeName{All PhD Programs}{PhD}{https://www.fmv.ulisboa.pt/en/study/phd}
-%     \degreeName{All MSc Programs}{MSc}{https://www.fmv.ulisboa.pt/pt/ensino/mestrados}
-%   }\\
-% \end{ntUniversity}
-%
-%
-% \newdata*{schlname}
-% \newdata*{schlurl}
-% \schlname(ea):={School of Architecture}
-% \schlurl(ea):={https://www.uminho.pt/EN/uminho/Units/schools-and-institutes/Pages/School-of-Architecture.aspx}
-% \schlname(ec):={School of Sciences}
-% \schlurl(ec):={https://www.uminho.pt/EN/uminho/Units/schools-and-institutes/Pages/school-of-sciences.aspx}
-% \schlname(ed):={School of Law}
-% \schlurl(ed):={https://www.uminho.pt/EN/uminho/Units/schools-and-institutes/Pages/school-of-law.aspx}
-% \schlname(ee):={School of Engineering}
-% \schlurl(ee):={https://www.uminho.pt/EN/uminho/Units/schools-and-institutes/Pages/school-of-Engineering.aspx}
-% \schlname(eeg):={School of Economics and Management}
-% \schlurl(eeg):={https://www.uminho.pt/EN/uminho/Units/schools-and-institutes/Pages/school-of-economics-and-management.aspx}
-% \schlname(em):={School of Medicine}
-% \schlurl(em):={https://www.uminho.pt/EN/uminho/Units/schools-and-institutes/Pages/school-of-Medicine.aspx}
-% \schlname(ep):={School of Psychology}
-% \schlurl(ep):={https://www.uminho.pt/EN/uminho/Units/schools-and-institutes/Pages/school-of-psychology.aspx}
-% \schlname(ese):={School of Nursing}
-% \schlurl(ese):={https://www.uminho.pt/EN/uminho/Units/schools-and-institutes/Pages/school-of-nursing.aspx}
-% \schlname(i3b):={Research Institute 13Bs}
-% \schlurl(i3b):={https://www.uminho.pt/EN/uminho/Units/schools-and-institutes/Pages/Institute-I3Bs.aspx}
-% \schlname(ics):={Institute of Social Sciences}
-% \schlurl(ics):={https://www.uminho.pt/EN/uminho/Units/schools-and-institutes/Pages/institute-of-social-sciences.aspx}
-% \schlname(ie):={Institute of Education}
-% \schlurl(ie):={https://www.uminho.pt/EN/uminho/Units/schools-and-institutes/Pages/institute-of-education.aspx}
-% \schlname(elach):={School of Arts and Humanities}
-% \schlurl(elach):={https://www.uminho.pt/EN/uminho/Units/schools-and-institutes/Pages/school-of-arts-and-humanities.aspx}
-%
-%
-% \begin{ntUniversity}{University of Minho}
-%     {
-%       \docCover{uminho-ea-phd-en,uminho-ea-msc-en}
-%     } & {
-%       \schlName{\theschlname(ea)}{\uppercase{ea}-UMINHO}{\theschlurl(ea)}
-%       \degreeName{All PhD Programs}{PhD}{https://www.uminho.pt/EN/education/educational-offer/Pages/PhD-degrees.aspx}
-%       \degreeName{All MSc Programs}{MSc}{https://www.uminho.pt/EN/education/educational-offer/Pages/Master-degrees.aspx}
-%     }\\
-%     {
-%       \docCover{uminho-ec-phd-en,uminho-ec-msc-en}
-%     } & {
-%       \schlName{\theschlname(ec)}{\uppercase{ec}-UMINHO}{\theschlurl(ec)}
-%       \degreeName{All PhD Programs}{PhD}{https://www.uminho.pt/EN/education/educational-offer/Pages/PhD-degrees.aspx}
-%       \degreeName{All MSc Programs}{MSc}{https://www.uminho.pt/EN/education/educational-offer/Pages/Master-degrees.aspx}
-%     }\\
-%     {
-%       \docCover{uminho-ed-phd-en,uminho-ed-msc-en}
-%     } & {
-%       \schlName{\theschlname(ed)}{\uppercase{ed}-UMINHO}{\theschlurl(ed)}
-%       \degreeName{All PhD Programs}{PhD}{https://www.uminho.pt/EN/education/educational-offer/Pages/PhD-degrees.aspx}
-%       \degreeName{All MSc Programs}{MSc}{https://www.uminho.pt/EN/education/educational-offer/Pages/Master-degrees.aspx}
-%     }\\
-%     {
-%       \docCover{uminho-ee-phd-en,uminho-ee-msc-en}
-%     } & {
-%       \schlName{\theschlname(ee)}{\uppercase{ee}-UMINHO}{\theschlurl(ee)}
-%       \degreeName{All PhD Programs}{PhD}{https://www.uminho.pt/EN/education/educational-offer/Pages/PhD-degrees.aspx}
-%       \degreeName{All MSc Programs}{MSc}{https://www.uminho.pt/EN/education/educational-offer/Pages/Master-degrees.aspx}
-%     }\\
-%     {
-%       \docCover{uminho-eeg-phd-en,uminho-eeg-msc-en}
-%     } & {
-%       \schlName{\theschlname(eeg)}{\uppercase{eeg}-UMINHO}{\theschlurl(eeg)}
-%       \degreeName{All PhD Programs}{PhD}{https://www.uminho.pt/EN/education/educational-offer/Pages/PhD-degrees.aspx}
-%       \degreeName{All MSc Programs}{MSc}{https://www.uminho.pt/EN/education/educational-offer/Pages/Master-degrees.aspx}
-%     }\\
-%     {
-%       \docCover{uminho-em-phd-en,uminho-em-msc-en}
-%     } & {
-%       \schlName{\theschlname(em)}{\uppercase{em}-UMINHO}{\theschlurl(em)}
-%       \degreeName{All PhD Programs}{PhD}{https://www.uminho.pt/EN/education/educational-offer/Pages/PhD-degrees.aspx}
-%       \degreeName{All MSc Programs}{MSc}{https://www.uminho.pt/EN/education/educational-offer/Pages/Master-degrees.aspx}
-%     }\\
-%     {
-%       \docCover{uminho-ep-phd-en,uminho-ep-msc-en}
-%     } & {
-%       \schlName{\theschlname(ep)}{\uppercase{ep}-UMINHO}{\theschlurl(ep)}
-%       \degreeName{All PhD Programs}{PhD}{https://www.uminho.pt/EN/education/educational-offer/Pages/PhD-degrees.aspx}
-%       \degreeName{All MSc Programs}{MSc}{https://www.uminho.pt/EN/education/educational-offer/Pages/Master-degrees.aspx}
-%     }\\
-%     {
-%       \docCover{uminho-ese-phd-en,uminho-ese-msc-en}
-%     } & {
-%       \schlName{\theschlname(ese)}{\uppercase{ese}-UMINHO}{\theschlurl(ese)}
-%       \degreeName{All PhD Programs}{PhD}{https://www.uminho.pt/EN/education/educational-offer/Pages/PhD-degrees.aspx}
-%       \degreeName{All MSc Programs}{MSc}{https://www.uminho.pt/EN/education/educational-offer/Pages/Master-degrees.aspx}
-%     }\\
-%     {
-%       \docCover{uminho-ics-phd-en,uminho-ics-msc-en}
-%     } & {
-%       \schlName{\theschlname(ics)}{\uppercase{ics}-UMINHO}{\theschlurl(ics)}
-%       \degreeName{All PhD Programs}{PhD}{https://www.uminho.pt/EN/education/educational-offer/Pages/PhD-degrees.aspx}
-%       \degreeName{All MSc Programs}{MSc}{https://www.uminho.pt/EN/education/educational-offer/Pages/Master-degrees.aspx}
-%     }\\
-%     {
-%       \docCover{uminho-ie-phd-en,uminho-ie-msc-en}
-%     } & {
-%       \schlName{\theschlname(ie)}{\uppercase{ie}-UMINHO}{\theschlurl(ie)}
-%       \degreeName{All PhD Programs}{PhD}{https://www.uminho.pt/EN/education/educational-offer/Pages/PhD-degrees.aspx}
-%       \degreeName{All MSc Programs}{MSc}{https://www.uminho.pt/EN/education/educational-offer/Pages/Master-degrees.aspx}
-%     }\\
-%     {
-%       \docCover{uminho-elach-phd-en,uminho-elach-msc-en}
-%     } & {
-%       \schlName{\theschlname(elach)}{\uppercase{elach}-UMINHO}{\theschlurl(elach)}
-%       \degreeName{All PhD Programs}{PhD}{https://www.uminho.pt/EN/education/educational-offer/Pages/PhD-degrees.aspx}
-%       \degreeName{All MSc Programs}{MSc}{https://www.uminho.pt/EN/education/educational-offer/Pages/Master-degrees.aspx}
-%     }\\
-%     {
-%       \docCover{uminho-i3b-phd-en,uminho-i3b-msc-en}
-%     } & {
-%       \schlName{\theschlname(i3b)}{\uppercase{i3b}-UMINHO}{\theschlurl(i3b)}
-%       \degreeName{All PhD Programs}{PhD}{https://www.uminho.pt/EN/education/educational-offer/Pages/PhD-degrees.aspx}
-%       \degreeName{All MSc Programs}{MSc}{https://www.uminho.pt/EN/education/educational-offer/Pages/Master-degrees.aspx}
-%     }\\
-% \end{ntUniversity}
-%
-%
-% %
-% % % \begin{ntUniversity}{ISCTE — Instituto Universitário de Lisboa}
-% % %     \ntSchool{cover-iscteiul-eta-phd}%
-% % %              {Escola{ de Tecnologias e Arquitectura};{ETA-ISCTE-IUL};{https://ciencia.iscte-iul.pt/schools/escola-tecnologias-arquitectura}%}
-% % % \end{ntUniversity}
-% %
-% \begin{ntUniversity}{Instituto Politécnico de Lisboa}
-%     {
-%       \docCover{ipl-isel-msc-en}
-%     } & {
-%       \schlName{Instituto Superior de Engenharia de Lisboa}{ISEL-IPL}{https://www.isel.pt}
-%       \degreeName{All MSc Programs}{MSc}{https://www.isel.pt/candidatos/candidaturas/mestrados}
-%     }\\
-% \end{ntUniversity}
-%
-% \begin{ntUniversity}{Instituto Politécnico de Setúbal}
-%     {
-%       \docCover{ips-ests-msc-en}
-%     } & {
-%       \schlName{Escola Superior de Tecnologia de Setúbal}{ISEL-IPL}{https://www.estbarreiro.ips.pt}
-%       \degreeName{All MSc Programs}{MSc}{https://www.estbarreiro.ips.pt/candidaturas/mestrados}
-%     }\\
-% \end{ntUniversity}
-%
-% \begin{ntUniversity}{Other Universities/Schools/Degrees}
-%     {
-%       \docCover{other-esep-msc-en}
-%     } & {
-%       \schlName{Escola Superior de Enfermagem do Porto}{ESEP}{https://www.esenf.pt/pt}
-%       \degreeName{All MSc Programs}{MSc}{https://estudar.esenf.pt/mestrados}
-%     }\\
-% \end{ntUniversity}
-
-%\subsection{Your Time is Precious}
-%\label{sub:time_is_money}
-%
-%Did you learn how to drive by sitting by the wheel and throwing your car into the road?  Most probably you did take your time \emph{learning the rules} and \emph{practicing} first! Likewise, it is not wise to throw yourself at the task of writing a thesis/dissertation in \LaTeX\ without seriously considering the following \ntindex{recommendation}!
-%
-%\begin{tcolorbox}[colback=green!8]
-%  If you are going to spend zillions of hours writing your thesis/dissertation using the \gls{novathesis} \LaTeX\ template (or some other \LaTeX\ template), be wise and spend a couple of hours learning how to use it properly by reading its manual.  And then, be even wiser, and spend a few more hours \href{https://github.com/joaomlourenco/novathesis/wiki\#learning-latex}{learning some \LaTeX}.  I am sure that the time you are investing now will pay itself countless times before you submit your thesis/dissertation.\\\parbox{\linewidth}{\raggedleft---~\emph{João Lourenço}}
-%\end{tcolorbox}
-%
-%\subsection{Recognition}
-%\label{sub:recognition}
-%
-%\ntindex[Recognition]{}
-%
-%The \gls{novathesis} template was born in~1996, and what you see now accumulates to many many hundreds (thousands?!) of working hours, unpaid and stolen from family and friends.  This work is available to the community under the \href{LaTeX project public license}{\LaTeX\ Project Public License v1.3c}, which means you are entitled to use it for free and change it at your will.  However, if you decide to use this template to write your thesis/dissertation, \textbf{be fair to the developers} and:
-%\begin{enumerate}
-%  \item \ntindex[novathesis!Citation]{} Cite the \gls{novathesis} manual~\cite{novathesis-manual} in a place of your choice (e.g., in the \emph{Acknowledgments}) of your thesis/dissertation with “\verb!\cite{novathesis-manual}!” .  If you cite it this way, the correct entry will be added automatically to your bibliography (no need to worry with the necessary BibTeX entry, as it will be added automatically);
-%  \item Go to the
-%\href{https://github.com/joaomlourenco/novathesis}{\ntindex[GitHub!project web page]{project web page} in GitHub} and give the project a \ntindex[GitHub!stars]{star} (marked with a red ellipse at the top-right in Figure~\ref{fig:github}); and
-%  \item Make a \ntindex[donations]{donation} by visiting the \gls{novathesis} project page and clicking in the button marked with a green ellipse at the top-center in Figure~\ref{fig:github}).  Alternatively, just click \href{https://www.paypal.com/donate/?hosted_button_id=8WA8FRVMB78W8}{\fcolorbox{DarkGreen}{gray!15}{\textbf{~HERE~}}} and your browser will be directed to the right page.
-%\end{enumerate}
-%
-%\begin{figure}[htbp]
-%    \centering
-%    \includegraphics[width=0.5\linewidth]{github1}
-%    \caption{The \gls{novathesis} project web page in GitHub.}
-%    \label{fig:github}
-%\end{figure}
-%
-%
-%\section{Getting Started}
-%\label{sec:getting_started}
-%
-%The template provides an \emph{easy to use} setting for you to write your thesis/dissertation in \LaTeX:
-%\begin{itemize}
-%  \item  Select your school;
-%  \item Fill your thesis metadata (title, research field, etc) in the file “\texttt{template.tex}”;
-%  \item Create your thesis/dissertation contents using the files in folder “\texttt{Chapters}”; and
-%  \item Process using you favorite \LaTeX\ processor (pdf\LaTeX, \XeLaTeX\ or \LuaLaTeX).
-%\end{itemize}
-%
-%\subsection{Using Overleaf}
-%\label{sub:using_overleaf}
-%
-%\ntindex[Installation!Overleaf]{}
-%\ntindex[Using!Overleaf]{}
-%
-%\newcommand{\Overleaf}{\href{https://www.overleaf.com?r=f5160636&rm=d&rs=b}{Overleaf}}
-%
-%\begin{wrapfigure}{r}{0.3\linewidth}
-%% \vspace*{-10ex}
-%\includegraphics[width=\linewidth]{overleaf}%
-%\caption{NOVAthesis template in Overleaf.}
-%\label{fig:overleaf}
-%\end{wrapfigure}
-%\mbox{}\Overleaf\ is a collaborative cloud-based LaTeX editor used for writing, editing and publishing scientific documents. Like “Google Docs”,  for \LaTeX\ users. You can edit and compile your \LaTeX\ source on the cloud, without installing software in your own computer, and, much like \emph{Google Docs}, you can share your document with others users and everybody can edit the same file at the same time (this may be dangerous).
-%
-%If you do not have an account in \Overleaf, you must \href{https://www.overleaf.com?r=f5160636&rm=d&rs=b}{create one first}.
-%
-%Once you have an account, please access the \gls{novathesis} template in \href{https://www.overleaf.com/latex/templates/novathesis-v7-dot-1-18/jhqwhtcwbmqc}{Overleaf} and select the green button \emph{Open as Template} (see \Autoref{fig:overleaf}).
-%
-%\bgroup
-%  \itshape
-%  Please notice that the version currently available in Overleaf (v7.1.18) is slightly outdated (current version is v\novathesisversion). A new version (v7.1.29) will be submitted to Overleaf soon.  Until then, please:
-%  \begin{enumerate}
-%    \item Download the \href{https://github.com/joaomlourenco/novathesis/archive/main.zip}{latest version} from the GitHub repository as a Zip file.
-%    \item Login to your favorite LaTeX cloud service. I recommend \href{https://www.overleaf.com/?r=f5160636&rm=d&rs=b}{Overleaf} but there are alternatives (these instructions apply to Overleaf and you'll have to adapt for other providers).
-%    \item In the menu select: \texttt{New project} $\rightarrow$ \texttt{Upload project}.
-%    \item Upload the zip file.
-%    \item Select “template.tex” as the main file.
-%    \item Let Overleaf compile the document.
-%  \end{enumerate}
-%\egroup
-%
-%\begin{tcolorbox}[colback=red!8]
-%	Notice that you need a (student) subscription to compile the \novathesis\ template in Overleaf, otherwise your compilation will always time out.
-%\end{tcolorbox}
-%
-%\subsection{Using a Local \LaTeX\ Installation Local}
-%\label{sub:using_local_latex}
-%
-%\ntindex[Installation!Local installation]{}
-%\ntindex[Using!Local installation]{}
-%
-%\begin{wrapfigure}{r}{0.3\linewidth}
-%\vspace*{-7ex}
-%\includegraphics[width=\linewidth]{github}%
-%\caption{The NOVAthesis Project page in GitHub.}
-%\label{fig:github2}
-%\end{wrapfigure}
-%
-%First of all, start by installing \LaTeX\ in your computer.  There are two main distributions, \href{https://miktex.org}{\ntindex{\MikTeX}}\ and \href{https://www.tug.org/texlive/}{\ntindex{\TeXLive}}, and both of them are available for the~3 most popular Operating Systems: Linux, macOS and Windows.
-%
-%Be aware that a full installation of \MikTeX\ or \TeXLive\ will take near~5\,GB of hard disk space.  So, think twice before installing the full distribution.  See the \gls{novathesis} Wiki for the \href{https://github.com/joaomlourenco/novathesis/wiki/installing-latex#minimal-installation-in-any-of-the-systems-above}{list of packages required to compile the template}.
-%
-%Once you have \LaTeX\ up and running, remember to install a good \LaTeX\ text editor.  I recommend you to take a look at  \href{https://tex.stackexchange.com/questions/339/latex-editors-ides}{this post} in the \url{tex.stackexchange.com} site.  If you want a quick and dirty recommendation, try \href{https://www.texstudio.org/}{\ntindex{TeXStudio}}.
-%
-%Now, you must access the \gls{novathesis} repository in \href{https://github.com/joaomlourenco/novathesis}{GitHub}, select the green button \emph{Code} and then \emph{download} (or \emph{clone}) the template.  You will always get the latest version of the template (currently v\novathesisversion\ from \novathesisdate).
-%
-%
-%\section{Getting Help}
-%\label{sec:getting_help}
-%
-%\ntindex[Help]{}
-%
-%No! You don't have to use this template to write your thesis.  You don't even have to use \LaTeX.  However, writing a thesis is serious stuff, and which tool you shall use to write it is not a decision to make lighthearted.
-%
-%\LaTeX\ is hard enough by itself.  This template aims at making your life easier, but not easy. If you choose to use this template to write your thesis, you are very welcome.  However, don't expect me to provide you help with \LaTeX.  Look for help with your friends (you have some friends, don't you?), or search the web, or try even to read some book(s) on \LaTeX. In the end you will certainly find the experience rewarding.
-%
-%When you come to the point of “\emph{How do I do this with the \novathesis\ template?}”, remember…
-%
-%\begin{enumerate}
-%  \item To check the \href{https://github.com/joaomlourenco/novathesis/wiki}{\gls{novathesis} wiki} and have some hope!  \emojiSmile
-%  \item \href{https://www.google.com}{Google} is your best friend.
-%  \item Search the \href{https://github.com/joaomlourenco/novathesis/discussions}{GitHub Discussions page} for a question related to yours.  \emph{If and only if} you don't find one, then post your own question in English please!
-%  \item Search the \href{https://www.facebook.com/groups/novathesis}{NOVAtheis Facebook group} for a question related to yours.  \emph{If and only if} you don't find one, then post your own question in either Portuguese or English, at your preference.
-%\end{enumerate}
-%
-%When you post your own question, remember to \textbf{always} state the \gls{novathesis} version number you are using and referring to.
-%
-%\begin{tcolorbox}[colback=blue!8]
-%	\centering
-%Please do not attempt to contact me directly (email, Messenger, etc)…\\I WILL NOT REPLY!
-%\end{tcolorbox}
-%
-%
-%\subsection{Suggestions, Bugs and Feature Requests} % (fold)
-%\label{sub:suggestions_bugs_and_feature_requests}
-%
-%\begin{description}
-%  \item[Help:] If you just need some help, see above \Autoref{sec:getting_help}.
-%  \item[Suggestion:] \ntindex[Suggestions]{} Do you have a suggestion/recommendation? Please add it to the wiki and help other users!
-%  \item[Bug:] \ntindex[Bugs]{} Did you find a bug? Please open an issue. Thanks!
-%  \item[New Feature:] \ntindex[Feature Requests]{} Would you like to request a new feature (or support of a new School)? Please open an issue. Thanks!
-%
-%\end{description}
-%
-%
-%
-%% subsection suggestions_bugs_and_feature_requests (end)
-%
-%
-%
-%
-%\section{Donors}
-%\label{sec:donations}
-%
-%\ntindex[Donations]{}
-%
-%The \href{https://github.com/joaomlourenco/novathesis/wiki#donators}{list of \emph{Donnors}} is available in the \gls{novathesis} Project page.
-%
-%
-%\section{Disclaimer}
-%\label{sec:disclaimer}
-%
-%\ntindex[Disclaimer]{}
-%
-%Although the \gls{novathesis} template is endorsed by some Schools (e.g., \href{https://www.fct.unl.pt/estudante/informacao-academica/teses-e-dissertacoes}{linked from NOVA FCT web site}), the \gls{novathesis} template \textbf{this not an official template} for any School.
-%
-%The \gls{novathesis} template exists to make your life easier and we do our best to make it compliant to the supported ($+25$) Schools' regulations but, in the end of the line, you and only you are accountable for both the look and the contents of the document you submit as your thesis/dissertation.
+The second change was more significant in terms of effort. As the developed
+components matured, it became necessary to integrate them with existing
+proprietary systems at \gls{GMV} that had not been part of the original scope.
+This integration work was not planned at the outset and resulted in additional
+unplanned effort, reflected in the actual work plan in
+Table~\ref{tab:actual_work_plan_schedule}. The nature of these systems is
+confidential and will not be described in detail in this report; their
+existence is acknowledged where relevant to explain architectural decisions made
+during the internship.
