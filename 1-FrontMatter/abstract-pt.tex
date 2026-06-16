@@ -6,17 +6,21 @@
 %% Abstract in Portuguese
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\ExplSyntaxOn
-\cs_if_exist:NT \TitleOnHeader
-  { \TitleOnHeader }
-\ExplSyntaxOff
+Este relatório descreve o trabalho realizado durante o estágio de \gls{CDA}
+realizado na \gls{GMV}, em Lisboa, Portugal, como parte do curso de
+Licenciatura em Engenharia Informática na \gls{FCT}. O estágio decorreu entre
+11 de março e 17 de julho de 2026, sob a supervisão da \gls{GMV}. O trabalho
+desenvolvido durante este estágio centrou-se no design e implementação de um
+sistema de software em C++ para o controlo programático de um gerador de sinais
+\gls{GNSS}. Isto envolveu a interface com hardware profissional \gls{SDR}
+através de uma API de fornecedor, o design de uma arquitetura cliente-servidor
+baseada em gRPC para expor esse controlo remotamente, e a implementação de uma
+camada de comunicação serial sobre \gls{RS232} para integração com equipamentos
+externos. O relatório está organizado para refletir a progressão natural do
+trabalho: o Capítulo 1 introduz o contexto, a motivação e os objetivos; o
+Capítulo 2 analisa o panorama existente de ferramentas e soluções relacionadas;
+os Capítulos 3 e 4 descrevem o design e a implementação do sistema de controlo
+SDR e da interface RS-232, respetivamente; e o Capítulo 5 aborda a estratégia
+de teste e validação dos sistemas desenvolvidos.
 
-\textcolor{Red}{TODO}
-
-\keywords{
-  Primeira palavra-chave \and
-  Outra palavra-chave \and
-  Mais uma palavra-chave \and
-  A última palavra-chave
-}
 % to add an extra black line

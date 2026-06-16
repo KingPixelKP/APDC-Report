@@ -1,15 +1,16 @@
 \usetikzlibrary{positioning, fit, backgrounds, arrows.meta, calc}
 
 \begin{tikzpicture}[
-        % ── node styles ─────────────────────────────────────────
-        comp/.style = { draw, rounded corners=3pt, minimum width=3.0cm, minimum
-                height=1.5cm, text width=2.8cm, align=center, font=\small, inner sep=5pt, },
-        lollipop/.style = { draw, circle, minimum size=0.32cm, inner sep=0pt,
-                fill=white, }, stereo/.style = {font=\tiny\itshape, text=gray!60}, use/.style =
-            {->, >=open triangle 45, dashed, thick}, realize/.style = {->, >=open triangle
-                45, dashed, thick, double distance=1.2pt}, assoc/.style = {thick}, note/.style
-            = { draw=gray!40, fill=yellow!8, rounded corners=2pt, font=\tiny, text
-                width=2.8cm, align=left, inner sep=4pt, }, node distance = 1.4cm, ]
+    % ── node styles ─────────────────────────────────────────
+    comp/.style = { draw, rounded corners=3pt, minimum width=3.0cm, minimum
+            height=1.5cm, text width=2.8cm, align=center, font=\small, inner sep=5pt, },
+    lollipop/.style = { draw, circle, minimum size=0.32cm, inner sep=0pt,
+            fill=white, }, stereo/.style = {font=\tiny\itshape, text=gray!60}, use/.style =
+    {->, >={Triangle[open]}, dashed, thick}, realize/.style = {->,
+    >={Triangle[open]}, dashed, thick, double distance=1.2pt}, assoc/.style =
+        {thick}, note/.style = { draw=gray!40, fill=yellow!8, rounded corners=2pt,
+            font=\tiny, text width=2.8cm, align=left, inner sep=4pt, }, node distance =
+    1.4cm, ]
 
     % ============================================================
     % ROW 1 — Registry  |  Reader |  Writer
