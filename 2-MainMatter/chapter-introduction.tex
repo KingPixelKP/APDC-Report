@@ -64,12 +64,12 @@ monitoring.\cite{wikipediaRS232}
 The \gls{DTAPI}, the C++ library provided by DekTec for interfacing with their
 \gls{SDR} hardware, is a powerful but low-level interface. Configuring a device
 requires precise sequencing of API calls, manual management of device state,
-and direct handling of hardware-level concerns such as FIFO buffer
-sizing, DMA configuration, and modulation parameter composition.
-Without a higher-level abstraction, engineers are required to interact with
-these low-level details directly, which significantly increases development
-effort, the risk of subtle bugs, and the barrier to integrating \gls{SDR}
-hardware into automated test workflows.
+and direct handling of hardware-level concerns such as FIFO buffer sizing, DMA
+configuration, and modulation parameter composition. Without a higher-level
+abstraction, engineers are required to interact with these low-level details
+directly, which significantly increases development effort, the risk of subtle
+bugs, and the barrier to integrating \gls{SDR} hardware into automated test
+workflows.
 
 Furthermore, no existing open-source solution connects the output of \gls{GNSS}
 signal generation tools to professional-grade \gls{SDR} hardware through a
@@ -113,20 +113,19 @@ command dispatch, and response handling.
 The main objectives of this internship were:
 
 \begin{itemize}
-    \item Acquire working knowledge of the target \gls{SDR} hardware
-          architecture and its vendor API.
-    \item Understand the \gls{RS232} communication standard and its application
-          in instrument control.
-    \item Implement C++ modules for \gls{SDR} control via the \gls{DTAPI},
-          exposing a clean and programmatic interface through \gls{gRPC}.
-    \item Develop a parameter management interface for test scenario
-          configuration.
-    \item Implement an \gls{RS232} communication layer for exchange of commands
-          and data with external equipment.
-    \item Validate the overall system functionality through functional and
-          integration testing.
-    \item Produce technical documentation and a final report covering the
-          developed interfaces and modules.
+      \item Acquire working knowledge of the target \gls{SDR} hardware architecture and its
+            vendor API.
+      \item Understand the \gls{RS232} communication standard and its application in
+            instrument control.
+      \item Implement C++ modules for \gls{SDR} control via the \gls{DTAPI}, exposing a
+            clean and programmatic interface through \gls{gRPC}.
+      \item Develop a parameter management interface for test scenario configuration.
+      \item Implement an \gls{RS232} communication layer for exchange of commands and data
+            with external equipment.
+      \item Validate the overall system functionality through functional and integration
+            testing.
+      \item Produce technical documentation and a final report covering the developed
+            interfaces and modules.
 \end{itemize}
 
 \section{Work Plan \& Schedule}
@@ -135,83 +134,83 @@ The main objectives of this internship were:
 Table~\ref{tab:work_plan_schedule} outlines the originally proposed work plan
 for the internship. Table~\ref{tab:actual_work_plan_schedule} reflects the
 actual timeline, which deviated from the original plan due to changes in
-project scope described in \autoref{sec:scope-evolution}. Note that
-between each implementation phase there were continuous testing and code review
-periods not explicitly represented in either table.
+project scope described in \autoref{sec:scope-evolution}. Note that between
+each implementation phase there were continuous testing and code review periods
+not explicitly represented in either table. \textcolor{Red}{TODO the second table is still not complete}
 
 \begin{table}[htbp]
-    \centering
-    \caption{Proposed Work Plan \& Schedule for the Internship.}
-    \label{tab:work_plan_schedule}
-    \begin{tabular}{|p{3cm}|p{8cm}|c|c|}
-        \hline
-        \multicolumn{4}{|c|}{\textbf{Proposed Work Plan \& Schedule}} \\
-        \hline
-        Phase & Task & Duration & Dates \\
-        \hline
-        Onboarding and Studying &
-        Introduction to the signal generator architecture; study of \gls{SDR}
-        APIs; \gls{RS232} protocol fundamentals; review of existing codebase
-        and tooling at \gls{GMV} &
-        3 weeks & Mar 11 -- Mar 31 \\
-        \hline
-        \gls{SDR} Control Modules &
-        Development of C++ API for \gls{SDR} control; implementation of signal
-        transmission functions; integration with vendor API and unit testing &
-        4 weeks & Apr 01 -- Apr 28 \\
-        \hline
-        Parameter Management &
-        Development of parameter management system; implementation of
-        configuration interface; integration with \gls{SDR} control modules &
-        4 weeks & Apr 29 -- May 26 \\
-        \hline
-        \gls{RS232} Communication &
-        Design and implementation of an \gls{RS232} communication layer for
-        exchange of commands and data with external equipment &
-        3 weeks & May 27 -- Jun 16 \\
-        \hline
-        Integration, Testing \& Documentation &
-        Integration of all components; system testing and validation;
-        preparation of technical documentation &
-        5 weeks & Jun 17 -- Jul 17 \\
-        \hline
-    \end{tabular}
+      \centering
+      \caption{Proposed Work Plan \& Schedule for the Internship.}
+      \label{tab:work_plan_schedule}
+      \begin{tabular}{|p{3cm}|p{8cm}|c|c|}
+            \hline
+            \multicolumn{4}{|c|}{\textbf{Proposed Work Plan \& Schedule}}                                              \\
+            \hline
+            Phase                                                                & Task             & Duration & Dates \\
+            \hline
+            Onboarding and Studying                                              &
+            Introduction to the signal generator architecture; study of \gls{SDR}
+            APIs; \gls{RS232} protocol fundamentals; review of existing codebase
+            and tooling at \gls{GMV}                                             &
+            3 weeks                                                              & Mar 11 -- Mar 31                    \\
+            \hline
+            \gls{SDR} Control Modules                                            &
+            Development of C++ API for \gls{SDR} control; implementation of signal
+            transmission functions; integration with vendor API and unit testing &
+            4 weeks                                                              & Apr 01 -- Apr 28                    \\
+            \hline
+            Parameter Management                                                 &
+            Development of parameter management system; implementation of
+            configuration interface; integration with \gls{SDR} control modules  &
+            4 weeks                                                              & Apr 29 -- May 26                    \\
+            \hline
+            \gls{RS232} Communication                                            &
+            Design and implementation of an \gls{RS232} communication layer for
+            exchange of commands and data with external equipment                &
+            3 weeks                                                              & May 27 -- Jun 16                    \\
+            \hline
+            Integration, Testing \& Documentation                                &
+            Integration of all components; system testing and validation;
+            preparation of technical documentation                               &
+            5 weeks                                                              & Jun 17 -- Jul 17                    \\
+            \hline
+      \end{tabular}
 \end{table}
 
 \begin{table}[htbp]
-    \centering
-    \caption{Actual Work Plan \& Schedule for the Internship.}
-    \label{tab:actual_work_plan_schedule}
-    \begin{tabular}{|p{3cm}|p{8cm}|c|c|}
-        \hline
-        \multicolumn{4}{|c|}{\textbf{Actual Work Plan \& Schedule}} \\
-        \hline
-        Phase & Task & Duration & Dates \\
-        \hline
-        Onboarding and Studying &
-        Introduction to the signal generator architecture; study of \gls{SDR}
-        APIs; \gls{RS232} protocol fundamentals; review of existing codebase
-        and tooling at \gls{GMV} &
-        1 week & Mar 11 -- Mar 17 \\
-        \hline
-        \gls{SDR} Control \& Parameter Management &
-        Development of C++ API for \gls{SDR} control; implementation of signal
-        transmission functions; integration with vendor API; parameter
-        management interface &
-        8 weeks & Mar 18 -- May 2 \\
-        \hline
-        \gls{RS232} Communication &
-        Design and implementation of an \gls{RS232} communication layer for
-        exchange of commands and data with external equipment &
-        1 week & May 3 -- May 9 \\
-        \hline
-        Integration with Proprietary Systems \& Documentation &
-        Integration of developed components with existing proprietary systems
-        at \gls{GMV}; writing of technical documentation, installation scripts,
-        and validation tooling &
-        4 weeks & May 10 -- Jun 7 \\
-        \hline
-    \end{tabular}
+      \centering
+      \caption{Actual Work Plan \& Schedule for the Internship.}
+      \label{tab:actual_work_plan_schedule}
+      \begin{tabular}{|p{3cm}|p{8cm}|c|c|}
+            \hline
+            \multicolumn{4}{|c|}{\textbf{Actual Work Plan \& Schedule}}                                 \\
+            \hline
+            Phase                                                 & Task             & Duration & Dates \\
+            \hline
+            Onboarding and Studying                               &
+            Introduction to the signal generator architecture; study of \gls{SDR}
+            APIs; \gls{RS232} protocol fundamentals; review of existing codebase
+            and tooling at \gls{GMV}                              &
+            1 week                                                & Mar 11 -- Mar 17                    \\
+            \hline
+            \gls{SDR} Control \& Parameter Management             &
+            Development of C++ API for \gls{SDR} control; implementation of signal
+            transmission functions; integration with vendor API; parameter
+            management interface                                  &
+            8 weeks                                               & Mar 18 -- May 2                     \\
+            \hline
+            \gls{RS232} Communication                             &
+            Design and implementation of an \gls{RS232} communication layer for
+            exchange of commands and data with external equipment &
+            1 week                                                & May 3 -- May 9                      \\
+            \hline
+            Integration with Proprietary Systems \& Documentation &
+            Integration of developed components with existing proprietary systems
+            at \gls{GMV}; writing of technical documentation, installation scripts,
+            and validation tooling                                &
+            4 weeks                                               & May 10 -- Jun 7                     \\
+            \hline
+      \end{tabular}
 \end{table}
 
 \section{Scope Evolution}
@@ -235,5 +234,5 @@ This integration work was not planned at the outset and resulted in additional
 unplanned effort, reflected in the actual work plan in
 Table~\ref{tab:actual_work_plan_schedule}. The nature of these systems is
 confidential and will not be described in detail in this report; their
-existence is acknowledged where relevant to explain architectural decisions made
-during the internship.
+existence is acknowledged where relevant to explain architectural decisions
+made during the internship.
