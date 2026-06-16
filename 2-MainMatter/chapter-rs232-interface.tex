@@ -2,62 +2,84 @@
 \chapter{RS232 Interface}
 \label{cha:rs232-interface}
 
-This chapter describes the \gls{rs232-interface} used in this internship.
-First, the \gls{RS232} standard will be introduced, followed by a description
-of the specific implementation used in this project.
+This chapter describes the \gls{rs232-interface} developed during this
+internship. It begins with a brief introduction to the \gls{RS232} standard,
+followed by a description of the objectives, design, and implementation of the
+interface.
 
 \section{RS232 Standard}
-\textcolor{Red}{Review}
-\gls{RS232} is a standard for serial communication that defines the electrical characteristics
-of the drivers and receivers used in a point-to-point communication system. It is widely used in
-industrial and commercial applications due to its simplicity and reliability. The \gls{RS232} standard allows for a single device to be connected on a single bus, with a maximum cable length
-of 300 meters.  \textcolor{Red}{Remove} It uses single-ended signalling referenced to a common ground which provides adequate noise immunity for the cable lengths typically encountered in laboratory and industrial environments.
-\cite{wikipediaRS232}.
+
+\gls{RS232} is a standard for serial communication that defines the electrical
+characteristics of the signals used in a point-to-point communication system
+between a single transmitter and a single receiver. It is widely used in
+industrial and laboratory instrumentation due to its simplicity, reliability,
+and broad hardware support.\cite{wikipediaRS232}
+
+The standard uses single-ended signalling referenced to a common ground, with
+logic levels defined between $\pm$3\,V and $\pm$15\,V, providing adequate noise
+immunity for the cable lengths typically encountered in laboratory and
+industrial environments. The maximum specified cable length is 15\,m at the
+standard's nominal data rate, though in practice longer cables are commonly
+used at lower baud rates. Typical baud rates range from 9600 to 115200\,bps,
+which is sufficient for command and status exchange in instrumentation
+applications.
+
 \section{Objective and Motivation}
-\textcolor{Red}{Review}
-As mentioned above \gls{RS232} is widely used in industrial and commercial
-applications due to its simplicity and reliability. The objective of the interface developed in this internship is
-to provide a system that can be easily integrated with a \gls{GNSS} signal
-generator, allowing for remote control and monitoring of the signal generation
-process. Thus, it was decided that the interface should be able to support a
-flexible way to declare protocols for both transmission and reception.
+
+The \gls{GNSS} signal generation system developed in this internship must be
+controllable by a remote controller or computer, which issues commands and
+receives status information at runtime. \gls{RS232} was selected as the
+communication channel for this purpose, given its ubiquity in instrumentation
+environments and the straightforward point-to-point topology it provides.
+
+The objective of the \gls{rs232-interface} is therefore to provide a
+lightweight, flexible communication layer that supports both the transmission
+of commands from a remote controller and the reception of status data in
+response. A key design requirement was that the interface should allow new
+protocols to be declared and registered without modifying the core of the
+system, enabling easy adaptation to different command sets as needed.
 
 \section{Design and Implementation}
-\textcolor{Red}{Review}
-The \gls{rs232-interface} was implemented through the use of an event-driven
-architecture, where the system listens for incoming data on the \gls{RS232} bus
-and processes it accordingly. The interface is designed so that a user may only
-need to declare C++ structs that represent protocol's messages, and a
-corresponding handler function that will be called when a message of that type
-is received. This allows a user to easily define new protocols and handle them
-without needing to modify the core of the system, thus providing a flexible way
-to manage different communication needs. Unlike the \gls{sdr-control-system},
-the \gls{rs232-interface} does not use \gls{gRPC} for reflection, as that would
-add unnecessary overhead to the system, it istead uses the boost-pfr
-library\footnote{''Boost.PFR is a C++14 library basic reflection'' It provides
-    an easy to use reflection mechanism\cite{boost-pfr}} to achieve a similar
-result, allowing the system to automatically determine the structure of the
-messages being sent and received, without the need for manual parsing or
-serialization. This design choice allows for a more efficient and streamlined
-communication process, while still providing the flexibility needed to support
-different protocols. In confomity with the choices made in
-\gls{sdr-control-system}, the \gls{rs232-interface} also uses errors as values
-and the XMake build system. Another relevant design choice was to leave the
-library as basic as possible, this could be changed in the future of course,
-but for now the library offers only necessary components to read, write and
-register protocols, leaving more complex features such as looping reads from
-the bus, or protocol composition, to be implemented by the user on top of the
-library, if needed.
+
+The \gls{rs232-interface} was implemented using an event-driven architecture,
+where the system listens for incoming data on the \gls{RS232} bus and
+dispatches it to the appropriate handler based on the message type received.
+
+The interface is designed around a protocol registration model: a user declares
+a C++ struct representing a protocol message and registers a corresponding
+handler function that is invoked whenever a message of that type is received,
+some more configuration is needed but that's not deemed important for this
+framing. This allows new protocols to be added without modifying the core of
+the system, providing a flexible and extensible communication layer.
+
+Message serialisation relies on the Boost.PFR library\footnote{Boost.PFR is a
+    C++14 library that provides basic struct reflection without requiring any macro
+    or annotation boilerplate.\cite{boost-pfr}}, which enables the system to
+automatically determine the memory layout of a message struct and serialise or
+deserialise it accordingly, without manual parsing code. This achieves an
+effect similar to the reflection capabilities provided by \gls{gRPC} in the
+\gls{sdr-control-system}, but without the overhead that a \gls{gRPC} layer
+would introduce for a low-level serial interface. Messages are framed using
+\gls{COBS} encoding, which provides reliable packet delimitation over the byte
+stream without requiring reserved byte values in the payload.
+
+In line with the design choices made in the \gls{sdr-control-system}, the
+\gls{rs232-interface} uses errors as values rather than exceptions, and is
+built with the XMake build system. The library was intentionally kept minimal:
+it provides only the components necessary to read, write, and register protocol
+handlers, leaving higher-level concerns such as continuous polling loops or
+protocol composition to be implemented by the user on top of the library if
+required.
 
 \section{Architecture Diagram}
-\textcolor{Red}{Review}
-Diagram \ref{fig:rs232-interface-architecture} illustrates the architecture of
-the \gls{rs232-interface}, showing the main components and their interactions.
-This type of architecture allows for a clear separation of concerns, with each
-component responsible for a specific aspect of the system, and provides clear
-way for a register new protocols and handlers without needing to modify the
-core of the system, thus providing a flexible way to manage different
-communication needs.
+
+Diagram~\ref{fig:rs232-interface-architecture} illustrates the architecture of
+the \gls{rs232-interface}. The \texttt{Registry} component is responsible for
+maintaining the association between message types and their handlers. The
+\texttt{Reader} and \texttt{Writer} components handle the reception and
+transmission of data on the \gls{RS232} bus, respectively. Both rely on the
+\texttt{Serializer} for message serialisation and deserialisation, and on the
+\gls{COBS} encoder/decoder for packet framing.
 
 \begin{figure}[htbp]
     \centering
@@ -67,4 +89,29 @@ communication needs.
 \end{figure}
 
 \section{Functionality and Use Cases}
-\textcolor{Red}{TODO}
+
+The \gls{rs232-interface} provides the following core functionalities:
+
+\begin{itemize}
+    \item \textbf{Protocol registration:} users register C++ structs as
+          protocol messages along with a handler function, which is
+          automatically invoked upon receipt of a matching message.
+    \item \textbf{Command reception:} the interface receives commands issued
+          by a remote controller over the \gls{RS232} bus, deserialises them,
+          and dispatches them to the registered handler.
+    \item \textbf{Status transmission:} the interface serialises and transmits
+          response data back to the remote controller, enabling two-way
+          communication.
+    \item \textbf{COBS framing:} all messages are framed using \gls{COBS}
+          encoding, ensuring reliable packet delimitation over the serial byte
+          stream.
+\end{itemize}
+
+A typical use case involves a remote controller sending a command struct over
+the \gls{RS232} bus — for example, requesting the current transmission status
+or issuing a configuration update. The \gls{rs232-interface} receives the
+framed packet, decodes it using the \gls{COBS} decoder, deserialises the
+payload into the corresponding C++ struct using Boost.PFR, and invokes the
+registered handler. The handler processes the command and may write a response
+back through the \texttt{Writer}, which serialises and re-encodes the response
+before transmitting it.
