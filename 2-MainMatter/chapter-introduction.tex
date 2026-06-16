@@ -86,10 +86,12 @@ The internship aims to develop an interface that closes the gap by designing an
 easy-to-use C++ tool for the programmatic control of a \gls{GNSS} signal
 generator and a transmitter. This interface will abstract the complexities of
 hardware communication and provide a more user-friendly environment for
-engineers to design and execute their tests. The internship can be split into
-three key phases:
+engineers to design and execute their tests. \textcolor{Red}{Major note that the
+      objectives displayed bellow evolved throughout the internship, and the final
+      objectives were a result of the evolution of the scope of the project.} The
+internship can be split into three key phases:
 
-\emph{Phase 1 SDR Control:}
+\emph{Phase 1 \gls{SDR} Control:}
 
 In this phase, the focus will be on developing the \gls{SDR} control interface.
 This will involve creating a C++ API that allows users to interact with the
@@ -141,26 +143,55 @@ The main objectives of this internship are:
 
 Table \ref{tab:work_plan_schedule} outlines the proposed work plan and schedule
 for the internship, detailing the key phases, tasks, durations, and
-corresponding dates for each phase of the project.
+corresponding dates for each phase of the project. Table
+\ref{tab:actual_work_plan_schedule} outlines the actual timeline of the
+internship, detailing the key phases, tasks, durations, and corresponding dates
+for each phase of the project. The actual timeline may differ from the proposed
+work plan due to unforeseen challenges, changes in project scope, or other
+factors that may arise during the course of the internship. The actual timeline
+will be updated and documented as the internship progresses to reflect any
+adjustments made to the original plan. Note that even though not displayed
+between each implementation phase there were testing and review periods of
+code. \textcolor{Red}{TODO}
 \begin{table}[htbp]
       \centering
       \caption{Work Plan \& Schedule for the Internship.}
       \label{tab:work_plan_schedule}
       \begin{tabular}{|p{3cm}|p{8cm}|c|c|}
             \hline
-            \multicolumn{4}{|c|}{\textbf{Work Plan \& Schedule}}                                                                                                                                                                              \\
+            \multicolumn{4}{|c|}{\textbf{Work Plan \& Schedule}}                                                                                                                                                                                         \\
             \hline
-            Phase                                 & Task                                                                                                                                                         & Duration & Dates           \\
+            Phase                                 & Task                                                                                                                                                                    & Duration & Dates           \\
             \hline
-            Onboarding and Studying               & Introduction to the signal generator architecture; study of SDR APIs; \gls{RS232} protocol fundamentals; review of existing codebase and tooling at GMVIS Skysoft & 3 weeks  & Mar 11 - Mar 31 \\
+            Onboarding and Studying               & Introduction to the signal generator architecture; study of \gls{SDR} APIs; \gls{RS232} protocol fundamentals; review of existing codebase and tooling at GMVIS Skysoft & 3 weeks  & Mar 11 - Mar 31 \\
             \hline
-            \gls{SDR} Control Modules             & Development of C++ API for SDR control; implementation of signal generation functions; integration with vendor API and unit testing                          & 4 weeks  & Apr 01 - Apr 28 \\
+            \gls{\gls{SDR}} Control Modules       & Development of C++ API for \gls{SDR} control; implementation of signal transmission functions; integration with vendor API and unit testing                             & 4 weeks  & Apr 01 - Apr 28 \\
             \hline
-            Parameter Management                  & Development of parameter management system; implementation of user-friendly configuration interface; integration with SDR control modules                    & 4 weeks  & Apr 29 - May 26 \\
+            Parameter Management                  & Development of parameter management system; implementation of user-friendly configuration interface; integration with \gls{SDR} control modules                         & 4 weeks  & Apr 29 - May 26 \\
             \hline
-            \gls{RS232} Communication             & Design and Implement of an \gls{RS232} communication layer for exchange of commands and data with external equipment                                         & 3 weeks  & May 27 - Jun 16 \\
+            \gls{RS232} Communication             & Design and Implement of an \gls{RS232} communication layer for exchange of commands and data with external equipment                                                    & 3 weeks  & May 27 - Jun 16 \\
             \hline
-            Integration, Testing \& Documentation & Integration of all components; system testing and validation; preparation of user manuals and technical documentation                                        & 5 weeks  & Jun 17 - Jul 17 \\
+            Integration, Testing \& Documentation & Integration of all components; system testing and validation; preparation of user manuals and technical documentation                                                   & 5 weeks  & Jun 17 - Jul 17 \\
+            \hline
+      \end{tabular}
+\end{table}
+\begin{table}
+      \centering
+      \caption{Actual Work Plan \& Schedule for the Internship.}
+      \label{tab:actual_work_plan_schedule}
+      \begin{tabular}{|p{3cm}|p{8cm}|c|c|}
+            \hline
+            \multicolumn{4}{|c|}{\textbf{Actual Work Plan \& Schedule}}                                                                                                                                                                                                                                                              \\
+            \hline
+            Phase                                                   & Task                                                                                                                                                                                                                              & Duration & Dates           \\
+            \hline
+            Onboarding and Studying                                 & Introduction to the signal generator architecture; study of \gls{SDR} APIs; \gls{RS232} protocol fundamentals; review of existing codebase and tooling at GMVIS Skysoft                                                           & 1 weeks  & Mar 11 - Mar 17 \\
+            \hline
+            \gls{\gls{SDR}} Control Modules \& Parameter Management & Development of C++ API for \gls{SDR} control; implementation of signal transmission functions; integration with vendor API and unit testing                                                                                       & 8 weeks  & Mar 18 - May 2  \\
+            \hline
+            \gls{RS232} Communication                               & Design and Implement of an \gls{RS232} communication layer for exchange of commands and data with external equipment                                                                                                              & 1 weeks  & May 3 - May 9   \\
+            \hline
+            Basic Documentation \& Tooling                          & Writing of basic documentation for both code and devices that will be used for testing, installation scripts both for code and drivers used to monitor testing devices and scripts used for testing and validation of the system. & 4 weeks  & May 10 - Jun 7  \\
             \hline
       \end{tabular}
 \end{table}
@@ -170,12 +201,23 @@ corresponding dates for each phase of the project.
 
 This chapter as thus introduced some of the context and motivation for the work
 carried out throughout the internship. The objectives and work plan were made
-clear, providing a roadmap for the development of the SDR control system and
-its integration with external equipment. The possible challenges due to the
-complexity of the SDR architecture and the RS-232 communication protocol were
-also acknowledged.
+clear, providing a roadmap for the development of the \gls{SDR} control system
+and its integration with external equipment. The possible challenges due to the
+complexity of the \gls{SDR} architecture and the RS-232 communication protocol
+were also acknowledged.
 
 \section{Scope Evolution}
+
+This section focuses on exposing how the scope of the internship evolved and
+mutated over time, and how the initial objectives were adapted to the realities
+of the project. An unfortunate change that had to be made due to
+miscommunication between many parties was the protocol to be used for the
+communication with the external equipment, the advertised in the internship
+proposal was \gls{RS485}, but the actual protocol used by the external
+equipment was \gls{RS232}, this change was extremely minor and did not affect
+the overall scope of the project, but it did require a change in the
+implementation of the communication layer, as the \gls{RS232} protocol is a
+simpler protocol than \gls{RS485}.
 
 %&\ntindex[Template]{}
 
