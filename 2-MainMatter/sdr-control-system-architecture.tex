@@ -98,10 +98,10 @@
     (client.south) .. controls +(0,-1.0) and +(-0.6, 0.6) .. (api-lollipop.west)
     node[stereo, pos=0.45, left=2pt] {<<use>>};
 
-    % Server  --<<realize>>-->  Public API
-    \draw[realize]
+    % Server  --<<use>>-->  Public API
+    \draw[use]
     (server.south) .. controls +(0,-0.8) and +(0.6, 0.6) .. (api-lollipop.east)
-    node[stereo, pos=0.45, right=2pt] {<<realize>>};
+    node[stereo, pos=0.45, right=2pt] {<<use>>};
 
     % Server  --<<use>>-->  app
     \draw[use]
