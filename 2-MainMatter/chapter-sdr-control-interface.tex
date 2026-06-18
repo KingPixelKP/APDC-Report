@@ -25,7 +25,7 @@ One of the main problems in this internship, whilst developing the
 \gls{sdr-control-system}, was the lack of an easy to use interface. Whilst
 \gls{DTAPI}, the \gls{sdr-control-system} library used in this internship,
 provides a powerful set of instructions to control the \gls{SDR} hardware, its
-interface is not user-friendly, due to its requirement to chain calls correcly
+interface is not user-friendly, due to its requirement to chain calls correctly,
 the heavy use of macros, manual device state management and it does not offer a
 clean way to manage the \gls{SDR} parameters. To address this issue, the
 \gls{sdr-control-system} was designed to provide a more intuitive and
@@ -110,8 +110,6 @@ system can be used in practice. The main functionalities of the system include:
 \begin{itemize}
   \item \textbf{Device management:} the system allows for the management of multiple \gls{SDR} devices, including the ability to list available devices, select a device for use, and monitor device status.
   \item \textbf{Channel configuration:} the system provides an interface for configuring the parameters of the \gls{SDR} channels, such as frequency, sampling rate, and modulation type, etc..
-  \item \textbf{Signal transmission:} the system allows for the transmission of signals through the \gls{SDR} hardware, including the ability to load \gls{I/Q} sample files and transmit them.
+  \item \textbf{Signal transmission:} the system allows for the transmission of signals through the \gls{SDR} hardware, including the ability to load \gls{I/Q} sample files and transmit them, or to read direclty from a stream of \gls{I/Q} samples and transmit them in real-time.
   \item \textbf{Synchronization:} the system provides mechanisms for synchronizing multiple \gls{SDR} devices, which is essential for applications that require precise timing and coordination between devices, such as \gls{GNSS} signal simulation.
 \end{itemize}
-Some use cases that demonstrate the functionality of the system include:
-\textcolor{Red}{Show some use cases either through script examples or through a more detailed description of the use cases.}

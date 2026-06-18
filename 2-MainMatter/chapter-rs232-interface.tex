@@ -48,13 +48,13 @@ dispatches it to the appropriate handler based on the message type received.
 The interface is designed around a protocol registration model: a user declares
 a C++ struct representing a protocol message and registers a corresponding
 handler function that is invoked whenever a message of that type is received,
-some more configuration is needed but that's not deemed important for this
-framing. This allows new protocols to be added without modifying the core of
-the system, providing a flexible and extensible communication layer.
+some more configuration is required though not deemed important to be explained
+here. This allows new protocols to be added without modifying the core of the
+system, providing a flexible and extensible communication layer.
 
 Message serialisation relies on the Boost.PFR library\footnote{Boost.PFR is a
-    C++14 library that provides basic struct reflection without requiring any macro
-    or annotation boilerplate.\cite{boost-pfr}}, which enables the system to
+      C++14 library that provides basic struct reflection without requiring any macro
+      or annotation boilerplate.\cite{boost-pfr}}, which enables the system to
 automatically determine the memory layout of a message struct and serialise or
 deserialise it accordingly, without manual parsing code. This achieves an
 effect similar to the reflection capabilities provided by \gls{gRPC} in the
@@ -82,10 +82,10 @@ transmission of data on the \gls{RS232} bus, respectively. Both rely on the
 \gls{COBS} encoder/decoder for packet framing.
 
 \begin{figure}[htbp]
-    \centering
-    \input{2-MainMatter/rs232-interface-architecture.tex}
-    \caption{RS232 Interface Architecture}
-    \label{fig:rs232-interface-architecture}
+      \centering
+      \input{2-MainMatter/rs232-interface-architecture.tex}
+      \caption{RS232 Interface Architecture}
+      \label{fig:rs232-interface-architecture}
 \end{figure}
 
 \section{Functionality and Use Cases}
@@ -93,25 +93,25 @@ transmission of data on the \gls{RS232} bus, respectively. Both rely on the
 The \gls{rs232-interface} provides the following core functionalities:
 
 \begin{itemize}
-    \item \textbf{Protocol registration:} users register C++ structs as
-          protocol messages along with a handler function, which is
-          automatically invoked upon receipt of a matching message.
-    \item \textbf{Command reception:} the interface receives commands issued
-          by a remote controller over the \gls{RS232} bus, deserialises them,
-          and dispatches them to the registered handler.
-    \item \textbf{Status transmission:} the interface serialises and transmits
-          response data back to the remote controller, enabling two-way
-          communication.
-    \item \textbf{COBS framing:} all messages are framed using \gls{COBS}
-          encoding, ensuring reliable packet delimitation over the serial byte
-          stream.
+      \item \textbf{Protocol registration:} users register C++ structs as
+            protocol messages along with a handler function, which is
+            automatically invoked upon receipt of a matching message.
+      \item \textbf{Command reception:} the interface receives commands issued
+            by a remote controller over the \gls{RS232} bus, deserialises them,
+            and dispatches them to the registered handler.
+      \item \textbf{Status transmission:} the interface serialises and transmits
+            response data back to the remote controller, enabling two-way
+            communication.
+      \item \textbf{COBS framing:} all messages are framed using \gls{COBS}
+            encoding, ensuring reliable packet delimitation over the serial byte
+            stream.
 \end{itemize}
 
 A typical use case involves a remote controller sending a command struct over
-the \gls{RS232} bus — for example, requesting the current transmission status
-or issuing a configuration update. The \gls{rs232-interface} receives the
-framed packet, decodes it using the \gls{COBS} decoder, deserialises the
-payload into the corresponding C++ struct using Boost.PFR, and invokes the
-registered handler. The handler processes the command and may write a response
-back through the \texttt{Writer}, which serialises and re-encodes the response
+the \gls{RS232} bus — for example, requesting the start of signal generation or
+issuing a configuration update. The \gls{rs232-interface} receives the framed
+packet, decodes it using the \gls{COBS} decoder, deserialises the payload into
+the corresponding C++ struct using Boost.PFR, and invokes the registered
+handler. The handler processes the command and may write a response back
+through the \texttt{Writer}, which serialises and re-encodes the response
 before transmitting it.
