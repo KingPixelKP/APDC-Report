@@ -1,0 +1,65 @@
+\typeout{NT FILE chapter-integration-testing.tex}%
+\chapter{Integration and Testing}
+
+This chapter describes how the components developed during this internship, the
+\gls{sdr-control-system} and the \gls{rs232-interface}, were brought together
+into a working system, the environment in which that system was validated, and
+the testing strategy used to ensure its correctness and reliability.
+
+\section{Unit Testing}
+Before integrating the components, unit tests were developed for both the
+\gls{sdr-control-system} and the \gls{rs232-interface}. These tests were
+designed to validate the functionality of individual components in isolation,
+ensuring that each component behaved as expected under a variety of conditions.
+For the \gls{sdr-control-system}, unit tests were created to verify the correct
+generation of \gls{GNSS} signals, the proper handling of configuration
+parameters, and the correct interaction with the underlying \gls{SDR} hardware.
+For the \gls{rs232-interface}, unit tests deemed to be harder to implement as
+the hardware used did not have same port loopback capabilities, thus
+unfortunately only framing, serialization, and protocol dispatch were unit
+tested. Proper \gls{RS232} testing required the development of the external
+tester described in \autoref{sec:the-external-tester}.
+
+\section{Environment Overview}
+
+Throughout this chapter, references to ``the computer'', ``the host'' or ``the
+generator'' refer specifically to the machine running the \gls{GNSS} signal
+generator software stack, which hosts both the \gls{sdr-control-system} and the
+\gls{rs232-interface}, and to which the \gls{SDR} hardware (DTA-2116 PCIe
+cards) is physically attached.
+
+It is important to frame the environment in which this system was developed and
+validated as a prototype setup, distinct from a final deployment environment.
+In a deployed scenario, the generator would be placed in a loopback, over a
+\gls{RF} uplink to a remote receiver that would measure the transmitted signal,
+and calculate any needed adjustments to the signal generator's configuration.
+That remote receiver would then communicate those adjustments back to the
+signal generator over the \gls{RS232} interface, closing the loop and allowing
+the signal generator to adapt its transmission parameters in response to the
+measured signal quality. In this prototype environment, however, such setup was
+too complex and impractical to maintain for day-to-day development and testing,
+and so a testing component was developed as described in
+\autoref{sec:the-external-tester}, with the external tester component
+simulating the behaviour of the remote receiver and any other measurement
+equipment that would normally be present in a deployed scenario.
+
+\section{The External Tester}
+\label{sec:the-external-tester}
+
+The external tester is a hardware/software component that simulates the
+behaviour of the remote receiver and any other measurement equipment that would
+normally be present in a deployed scenario. It is used to validate the
+\gls{rs232-interface} and the \gls{sdr-control-system} in a controlled and
+repeatable manner. The setup is quite simple, the generator is connected to
+measurement equipment over a \gls{RF} link, which relays information to the
+tester. The tester then communicates with the generator over a \gls{RS232}
+link, issuing commands and producing responses that are representative of what
+the real equipment would return. This allows the both the \gls{rs232-interface}
+and the \gls{sdr-control-system} to be exercised end-to-end, covering message
+framing, serialisation, protocol dispatch, handler invocation, and signal
+generation. Thus allowing the behaviour of the real system to be validated
+under controlled and repeatable conditions, without depending on the
+availability of physical instrumentation.
+
+\section{Integration}
+\textcolor{Red}{TODO}
