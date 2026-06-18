@@ -32,6 +32,16 @@ receives status information at runtime. \gls{RS232} was selected as the
 communication channel for this purpose, given its ubiquity in instrumentation
 environments and the straightforward point-to-point topology it provides.
 
+Beyond this general suitability, the choice of \gls{RS232} was in practice
+dictated by an external constraint, the system ought to be intrgrated with
+legacy equipment that communicates exclusively over \gls{RS232}. Modifying or
+replacing that equipment's communication interface was outside the scope of
+this internship, and as discussed in \autoref{sec:scope-evolution}, this
+requirement is also what led to the protocol being changed from the originally
+proposed \gls{RS485} to \gls{RS232}. RS-232 was therefore not purely a design
+preference, but a constraint imposed by the pre-existing environment the system
+had to integrate with.
+
 The objective of the \gls{rs232-interface} is therefore to provide a
 lightweight, flexible communication layer that supports both the transmission
 of commands from a remote controller and the reception of status data in
