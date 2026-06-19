@@ -25,11 +25,11 @@ One of the main problems in this internship, whilst developing the
 \gls{sdr-control-system}, was the lack of an easy to use interface. Whilst
 \gls{DTAPI}, the \gls{sdr-control-system} library used in this internship,
 provides a powerful set of instructions to control the \gls{SDR} hardware, its
-interface is not user-friendly, due to its requirement to chain calls correctly,
-the heavy use of macros, manual device state management and it does not offer a
-clean way to manage the \gls{SDR} parameters. To address this issue, the
-\gls{sdr-control-system} was designed to provide a more intuitive and
-user-friendly interface for managing parameters and operations, either by
+interface is not user-friendly, due to its requirement to chain calls
+correctly, the heavy use of macros, manual device state management and it does
+not offer a clean way to manage the \gls{SDR} parameters. To address this
+issue, the \gls{sdr-control-system} was designed to provide a more intuitive
+and user-friendly interface for managing parameters and operations, either by
 providing easy to use abstractions to transmit signals, or by providing
 synchronization mechanisms between devices.
 
@@ -87,6 +87,141 @@ support all the features of the \gls{SDR} hardware, though this cant really be
 considered a problem as those features are outside the scope of this internship
 and can be easily added in the future if needed.
 
+\section{IQ Signal Generation}
+\label{sec:iq-signal-generation}
+
+Whilst not the main focus of this internship, the \gls{sdr-control-system} is
+designed to integrate with a \gls{GNSS} signal generation system, which is
+responsible for generating the actual \gls{I/Q} samples that are transmitted
+through the \gls{SDR} hardware. Since such component was still unfinised a
+simplified model of the signal generation was implemented, which allows for the
+generation of single tone signals with configurable parameters, such as
+frequency, amplitude, phase, Doppler shift and code delay. This simplified
+model was sufficient for the purpose of testing the \gls{sdr-control-system}
+and its integration with the \gls{SDR} hardware, but it is expected that a more
+sophisticated signal generation system will be integrated in the future.
+
+\subsection{In-phase and Quadrature Components}
+
+A signal intended for transmission is represented in baseband by two orthogonal
+components, the in-phase component, $I(t)$, and the quadrature component,
+$Q(t)$. Together they describe a complex baseband signal $s(t) = I(t) + jQ(t)$,
+which is later mixed up to the desired carrier frequency by the \gls{SDR}
+hardware. For a single tone, the two components are given by
+
+\begin{equation}
+  I(t) = A\cos\left(2\pi f t + \varphi\right), \qquad
+  Q(t) = A\sin\left(2\pi f t + \varphi\right),
+  \label{eq:iq-components}
+\end{equation}
+
+\noindent where $A$ is the amplitude, $f$ is the frequency, and $\varphi$ is
+the phase of the signal. Figure~\ref{fig:iq-components} shows an example of
+these two components plotted over time, with a $90\degree$ phase offset
+between them, which is what gives the quadrature component its name.\cite{pysdrSamplingPySDR}
+
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[
+        width=0.8\textwidth, height=6cm,
+        xlabel={Time [$\mu$s]},
+        ylabel={Amplitude},
+        xmin=0, xmax=2,
+        ymin=-1.3, ymax=1.3,
+        legend style={at={(0.5,-0.22)}, anchor=north, legend columns=2},
+        axis lines=left,
+        ticklabel style={font=\small},
+        label style={font=\small},
+        legend style={font=\small},
+      ]
+      \addplot[domain=0:2, samples=200, thick, blue] {cos(2*360*0.5*x + 30)};
+      \addlegendentry{$I(t) = A\cos(2\pi f t + \varphi)$}
+      \addplot[domain=0:2, samples=200, thick, red, dashed] {sin(2*360*0.5*x + 30)};
+      \addlegendentry{$Q(t) = A\sin(2\pi f t + \varphi)$}
+    \end{axis}
+  \end{tikzpicture}
+  \caption{In-phase and quadrature components of a single-tone baseband signal.}
+  \label{fig:iq-components}
+\end{figure}
+
+Amplitude, frequency and phase are thus the three basic parameters that both
+the signal generator and the \gls{sdr-control-system} expose for a given signal
+channel. Amplitude controls the transmitted power level, frequency determines
+the carrier offset within the channel bandwidth, and phase allows for fine
+alignment between multiple signals or devices, which becomes particularly
+relevant when synchronizing several \gls{SDR} channels, as mentioned in
+Section~\ref{sec:functionality-and-use-cases}.
+
+\subsection{Doppler Effect}
+
+In the context of \gls{GNSS} signal simulation, the relative motion between a
+satellite and a receiver introduces a Doppler shift on the carrier frequency.
+This shift is not constant, as it depends on the relative velocity along the
+line of sight between transmitter and receiver, which changes over the course
+of a satellite pass. Figure~\ref{fig:doppler} illustrates a typical Doppler
+profile for a satellite pass, where the shift starts positive as the satellite
+approaches, crosses zero near the point of closest approach, and becomes
+negative as the satellite recedes.
+
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[
+        width=0.7\textwidth, height=6cm,
+        xlabel={Time [s]},
+        ylabel={Doppler shift $f_d$ [kHz]},
+        xmin=0, xmax=10,
+        axis lines=left,
+        ticklabel style={font=\small},
+        label style={font=\small},
+      ]
+      \addplot[domain=0:10, samples=100, thick, blue] {2.2 * (1 - 2/(1+exp(-1.2*(x-5))))};
+    \end{axis}
+  \end{tikzpicture}
+  \caption{Example Doppler shift profile over the course of a satellite pass.}
+  \label{fig:doppler}
+\end{figure}
+
+To support this, the signal generator allows the Doppler shift to be specified
+as a parameter of the generated signal.
+
+\subsection{Code Delay}
+
+\gls{GNSS} signals are modulated with a pseudorandom ranging code, which the
+receiver correlates against a locally generated replica to estimate the
+propagation delay between satellite and receiver. This propagation delay,
+referred to as the code delay $\tau$, is what ultimately allows the receiver
+to compute its position, and it is usually expressed in chips of the ranging
+code rather than in absolute time. As the geometric distance between satellite
+and receiver changes, so does the code delay, typically increasing or
+decreasing smoothly over time, as illustrated in
+Figure~\ref{fig:code-delay}.
+
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[
+        width=0.7\textwidth, height=6cm,
+        xlabel={Time [s]},
+        ylabel={Code delay $\tau$ [chips]},
+        xmin=0, xmax=10,
+        axis lines=left,
+        ticklabel style={font=\small},
+        label style={font=\small},
+      ]
+      \addplot[domain=0:10, samples=100, thick, green] {200 + 15*x + 0.5*x*x};
+    \end{axis}
+  \end{tikzpicture}
+  \caption{Example code delay evolution over time.}
+  \label{fig:code-delay}
+\end{figure}
+
+Similarly to the Doppler shift, the code delay can be configured in the signal
+generator as a parameter of the generated signal, allowing the simulation of
+realistic satellite-to-receiver geometries without requiring an actual moving
+transmitter.
+
 \section{Architecture Diagram}
 Diagram \ref{fig:sdr-control-architecture} illustrates the architecture of the
 \gls{sdr-control-system}, showing the main components and their interactions.
@@ -104,6 +239,7 @@ system.
 \end{figure}
 
 \section{Functionality and Use Cases}
+\label{sec:functionality-and-use-cases}
 This section will brief some of the main functionalities of the
 \gls{sdr-control-system}, as well as some use cases that demonstrate how the
 system can be used in practice. The main functionalities of the system include:
