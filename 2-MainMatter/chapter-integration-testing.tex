@@ -6,8 +6,8 @@ This chapter describes how the components developed during this internship, the
 \gls{sdr-control-system} and the \gls{rs232-interface}, were brought together
 into a working system, the environment in which that system was validated, and
 the testing strategy used to ensure its correctness and reliability.
-
 \section{Unit Testing}
+
 Before integrating the components, unit tests were developed for both the
 \gls{sdr-control-system} and the \gls{rs232-interface}. These tests were
 designed to validate the functionality of individual components in isolation,
@@ -20,7 +20,6 @@ the hardware used did not have same port loopback capabilities, thus
 unfortunately only framing, serialization, and protocol dispatch were unit
 tested. Proper \gls{RS232} testing required the development of the external
 tester described in \autoref{sec:the-external-tester}.
-
 \section{Environment Overview}
 
 Throughout this chapter, references to ``the computer'', ``the host'' or ``the
@@ -28,7 +27,6 @@ generator'' refer specifically to the machine running the \gls{GNSS} signal
 generator software stack, which hosts both the \gls{sdr-control-system} and the
 \gls{rs232-interface}, and to which the \gls{SDR} hardware (DTA-2116 PCIe
 cards) is physically attached.
-
 It is important to frame the environment in which this system was developed and
 validated as a prototype setup, distinct from a final deployment environment.
 In a deployed scenario, the generator would be placed in a loopback, over a
@@ -43,10 +41,8 @@ and so a testing component was developed as described in
 \autoref{sec:the-external-tester}, with the external tester component
 simulating the behaviour of the remote receiver and any other measurement
 equipment that would normally be present in a deployed scenario.
-
 \section{The External Tester}
 \label{sec:the-external-tester}
-
 The external tester is a hardware/software component that simulates the
 behaviour of the remote receiver and any other measurement equipment that would
 normally be present in a deployed scenario. It is used to validate the
@@ -61,6 +57,34 @@ framing, serialisation, protocol dispatch, handler invocation, and signal
 generation. Thus allowing the behaviour of the real system to be validated
 under controlled and repeatable conditions, without depending on the
 availability of physical instrumentation.
-
 \section{Integration}
-\textcolor{Red}{TODO}
+\label{sec:integration}
+
+During integration with the existing proprietary systems at GMV, it
+became apparent that the gRPC client-server boundary described in
+\autoref{sec:design-implementation}, while functioning correctly and
+as designed, was not exercised in the final integration. The
+proprietary system integrating with the \gls{sdr-control-system}
+links the \texttt{app} component directly as a library and invokes
+it in-process, rather than communicating with it through the gRPC
+server. The gRPC server is implemented as a separate module within
+the system, and in this integration context that module is simply
+not built into the resulting binary, making the client-server hop
+entirely absent from this deployment path rather than merely unused
+at runtime.
+
+This does not retroactively invalidate the architectural decision
+described in \autoref{sec:design-implementation}: the gRPC layer
+remains functional and independently testable through the CLI
+client (\autoref{sec:functionality-use-cases}), and would be
+exercised by any future integration that requires the
+\gls{sdr-control-system} to be controlled remotely or from a
+separate process. The finding instead reflects a mismatch between
+the generality assumed at design time, driven by the original
+goal of remote, multi-client control
+(\autoref{sec:objective-motivation}), and the specific
+integration constraints of the proprietary system actually
+encountered, which favoured direct, in-process linkage over
+out-of-process communication. This mirrors, at a smaller scale, the
+broader generalisation lesson discussed in
+\autoref{sec:sdr-iterations}.
