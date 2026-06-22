@@ -1,0 +1,29 @@
+% appendices/design_patterns.tex
+\chapter{Design Patterns and Architectural Decisions}
+\label{cha:design-patterns}
+
+This appendix details the C++ design patterns and architectural decisions
+underlying the SDR Control/Interface System and the RS-232 Interface,
+expanding on the rationale only briefly mentioned in chapters
+\autoref{cha:sdr-control} and \autoref{cha:rs232-interface}.
+
+
+\section{Errors as Values}
+\label{cha:design-patterns:errors}
+Exceptions were not used in the SDR Control/Interface System or the RS-232
+Interface, as they were deemed to introduce unnecessary overhead and implicit
+error contracts. C-style error codes (e.g., returning an integer to indicate success or failure) 
+were also avoided, as they may lead to error-prone code due to forgetfulness per part of the developer. 
+Instead, the design adopted a more modern approach using \texttt{std::expected<T,E>}, which allows functions to 
+return either a successful result of type \texttt{T} or an error of type \texttt{E}, making error handling explicit and predictable, with the benefit of compile-time type checking.
+This design choice promotes clearer and more maintainable code, as it forces the caller to handle potential errors explicitly, reducing the likelihood
+of unhandled exceptions or overlooked error conditions.
+Though it must be noted that this approach can lead to more verbose code at the call site, as it requires explicit checks for success or failure.
+
+
+\section{Compile-Time Reflection and Serialisation}
+\label{app:design-patterns:reflection}
+To facilitate the serialisation and deserialisation of arbitrary C++ structs without requiring manual boilerplate code or annotation macros, the design uses compile-time reflection techniques.
+The Boost.PFR library is used for the general case of aggregate types, allowing the system to automatically determine the memory layout of a struct and perform serialisation or deserialisation accordingly.
+For non-aggregate types that do not fit the reflection model provided by Boost.PFR (e.g., vectors, maps, or other complex types), a template specialization of a \texttt{CustomSerde<T>} struct is provided as an "escape hatch," allowing developers to define custom serialisation and deserialisation logic for those types.
+This approach ensures that the system can handle a wide range of data structures while maintaining flexibility and extensibility, enabling easy adaptation to different command sets as needed.
