@@ -4,6 +4,116 @@ This chapter summarizes the work conducted during this internship, highlighting
 the key achievements, challenges faced, and lessons learned. It also provides a
 retrospective analysis of the project, reflecting on the development process
 and the overall impact of the work.
+
 \section{Summary of Achievements}
+
+The work carried out during this internship resulted in two complementary
+software systems, designed and implemented in C++ over the course of the
+internship period.
+
+The \gls{sdr-control-system} provides a higher-level abstraction over the
+\gls{DTAPI}, exposing device management, channel configuration, and signal
+transmission functionality through a \gls{gRPC} interface. This addresses
+the original problem identified at the outset of the internship: that
+configuring \gls{SDR} hardware directly through the \gls{DTAPI} required
+detailed knowledge of low-level hardware concerns, such as FIFO buffer sizing
+and modulation parameter composition, which the developed system abstracts
+away behind a clean, strongly-typed, and remotely accessible interface. The
+client-server architecture, together with \gls{gRPC}'s reflection
+capabilities, additionally enables interactive use through a \gls{CLI}
+client, lowering the barrier for engineers unfamiliar with the underlying
+hardware to issue commands and inspect available functionality.
+
+The \gls{rs232-interface} provides a lightweight communication layer over
+\gls{RS232}, built around a protocol registration model that allows new
+message types and handlers to be declared without modifying the core of the
+system. Its design, relying on Boost.PFR for automatic struct serialisation
+and \gls{COBS} for packet framing, achieves a level of extensibility and
+ease of use comparable to that provided by \gls{gRPC} in the
+\gls{sdr-control-system}, while remaining lightweight enough to be
+appropriate for a low-level serial link.
+
+Both systems share a consistent set of design principles established during
+the internship: the use of errors as values rather than exceptions, the
+adoption of XMake as the build system, and a preference for minimal,
+composable abstractions over heavier frameworks where the simpler approach
+was sufficient. Beyond the two systems themselves, the work also included
+their integration with existing proprietary systems at GMV, as described in
+\autoref{cha:integration-testing}, validated through a combination of unit
+testing, code coverage analysis, and the external tester component developed
+to simulate measurement equipment in the prototype environment.
+
 \section{Challenges Faced}
+
+Several challenges were encountered throughout the internship, spanning both
+technical implementation details and the evolving scope of the project
+itself.
+
+On the technical side, the development of the \gls{rs232-interface} surfaced
+a number of subtle issues that required careful debugging. The serialisation
+layer initially relied on a concept-and-ADL-based customisation point \textcolor{Red}{Remove}
+mechanism, which was later replaced by a \texttt{CustomSerde<T>} trait-based
+pattern after the original approach proved difficult to extend cleanly. This
+transition surfaced a heap corruption issue, ultimately traced to missing
+\texttt{if constexpr} branches handling non-trivially-copyable types, where
+naively applying \texttt{memcpy} over such fields silently corrupted memory
+rather than failing at compile time. Locating and resolving this class of bug
+underscored the importance of exhaustive compile-time branching when working
+with generic, reflection-based serialisation. Similarly, the \gls{COBS}
+implementation required correcting an off-by-one error in output buffer
+sizing and an incorrect use of \texttt{pop\_back()} in the decode path,
+both of which only manifested under specific payload lengths and were not
+immediately obvious from initial testing.
+
+Hardware-level challenges were also significant, particularly around serial
+port configuration. The WCH CH382 PCIe card initially relied on the generic
+\texttt{8250} driver, which proved insufficient for reliable operation and
+was replaced with the vendor-supplied \texttt{ch35\_38x\_linux} driver,
+exposing the expected \texttt{/dev/ttyWCH0--3} device nodes. Further issues
+were traced to incorrect \texttt{termios} configuration, including the
+handling of the \texttt{VMIN} parameter and a typo confusing
+\texttt{TIOCGRS485} with \texttt{TIOCSRS485}, both of which produced
+behaviour that was difficult to diagnose without careful inspection of the
+serial driver interface.
+
+Beyond these technical issues, the project's scope evolved in ways that
+introduced additional challenges not anticipated in the original work plan,
+as described in \cref{sec:scope-evolution}. The change from the originally
+proposed \gls{RS485} to \gls{RS232}, while limited in technical impact due
+to the similarity between the two standards, required adjusting assumptions
+made early in the design process. More significantly, the need to integrate
+the developed components with existing proprietary systems at GMV, which had
+not been part of the original scope, introduced a substantial amount of
+unplanned effort. This integration work required adapting the
+\gls{sdr-control-system} and \gls{rs232-interface} to interoperate with
+systems whose internal design was outside the author's control, which
+demanded a more defensive and flexible approach to the public interfaces of
+both components than would otherwise have been necessary.
+
 \section{Conclusion}
+
+The internship achieved its core objectives: a \gls{gRPC}-based abstraction
+over the \gls{DTAPI} was designed and implemented, providing a programmatic
+and remotely accessible interface for \gls{SDR}-based \gls{GNSS} signal
+transmission, and a complementary \gls{RS232} communication layer was
+developed to support integration with external equipment. Together, these
+systems address the gap identified in \cref{cha:state-of-the-art} between
+low-level, hardware-specific vendor APIs and the higher-level, programmatic
+control required for automated and remotely operated test workflows.
+
+Beyond the specific technical deliverables, the internship provided practical
+exposure to the realities of developing software against real, professional
+hardware and within an existing industrial codebase, rather than in an
+isolated academic setting. The need to adapt the original work plan in
+response to a changed protocol requirement and an expanded integration scope
+also reflected a broader lesson about software engineering in a professional
+context: that requirements and scope are rarely fixed in advance, and that
+designing systems with extensibility and clear interfaces in mind, as was
+done throughout this work, pays off when that flexibility is inevitably
+required.
+
+Overall, the work developed during this internship is believed to represent
+a meaningful and reusable contribution within GMV, providing a foundation
+that can be extended to support additional \gls{SDR} hardware features,
+additional \gls{RS232}-based protocols, or further integration with other
+systems, beyond what was required within the scope of this internship.
