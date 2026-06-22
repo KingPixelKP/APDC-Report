@@ -22,8 +22,80 @@ Though it must be noted that this approach can lead to more verbose code at the 
 
 
 \section{Compile-Time Reflection and Serialisation}
-\label{app:design-patterns:reflection}
+\label{cha:design-patterns:reflection}
 To facilitate the serialisation and deserialisation of arbitrary C++ structs without requiring manual boilerplate code or annotation macros, the design uses compile-time reflection techniques.
 The Boost.PFR library is used for the general case of aggregate types, allowing the system to automatically determine the memory layout of a struct and perform serialisation or deserialisation accordingly.
 For non-aggregate types that do not fit the reflection model provided by Boost.PFR (e.g., vectors, maps, or other complex types), a template specialization of a \texttt{CustomSerde<T>} struct is provided as an "escape hatch," allowing developers to define custom serialisation and deserialisation logic for those types.
 This approach ensures that the system can handle a wide range of data structures while maintaining flexibility and extensibility, enabling easy adaptation to different command sets as needed.
+
+
+\section{Protocol Registration as a Type-Erased Command Dispatcher}
+\label{cha:design-patterns:registry}
+The RS-232 Interface employs a type-erased command dispatcher pattern to manage the registration and handling of different message types. 
+This design allows for the dynamic addition of new message types without requiring modifications to the core system, promoting extensibility and maintainability.
+Not only does this pattern enable the system to accommodate new message types as they arise, 
+but it also decouples the message handling logic from the core processing loop, allowing for cleaner code organization and separation of concerns.
+
+
+
+\section{Iterations of the SDR Control System}
+\label{cha:design-patterns:sdr-iterations}
+ 
+The \gls{sdr-control-system} described in
+\autoref{cha:sdr-control} is the third iteration of the system. The
+two preceding attempts are summarised in
+\autoref{tab:sdr-iterations}, as the reasoning behind their
+abandonment directly informed several of the design decisions
+discussed throughout this appendix.
+ 
+\begin{table}[h]
+\centering
+\caption{Iterations of the SDR Control/Interface System.}
+\label{tab:sdr-iterations}
+\begin{tabular}{p{2.2cm} p{4.7cm} p{5.8cm}}
+\toprule
+\textbf{Iteration} & \textbf{Approach} & \textbf{Outcome / Reason for Abandonment} \\
+\midrule
+1 & 
+    Reuse of an existing third-party program for \gls{SDR} control,
+    adapted to the \gls{GNSS} use case rather than built from
+    scratch. &
+    Abandoned due to incompatibilities between the program's
+    assumptions 
+    (threading model, extensibility of its API) and the requirements of this
+    internship, which made adaptation impractical. \\
+\addlinespace
+2 & A ground-up rewrite aiming for a fully general \gls{SDR} control
+    library, supporting an open-ended range of modulation types
+    and configurations. &
+    Over-generalisation: most of the supported modulation types
+    were never required by the actual use case, and the effort
+    spent on generality (abstracting over modulation schemes that
+    were never exercised) outweighed its benefit, while also
+    making the codebase harder to reason about and test. \\
+\addlinespace
+3 (final) & A ground-up rewrite scoped specifically to the
+    DTA-2115B/2116 cards and the \gls{GNSS} \gls{I/Q} transmission
+    use case, described in \autoref{cha:sdr-control}. &
+    Adopted. Narrowing the scope to the actual requirements
+    made the system significantly simpler to implement, test, and
+    reason about. \\
+\bottomrule
+\end{tabular}
+\end{table}
+ 
+This outcome is a useful counterpoint to the broader lesson drawn
+in \autoref{cha:conclusion-retrospective}, where extensibility and
+flexible interfaces are credited with absorbing the unplanned
+integration effort described in \autoref{sec:scope-evolution}.
+Taken together, the two findings suggest a more nuanced position
+than either alone: designing for extensibility paid off where the
+\emph{source} of change was external and unpredictable (integration
+requirements imposed by GMV's pre-existing systems), but pursuing
+generality \emph{pre-emptively}, ahead of any concrete requirement
+for it, incurred a cost with no corresponding benefit in the second
+iteration. The same tension resurfaces in
+\autoref{sec:integration}, where the gRPC layer --- itself a
+generalisation in service of a remote-control requirement that the
+final integration path did not end up needing --- went unused once
+the proprietary system was integrated in-process.

@@ -74,18 +74,36 @@ Ninja\footnote{Ninja is a small build system with a focus on
   speed.\cite{ninja-build}}, due to its caching
 mechanism\cite{xmake}\cite{xmake-cache}.
 
+The design described above is the result of the third iteration of
+the \gls{sdr-control-system}; the two earlier attempts, and the
+reasoning behind their abandonment, are documented in
+\autoref{cha:design-patterns:sdr-iterations}, as several of the design
+choices discussed in this chapter were directly informed by that
+history.
+ 
+
+
 % Limitations
 
 \textcolor{Red}{Review}
-Some of the limitations of the current implementation of the \gls{sdr-control-system} are related to the client server architecture. One of the main
-limitations is that it introduces some latency in the communication between the
-server and client, due to a client being created on binary boot, which can be an
-issue for real-time applications, to note that this is only a problem due to the client being a \gls{CLI}.
-Additionally, whilst on purpose the coupling between the system and \gls{gRPC}
-is notable. Another limitation is that the current implementation does not
-support all the features of the \gls{SDR} hardware, though this cant really be
-considered a problem as those features are outside the scope of this internship
-and can be easily added in the future if needed.
+Some of the limitations of the current implementation of the
+\gls{sdr-control-system} are related to the client server
+architecture. One of the main limitations is that it introduces some
+latency in the communication between the server and client, due to a
+client being created on binary boot, which can be an issue for
+real-time applications, to note that this is only a problem due to
+the client being a \gls{CLI}. It is worth noting, however, that this
+latency concern was not actually encountered in practice, as
+discussed in \autoref{sec:integration}, the gRPC layer was ultimately
+deemed unnecessary for the integration with GMV's proprietary
+systems, which instead linked the \texttt{app} component directly
+in-process. Additionally, whilst on purpose, the coupling between the
+system and \gls{gRPC} is notable. Another limitation is that the
+current implementation does not support all the features of the
+\gls{SDR} hardware, though this cant really be considered a problem
+as those features are outside the scope of this internship and can
+be easily added in the future if needed.
+ 
 
 \section{IQ Signal Generation}
 \label{sec:iq-signal-generation}
