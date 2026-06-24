@@ -184,32 +184,34 @@ not explicitly represented in either table. \textcolor{Red}{TODO the second
       \label{tab:actual_work_plan_schedule}
       \begin{tabular}{|p{3cm}|p{8cm}|c|c|}
             \hline
-            \multicolumn{4}{|c|}{\textbf{Actual Work Plan \& Schedule}}                                 \\
+            \multicolumn{4}{|c|}{\textbf{Actual Work Plan \& Schedule}}                                                                    \\
             \hline
-            Phase                                                 & Task             & Duration & Dates \\
+            Phase                                                                                    & Task             & Duration & Dates \\
             \hline
-            Onboarding and Studying                               &
+            Onboarding and Studying                                                                  &
             Introduction to the signal generator architecture; study of \gls{SDR}
             APIs; \gls{RS232} protocol fundamentals; review of existing codebase
-            and tooling at \gls{GMV}                              &
-            1 week                                                & Mar 11 -- Mar 17                    \\
+            and tooling at \gls{GMV}                                                                 &
+            1 week                                                                                   & Mar 11 -- Mar 17                    \\
             \hline
-            \gls{SDR} Control \& Parameter Management             &
+            \gls{SDR} Control \& Parameter Management                                                &
             Development of C++ API for \gls{SDR} control; implementation of signal
             transmission functions; integration with vendor API; parameter
-            management interface                                  &
-            8 weeks                                               & Mar 18 -- May 2                     \\
+            management interface                                                                     &
+            8 weeks                                                                                  & Mar 18 -- May 2                     \\
             \hline
-            \gls{RS232} Communication                             &
+            \gls{RS232} Communication                                                                &
             Design and implementation of an \gls{RS232} communication layer for
-            exchange of commands and data with external equipment &
-            1 week                                                & May 3 -- May 9                      \\
+            exchange of commands and data with external equipment                                    &
+            1 week                                                                                   & May 3 -- May 9                      \\
             \hline
-            Integration with Proprietary Systems \& Documentation &
+            Integration with Proprietary Systems \& Documentation                                    &
             Integration of developed components with existing proprietary systems
             at \gls{GMV}; writing of technical documentation, installation scripts,
-            and validation tooling                                &
-            6 weeks                                               & May 10 -- Jun 21                    \\
+            and validation tooling                                                                   &
+            6 weeks                                                                                  & May 10 -- Jun 21                    \\
+            \hline
+            Complete Testung Suite \& Final Report \& Further development of technical documentation & Jun 22 -- Jul 17                    \\
             \hline
       \end{tabular}
 \end{table}
@@ -230,9 +232,9 @@ was minimal, requiring only adjustments to the physical layer configuration.
 
 The second change was more significant in terms of effort. As the developed
 components matured, it became necessary to integrate them with existing
-proprietary systems at \gls{GMV} that had not been part of the original scope.
-This integration work was not planned at the outset and resulted in additional
-unplanned effort, reflected in the actual work plan in
+proprietary systems at \gls{GMV} \textcolor{red}{that had not been part of the
+      original scope}. This integration work was not planned at the outset and
+resulted in additional unplanned effort, reflected in the actual work plan in
 Table~\ref{tab:actual_work_plan_schedule}. The nature of these systems is
 confidential and will not be described in detail in this report; their
 existence is acknowledged where relevant to explain architectural decisions

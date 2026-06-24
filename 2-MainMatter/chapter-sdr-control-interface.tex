@@ -48,10 +48,10 @@ commands from client applications and executes them accordingly. The
 communication between the server and client is handled through a \gls{gRPC}
 interface, which allows for remote procedure calls and provides a structured
 way to manage the interactions between the different components of the system.
-To note that an undesired, but useful nonetheless, feature of this architecture
-is that it allows users to create \textit{bash} scripts that can interact with
-the system through the client executable, which can be useful for quick testing
-and automation purposes.
+To note that an unintended, but useful nonetheless, feature of this
+architecture is that it allows users to create \textit{bash} scripts that can
+interact with the system through the client executable, which can be useful for
+quick testing and automation purposes.
 
 % Design choices
 It is also relevant to note some of the design choices made during the
@@ -60,51 +60,45 @@ use of \gls{gRPC} for three main reasons: it has proven itself in terms of
 reliability and performance, it provides a clear and strongly typed interface
 for communication between the server and client, and allows for reflection, the
 latter being one of the most useful features during development, as it not only
-allows for easy debugging and testing, but also allows the user to easily
-discover the available commands and their parameters, which is especially
-useful for users that are not familiar with the system. Another quite relevant,
-but not as impactful design choice was the use of errors as values instead of
-the traditional approach of using exceptions. This aided not only in making a
-more concise interface, but also avoids some of the performance pitfalls of
-exceptions. Other quite impactful decision that deviates from the norm was the
-build system used, usually the default buildsystem is CMake\footnote{CMake is a
-  powerful yet complex build system.\cite{cmake}}, though XMake was chosen, XMake
-is a more modern and user-friendly build system, which allows for a more
-concise and easier to maintain build configuration, as well as an extremely
-easy to use package manager and faster build times, when compared to CMake and
-Ninja\footnote{Ninja is a small build system with a focus on
-  speed.\cite{ninja-build}}, due to its caching
-mechanism\cite{xmake}\cite{xmake-cache}.
+allows for easy debugging and testing, easy configuration parsing, but also
+allows the user to easily discover the available commands and their parameters,
+which is especially useful for users that are not familiar with the system.
+Another quite relevant, but not as impactful design choice was the use of
+errors as values instead of the traditional approach of using exceptions. This
+aided not only in making a more concise interface, but also avoids some of the
+performance pitfalls of exceptions. Another quite impactful decision that
+deviates from the norm was the build system used, usually the default
+buildsystem is CMake\footnote{CMake is a powerful yet complex build
+  system.\cite{cmake}}, though XMake was chosen, XMake is a more modern and
+user-friendly build system, which allows for a more concise and easier to
+maintain build configuration, as well as an extremely easy to use package
+manager and faster build times, when compared to CMake and Ninja\footnote{Ninja
+  is a small build system with a focus on speed.\cite{ninja-build}}, due to its
+caching mechanism\cite{xmake}\cite{xmake-cache}.
 
-The design described above is the result of the third iteration of
-the \gls{sdr-control-system}; the two earlier attempts, and the
-reasoning behind their abandonment, are documented in
-\autoref{sec:design-patterns:sdr-iterations}, as several of the design
-choices discussed in this chapter were directly informed by that
-history.
- 
-
+The design described above is the result of the third iteration of the
+\gls{sdr-control-system}. The two earlier attempts, and the reasoning behind
+their abandonment, are documented in
+\autoref{sec:design-patterns:sdr-iterations}, as several of the design choices
+discussed in this chapter were directly informed by that history.
 
 % Limitations
 
 Some of the limitations of the current implementation of the
-\gls{sdr-control-system} are related to the client server
-architecture. One of the main limitations is that it introduces some
-latency in the communication between the server and client, due to a
-client being created on binary boot, which can be an issue for
-real-time applications, to note that this is only a problem due to
-the client being a \gls{CLI}. It is worth noting, however, that this
-latency concern was not actually encountered in practice, as
-discussed in \autoref{sec:integration}, the gRPC layer was ultimately
-deemed unnecessary for the integration with GMV's proprietary
-systems, which instead linked the \texttt{app} component directly
-in-process. Additionally, whilst on purpose, the coupling between the
-system and \gls{gRPC} is notable. Another limitation is that the
-current implementation does not support all the features of the
-\gls{SDR} hardware, though this cant really be considered a problem
-as those features are outside the scope of this internship and can
-be easily added in the future if needed.
- 
+\gls{sdr-control-system} are related to the client server architecture. One of
+the main limitations is that it introduces some latency in the communication
+between the server and client, due to a client being created on binary boot,
+which can be an issue for real-time applications, to note that this is only a
+problem due to the client being a \gls{CLI}. It is worth noting, however, that
+this latency concern was not actually encountered in practice, as discussed in
+\autoref{sec:integration}, the gRPC layer was ultimately deemed unnecessary for
+the integration with GMV's proprietary systems, which instead linked the
+\texttt{app} component directly in-process. Additionally, whilst on purpose,
+the coupling between the system and \gls{gRPC} is notable. Another limitation
+is that the current implementation does not support all the features of the
+\gls{SDR} hardware, though this cant really be considered a problem as those
+features are outside the scope of this internship and can be easily added in
+the future if needed.
 
 \section{IQ Signal Generation}
 \label{sec:iq-signal-generation}
