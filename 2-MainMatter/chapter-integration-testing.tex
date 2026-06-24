@@ -62,7 +62,7 @@ availability of physical instrumentation.
 
 During integration with the existing proprietary systems at GMV, it
 became apparent that the gRPC client-server boundary described in
-\autoref{sec:design-implementation}, while functioning correctly and
+\autoref{sec:sdr-design-and-implementation}, while functioning correctly and
 as designed, was not exercised in the final integration. The
 proprietary system integrating with the \gls{sdr-control-system}
 links the \texttt{app} component directly as a library and invokes
@@ -74,17 +74,17 @@ entirely absent from this deployment path rather than merely unused
 at runtime.
 
 This does not retroactively invalidate the architectural decision
-described in \autoref{sec:design-implementation}: the gRPC layer
+described in \autoref{sec:sdr-design-and-implementation}: the gRPC layer
 remains functional and independently testable through the CLI
-client (\autoref{sec:functionality-use-cases}), and would be
+client (\autoref{sec:sdr-functionality-and-use-cases}), and would be
 exercised by any future integration that requires the
 \gls{sdr-control-system} to be controlled remotely or from a
 separate process. The finding instead reflects a mismatch between
 the generality assumed at design time, driven by the original
 goal of remote, multi-client control
-(\autoref{sec:objective-motivation}), and the specific
+(\autoref{sec:sdr-objective-and-motivation}), and the specific
 integration constraints of the proprietary system actually
 encountered, which favoured direct, in-process linkage over
 out-of-process communication. This mirrors, at a smaller scale, the
 broader generalisation lesson discussed in
-\autoref{sec:sdr-iterations}.
+\autoref{sec:design-patterns:sdr-iterations}.

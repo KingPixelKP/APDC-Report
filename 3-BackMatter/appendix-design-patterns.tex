@@ -9,7 +9,7 @@ expanding on the rationale only briefly mentioned in chapters
 
 
 \section{Errors as Values}
-\label{cha:design-patterns:errors}
+\label{sec:design-patterns:errors}
 Exceptions were not used in the SDR Control/Interface System or the RS-232
 Interface, as they were deemed to introduce unnecessary overhead and implicit
 error contracts. C-style error codes (e.g., returning an integer to indicate success or failure) 
@@ -22,7 +22,7 @@ Though it must be noted that this approach can lead to more verbose code at the 
 
 
 \section{Compile-Time Reflection and Serialisation}
-\label{cha:design-patterns:reflection}
+\label{sec:design-patterns:reflection}
 To facilitate the serialisation and deserialisation of arbitrary C++ structs without requiring manual boilerplate code or annotation macros, the design uses compile-time reflection techniques.
 The Boost.PFR library is used for the general case of aggregate types, allowing the system to automatically determine the memory layout of a struct and perform serialisation or deserialisation accordingly.
 For non-aggregate types that do not fit the reflection model provided by Boost.PFR (e.g., vectors, maps, or other complex types), a template specialization of a \texttt{CustomSerde<T>} struct is provided as an "escape hatch," allowing developers to define custom serialisation and deserialisation logic for those types.
@@ -30,7 +30,7 @@ This approach ensures that the system can handle a wide range of data structures
 
 
 \section{Protocol Registration as a Type-Erased Command Dispatcher}
-\label{cha:design-patterns:registry}
+\label{sec:design-patterns:registry}
 The RS-232 Interface employs a type-erased command dispatcher pattern to manage the registration and handling of different message types. 
 This design allows for the dynamic addition of new message types without requiring modifications to the core system, promoting extensibility and maintainability.
 Not only does this pattern enable the system to accommodate new message types as they arise, 
@@ -39,7 +39,7 @@ but it also decouples the message handling logic from the core processing loop, 
 
 
 \section{Iterations of the SDR Control System}
-\label{cha:design-patterns:sdr-iterations}
+\label{sec:design-patterns:sdr-iterations}
  
 The \gls{sdr-control-system} described in
 \autoref{cha:sdr-control} is the third iteration of the system. The

@@ -50,11 +50,7 @@ Several challenges were encountered throughout the internship, spanning both
 technical implementation details and the evolving scope of the project
 itself.
 
-On the technical side, the development of the \gls{rs232-interface} surfaced
-a number of subtle issues that required careful debugging. The serialisation
-layer relies on a trait-based pattern, \texttt{CustomSerde<T>}. This
-revealed a heap corruption issue, ultimately traced to deserialization returning a reference instead of the actual deserialized object/struct, which for those unfamiliar with C++'s value semantics can be a common pitfall.
-Similarly, the \gls{COBS} implementation required correcting an off-by-one error in output buffer
+On the technical side, the development of the \gls{rs232-interface} surfaced an issue with the \gls{COBS} implementation, which required correcting an off-by-one error in output buffer
 sizing and an incorrect use of \texttt{pop\_back()} in the decode path,
 both of which only manifested under specific payload lengths and were not
 immediately obvious from initial testing.
