@@ -1,0 +1,19 @@
+
+\begin{tikzpicture}[scale = 0.20]
+
+% Camada de fundo: caixas grandes (Generator, Tester)
+\begin{pgfonlayer}{background}
+\node at (40.0, -38.0) [align=center,solid,draw,fill=white,minimum width=3.2 cm,minimum height=4.0 cm,text width=3.2cm,inner sep=0](IDDHjV-1) {Generator};
+\node at (84.0, -38.0) [align=center,solid,draw,fill=white,minimum width=3.2 cm,minimum height=4.0 cm,text width=3.2cm,inner sep=0](IDDHjV-2) {Tester};
+\end{pgfonlayer}
+
+% Camada principal: nós pequenos, desenhados por cima
+\node at (40.0, -49.0) [align=center,solid,draw,fill=white,minimum width=2.4 cm,minimum height=1.2 cm,text width=2.4cm,inner sep=0](IDDHjV-3) {Serial Port};
+\node at (52.0, -38.0) [align=center,solid,draw,fill=white,minimum width=2.4 cm,minimum height=1.2 cm,text width=2.4cm,inner sep=0](IDDHjV-4) {DTA-2116};
+\node at (74.0, -38.0) [align=center,solid,draw,fill=white,minimum width=2.4 cm,minimum height=1.2 cm,text width=2.4cm,inner sep=0](IDDHjV-5) {Measuring Equipment};
+\node at (84.0, -49.0) [align=center,solid,draw,fill=white,minimum width=2.4 cm,minimum height=1.2 cm,text width=2.4cm,inner sep=0](IDDHjV-6) {Serial Port};
+
+\draw [stealth-stealth,solid](IDDHjV-3)--(40.0,-60.0)--(84.0,-60.0)--(IDDHjV-6);
+\draw [-stealth,solid](IDDHjV-4)--(IDDHjV-5);
+
+\end{tikzpicture}

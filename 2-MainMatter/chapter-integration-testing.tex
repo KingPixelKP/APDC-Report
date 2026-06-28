@@ -20,8 +20,8 @@ the hardware used did not have same port loopback capabilities, thus
 unfortunately only framing, serialization, and protocol dispatch were unit
 tested. Proper \gls{RS232} testing required the development of the external
 tester described in \autoref{sec:the-external-tester}.
-\section{Environment Overview}
 
+\section{Environment Overview}
 Throughout this chapter, references to ``the computer'', ``the host'' or ``the
 generator'' refer specifically to the machine running the \gls{GNSS} signal
 generator software stack, which hosts both the \gls{sdr-control-system} and the
@@ -41,8 +41,21 @@ and so a testing component was developed as described in
 \autoref{sec:the-external-tester}, with the external tester component
 simulating the behaviour of the remote receiver and any other measurement
 equipment that would normally be present in a deployed scenario.
+\autoref{fig:prototype-test-environment} illustrates this prototype
+environment, showing the generator and the external tester connected via
+the simulated \gls{RF} uplink and the \gls{RS232} feedback loop.
+
+\begin{figure}[htbp]
+      \centering
+      \input{2-MainMatter/prototype-test-environment.tex}
+      \caption{Prototype Test Environment}
+      \label{fig:prototype-test-environment}
+\end{figure}
+
+
 \section{The External Tester}
 \label{sec:the-external-tester}
+
 The external tester is a hardware/software component that simulates the
 behaviour of the remote receiver and any other measurement equipment that would
 normally be present in a deployed scenario. It is used to validate the
@@ -57,6 +70,8 @@ framing, serialisation, protocol dispatch, handler invocation, and signal
 generation. Thus allowing the behaviour of the real system to be validated
 under controlled and repeatable conditions, without depending on the
 availability of physical instrumentation.
+
+
 \section{Integration}
 \label{sec:integration}
 
@@ -88,3 +103,105 @@ encountered, which favoured direct, in-process linkage over
 out-of-process communication. This mirrors, at a smaller scale, the
 broader generalisation lesson discussed in
 \autoref{sec:design-patterns:sdr-iterations}.
+
+\section{Testing}
+\label{sec:testing}
+
+While the components of the \gls{sdr-control-system} and the
+\gls{rs232-interface} were validated individually through unit and
+integration tests during development, as described throughout this
+report, end-to-end verification against external reference
+instrumentation was also performed to confirm that the system behaves
+correctly when driving real \gls{SDR} hardware. This section describes
+three test cases used for this purpose, each exercising the system
+against a different piece of reference equipment connected to the
+output of a DTA-2116 card.
+
+\subsection{Test Case 1: Power Configuration}
+\label{sec:tc1-power}
+
+\textbf{Objective:} verify that configured transmit power matches the
+power measured at the \gls{SDR} output, and that start/stop and
+reconfiguration behave correctly.
+
+\textbf{Setup:} DTA-2116 \gls{RF} output connected to a Rohde \&
+Schwarz NRQ6 power sensor.
+
+\begin{center}
+\small
+\begin{tabular}{|c|p{5.5cm}|p{4.0cm}|}
+\hline
+\textbf{Step} & \textbf{Action} & \textbf{Expected Result} \\
+\hline
+1 & Configure power $P_1$ and \texttt{start}. & Measured power
+matches $P_1$ within tolerance. \\
+\hline
+2 & \texttt{stop}. & Measured power drops to noise floor. \\
+\hline
+3 & Reconfigure to $P_2$ and \texttt{start} again. & Measured power
+updates to $P_2$, confirming the new configuration is applied. \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Test Case 2: Frequency Configuration}
+\label{sec:tc2-frequency}
+
+\textbf{Objective:} verify that the configured carrier frequency
+matches the frequency measured at the \gls{SDR} output, and that
+start/stop and reconfiguration behave correctly.
+
+\textbf{Setup:} DTA-2116 \gls{RF} output connected to a % TODO: nome/modelo do frequency counter
+frequency counter.
+
+\begin{center}
+\small
+\begin{tabular}{|c|p{5.5cm}|p{4.0cm}|}
+\hline
+\textbf{Step} & \textbf{Action} & \textbf{Expected Result} \\
+\hline
+1 & Configure frequency $f_1$ and \texttt{start}. & Measured
+frequency matches $f_1$ within tolerance. \\
+\hline
+2 & \texttt{stop}. & No carrier is detected. \\
+\hline
+3 & Reconfigure to $f_2$ and \texttt{start} again. & Measured
+frequency updates to $f_2$, confirming the new configuration is
+applied. \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\subsection{Test Case 3: Signal Recording}
+\label{sec:tc3-recording}
+
+\textbf{Objective:} verify that a transmitted signal can be captured
+by external receiving equipment and matches the original \gls{I/Q}
+test vector.
+
+\textbf{Setup:} DTA-2116 \gls{RF} output connected to an Ettus USRP
+X310, used to record the transmitted signal. 
+A \gls{GNSS} \gls{I/Q} signal generated using 
+is used as the input test vector.
+
+
+\begin{center}
+\small
+\begin{tabular}{|c|p{5.5cm}|p{4.0cm}|}
+\hline
+\textbf{Step} & \textbf{Action} & \textbf{Expected Result} \\
+\hline
+1 & Transmit the \gls{I/Q} test vector through the
+\gls{sdr-control-system}. & Transmission begins without errors. \\
+\hline
+2 & Capture the transmitted signal using the USRP X310.
+% TODO: detalhar ferramenta/comando de captura, fornecido pela FFVD
+& Recorded \gls{I/Q} file is produced. \\
+\hline
+3 & Compare the recorded signal against the original test vector.
+% TODO: detalhar método de comparação (correlação? decodificação?), fornecido pela FFVD
+& Recorded signal matches the original test vector. \\
+\hline
+\end{tabular}
+\end{center}
