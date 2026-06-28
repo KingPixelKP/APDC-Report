@@ -30,7 +30,10 @@ reliable testing and validation of \gls{GNSS} receivers and the systems built
 around them.\cite{europaWhatGNSS} A signal simulator is a tool used to
 reproduce the \gls{GNSS} signals that would otherwise be transmitted by
 navigation satellites and received by an
-antenna.\cite{insidegnssVerificationTesting} Such simulators are essential for
+antenna. Besides emulating currently deployed signals, 
+modern simulators can also generate signals corresponding to new 
+or upcoming signal generations, allowing receivers and processing algorithms to 
+be developed and validated before these signals become operational. \cite{insidegnssVerificationTesting} Such simulators are essential for
 testing and validating \gls{GNSS} receivers: they serve as a controlled and
 repeatable signal source, enabling engineers to test receivers under a wide
 range of scenarios without requiring outdoor tests or waiting for satellites to
@@ -53,11 +56,9 @@ hardware internals. Bridging this gap — between the high-level intent of an
 engineer setting up a test scenario and the low-level reality of the hardware
 API — is the central motivation for the work developed in this internship.
 
-Additionally, \gls{RS232} is a standard for serial communication widely used in
-industrial and laboratory instrumentation. In the context of this internship,
-it provides the communication channel between the developed system and external
-equipment, enabling remote command dispatch and status
-monitoring.\cite{wikipediaRS232}
+Additionally, in the context of this internship, an interface that provides the communication channel 
+between the developed system and external equipment is developed, enabling remote
+command dispatch and status monitoring using \gls{RS232}, a standard for serial communication widely used in industrial and laboratory instrumentation.\cite{wikipediaRS232}
 
 \section{Problem}
 
@@ -76,6 +77,19 @@ signal generation tools to professional-grade \gls{SDR} hardware through a
 clean, programmatic interface. This forces engineers into manual, error-prone
 workflows that are difficult to automate and hard to integrate into larger
 systems.
+
+Beyond signal generation and transmission, \gls{GNSS} receiver testing also requires
+control over auxiliary hardware and external system state, often via
+manufacturer-specific serial protocols. The \gls{RS232} interface used in this
+context lacks a standard, well-documented application-layer protocol: framing,
+message structure, and field encoding are entirely bespoke, and no off-the-shelf
+library exists for reliably serializing and deserializing structured data over
+this link. Implementing such a protocol from scratch invites the same class of
+problems as low-level \gls{DTAPI} usage: manual buffer and framing management,
+ad-hoc encoding/decoding logic scattered throughout the codebase, and a high
+risk of subtle bugs (e.g. off-by-one errors in frame delimiting, or corruption
+from incorrect handling of non-trivially-copyable data) that are difficult to
+detect and debug at the byte level.
 
 \section{Proposed Work}
 
@@ -216,24 +230,22 @@ not explicitly represented in either table. \textcolor{Red}{TODO the second
 
 \section{Scope Evolution}
 \label{sec:scope-evolution}
-
-The scope of the internship evolved in two notable ways relative to the
+The scope of the internship evolved in one notable way relative to the
 original plan.
 
-The first was a minor protocol change: the serial communication interface was
-originally specified in the internship proposal as \gls{RS485}, but the
-external equipment in use at \gls{GMV} communicated over \gls{RS232}. This
-discrepancy arose from miscommunication between the involved parties and was
-identified early in the implementation phase. As \gls{RS232} and \gls{RS485}
-share similar framing and command structures, the impact on the implementation
-was minimal, requiring only adjustments to the physical layer configuration.
-
-The second change was more significant in terms of effort. As the developed
-components matured, it became necessary to integrate them with existing
-proprietary systems at \gls{GMV} that had not been part of the original scope.
-This integration work was not planned at the outset and resulted in additional
-unplanned effort, reflected in the actual work plan in
+As the developed components matured, it became necessary to integrate them
+with existing proprietary systems at \gls{GMV} that had not been part of the
+original scope. This integration work was not planned at the outset and
+resulted in additional unplanned effort, reflected in the actual work plan in
 Table~\ref{tab:actual_work_plan_schedule}. The nature of these systems is
 confidential and will not be described in detail in this report; their
 existence is acknowledged where relevant to explain architectural decisions
 made during the internship.
+
+It is also worth noting that the original internship proposal referred to the
+serial interface as \gls{RS485}. This was a misnomer in the proposal
+document: the external equipment in use at \gls{GMV} communicated over
+\gls{RS232} from the outset, and no requirement or design decision was
+actually changed. As this was identified before any protocol-specific
+implementation work took place, it had no impact on the development of the
+\gls{RS232} interface described in this report.

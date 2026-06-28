@@ -33,14 +33,16 @@ communication channel for this purpose, given its ubiquity in instrumentation
 environments and the straightforward point-to-point topology it provides.
 
 Beyond this general suitability, the choice of \gls{RS232} was in practice
-dictated by an external constraint, the system ought to be intrgrated with
+dictated by an external constraint: the system needed to be integrated with
 legacy equipment that communicates exclusively over \gls{RS232}. Modifying or
 replacing that equipment's communication interface was outside the scope of
-this internship, and as discussed in \autoref{sec:scope-evolution}, this
-requirement is also what led to the protocol being changed from the originally
-proposed \gls{RS485} to \gls{RS232}. RS-232 was therefore not purely a design
-preference, but a constraint imposed by the pre-existing environment the system
-had to integrate with.
+this internship. It should be noted that the original internship proposal
+referred to \gls{RS485} instead of \gls{RS232}; as discussed in
+\autoref{sec:scope-evolution}, this was a misnomer in the proposal document
+rather than an intentional design choice, and \gls{RS232} was the protocol
+required from the outset. RS-232 was therefore not purely a design preference,
+but a constraint imposed by the pre-existing environment the system had to
+integrate with.
 
 The objective of the \gls{rs232-interface} is therefore to provide a
 lightweight, flexible communication layer that supports both the transmission
