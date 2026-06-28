@@ -150,8 +150,7 @@ for the internship. Table~\ref{tab:actual_work_plan_schedule} reflects the
 actual timeline, which deviated from the original plan due to changes in
 project scope described in \autoref{sec:scope-evolution}. Note that between
 each implementation phase there were continuous testing and code review periods
-not explicitly represented in either table. \textcolor{Red}{TODO the second
-      table is still not complete}
+not explicitly represented in either table. 
 
 \begin{table}[htbp]
       \centering
@@ -198,32 +197,34 @@ not explicitly represented in either table. \textcolor{Red}{TODO the second
       \label{tab:actual_work_plan_schedule}
       \begin{tabular}{|p{3cm}|p{8cm}|c|c|}
             \hline
-            \multicolumn{4}{|c|}{\textbf{Actual Work Plan \& Schedule}}                                 \\
+            \multicolumn{4}{|c|}{\textbf{Actual Work Plan \& Schedule}}                                                                                                                                                                                                  \\
             \hline
-            Phase                                                 & Task             & Duration & Dates \\
+            Phase                                                                                    & Task                                                                                                                                & Duration & Dates            \\
             \hline
-            Onboarding and Studying                               &
+            Onboarding and Studying                                                                  &
             Introduction to the signal generator architecture; study of \gls{SDR}
             APIs; \gls{RS232} protocol fundamentals; review of existing codebase
-            and tooling at \gls{GMV}                              &
-            1 week                                                & Mar 11 -- Mar 17                    \\
+            and tooling at \gls{GMV}                                                                 &
+            1 week                                                                                   & Mar 11 -- Mar 17                                                                                                                                                  \\
             \hline
-            \gls{SDR} Control \& Parameter Management             &
+            \gls{SDR} Control \& Parameter Management                                                &
             Development of C++ API for \gls{SDR} control; implementation of signal
             transmission functions; integration with vendor API; parameter
-            management interface                                  &
-            8 weeks                                               & Mar 18 -- May 2                     \\
+            management interface                                                                     &
+            8 weeks                                                                                  & Mar 18 -- May 2                                                                                                                                                   \\
             \hline
-            \gls{RS232} Communication                             &
+            \gls{RS232} Communication                                                                &
             Design and implementation of an \gls{RS232} communication layer for
-            exchange of commands and data with external equipment &
-            1 week                                                & May 3 -- May 9                      \\
+            exchange of commands and data with external equipment                                    &
+            1 week                                                                                   & May 3 -- May 9                                                                                                                                                    \\
             \hline
-            Integration with Proprietary Systems \& Documentation &
+            Integration with Proprietary Systems \& Documentation                                    &
             Integration of developed components with existing proprietary systems
             at \gls{GMV}; writing of technical documentation, installation scripts,
-            and validation tooling                                &
-            6 weeks                                               & May 10 -- Jun 21                    \\
+            and validation tooling                                                                   &
+            6 weeks                                                                                  & May 10 -- Jun 21                                                                                                                                                  \\
+            \hline
+            Complete Testing Suite \& Final Report \& Further development of technical documentation & Create a complete testing suite to test component integration; finalize the report; continue development of technical documentation & 4 weeks  & Jun 22 -- Jul 17 \\ 
             \hline
       \end{tabular}
 \end{table}
@@ -233,9 +234,18 @@ not explicitly represented in either table. \textcolor{Red}{TODO the second
 The scope of the internship evolved in one notable way relative to the
 original plan.
 
-As the developed components matured, it became necessary to integrate them
-with existing proprietary systems at \gls{GMV} that had not been part of the
-original scope. This integration work was not planned at the outset and
+The first was a minor protocol change: the serial communication interface was
+originally specified in the internship proposal as \gls{RS485}, but the
+external equipment in use at \gls{GMV} communicated over \gls{RS232}. This
+discrepancy arose from miscommunication between the involved parties and was
+identified early in the implementation phase. As \gls{RS232} and \gls{RS485}
+share similar framing and command structures, the impact on the implementation
+was minimal, requiring only adjustments to the physical layer configuration.
+
+The second change was more significant in terms of effort. As the developed
+components matured, it became necessary to integrate them with existing
+proprietary systems at \gls{GMV} \textcolor{red}{that had not been part of the
+      original scope}. This integration work was not planned at the outset and
 resulted in additional unplanned effort, reflected in the actual work plan in
 Table~\ref{tab:actual_work_plan_schedule}. The nature of these systems is
 confidential and will not be described in detail in this report; their
