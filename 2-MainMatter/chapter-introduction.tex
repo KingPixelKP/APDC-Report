@@ -228,19 +228,21 @@ not explicitly represented in either table.
             \hline
       \end{tabular}
 \end{table}
-
 \section{Scope Evolution}
 \label{sec:scope-evolution}
 The scope of the internship evolved in one notable way relative to the
 original plan.
 
-The first was a minor protocol change: the serial communication interface was
-originally specified in the internship proposal as \gls{RS485}, but the
-external equipment in use at \gls{GMV} communicated over \gls{RS232}. This
-discrepancy arose from miscommunication between the involved parties and was
-identified early in the implementation phase. As \gls{RS232} and \gls{RS485}
-share similar framing and command structures, the impact on the implementation
-was minimal, requiring only adjustments to the physical layer configuration.
+The first was a minor documentation discrepancy rather than an actual change
+in scope: the original internship proposal referred to the serial
+communication interface as \gls{RS485}, but the external equipment in use at
+\gls{GMV} communicated over \gls{RS232} from the outset. This was a misnomer
+in the proposal document, arising from miscommunication between the involved
+parties, and not an intentional design choice or a change in requirements. As
+this was identified early, before any protocol-specific implementation work
+took place, no requirement or design decision was actually changed, and it had
+no impact on the development of the \gls{RS232} interface described in this
+report.
 
 The second change was more significant in terms of effort. As the developed
 components matured, it became necessary to integrate them with existing
@@ -251,11 +253,3 @@ Table~\ref{tab:actual_work_plan_schedule}. The nature of these systems is
 confidential and will not be described in detail in this report; their
 existence is acknowledged where relevant to explain architectural decisions
 made during the internship.
-
-It is also worth noting that the original internship proposal referred to the
-serial interface as \gls{RS485}. This was a misnomer in the proposal
-document: the external equipment in use at \gls{GMV} communicated over
-\gls{RS232} from the outset, and no requirement or design decision was
-actually changed. As this was identified before any protocol-specific
-implementation work took place, it had no impact on the development of the
-\gls{RS232} interface described in this report.
