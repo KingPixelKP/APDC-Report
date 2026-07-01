@@ -12,8 +12,8 @@ expanding on the rationale only briefly mentioned in chapters
 \label{sec:design-patterns:errors}
 Exceptions were not used in the SDR Control/Interface System or the RS-232
 Interface, as they were deemed to introduce unnecessary overhead and implicit
-error contracts. C-style error codes (e.g., returning an integer to indicate success or failure) 
-were also avoided, as they may lead to error-prone code due to forgetfulness per part of the developer. 
+error contracts. C-style error codes (e.g., returning an integer to indicate success or failure)
+were also avoided, as they may lead to error-prone code due to forgetfulness on the part of the developer.
 Instead, the design adopted a more modern approach using \texttt{std::expected<T,E>}, which allows functions to 
 return either a successful result of type \texttt{T} or an error of type \texttt{E}, making error handling explicit and predictable, with the benefit of compile-time type checking.
 This design choice promotes clearer and more maintainable code, as it forces the caller to handle potential errors explicitly, reducing the likelihood

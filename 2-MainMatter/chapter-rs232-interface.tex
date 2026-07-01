@@ -1,5 +1,5 @@
-\typeout{NT FILE chapter-rs485-interface.tex}%
-\chapter{RS232 Interface}
+\typeout{NT FILE chapter-rs232-interface.tex}%
+\chapter{RS-232 Interface}
 \label{cha:rs232-interface}
 
 This chapter describes the \gls{rs232-interface} developed during this
@@ -7,7 +7,7 @@ internship. It begins with a brief introduction to the \gls{RS232} standard,
 followed by a description of the objectives, design, and implementation of the
 interface.
 
-\section{RS232 Standard}
+\section{RS-232 Standard}
 
 \gls{RS232} is a standard for serial communication that defines the electrical
 characteristics of the signals used in a point-to-point communication system
@@ -60,9 +60,9 @@ dispatches it to the appropriate handler based on the message type received.
 The interface is designed around a protocol registration model: a user declares
 a C++ struct representing a protocol message and registers a corresponding
 handler function that is invoked whenever a message of that type is received,
-some more configuration is required though not deemed important to be explained
-here. This allows new protocols to be added without modifying the core of the
-system, providing a flexible and extensible communication layer.
+though additional configuration is required and is omitted here for brevity.
+This allows new protocols to be added without modifying the core of the system,
+providing a flexible and extensible communication layer.
 
 Message serialisation relies on the Boost.PFR library\footnote{Boost.PFR is a
       C++14 library that provides basic struct reflection without requiring any macro
@@ -96,7 +96,7 @@ transmission of data on the \gls{RS232} bus, respectively. Both rely on the
 \begin{figure}[htbp]
       \centering
       \input{2-MainMatter/rs232-interface-architecture.tex}
-      \caption{RS232 Interface Architecture}
+      \caption{RS-232 Interface Architecture}
       \label{fig:rs232-interface-architecture}
 \end{figure}
 

@@ -61,9 +61,11 @@ port configuration. The WCH CH382 PCIe card initially relied on the generic
 was replaced with the vendor-supplied \texttt{ch35\_38x\_linux} driver,
 exposing the expected \texttt{/dev/ttyWCH0--3} device nodes. Further issues
 were traced to incorrect \texttt{termios} configuration, including the
-handling of the \texttt{VMIN} parameter. Another quite relevant issue was the use of 2 \gls{DTE} devices connected back-to-back without a null modem adapter, which, in simple terms, 
+handling of the \texttt{VMIN} parameter. Another quite relevant issue was the
+use of two \gls{DTE} devices connected back-to-back without a null modem adapter, which, in simple terms,
 meant a device transmitted data into the other's transmit line instead of its receive line. 
-This was resolved by using a null modem adapter, which correctly cross-connected the transmit and receive lines between the two devices.
+This was resolved by using a null modem adapter, which correctly cross-connected
+the transmit and receive lines between the two devices.
 
 \section{Conclusion}
 

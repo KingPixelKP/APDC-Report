@@ -15,9 +15,9 @@ ensuring that each component behaved as expected under a variety of conditions.
 For the \gls{sdr-control-system}, unit tests were created to verify the correct
 generation of \gls{GNSS} signals, the proper handling of configuration
 parameters, and the correct interaction with the underlying \gls{SDR} hardware.
-For the \gls{rs232-interface}, unit tests deemed to be harder to implement as
-the hardware used did not have same port loopback capabilities, thus
-unfortunately only framing, serialization, and protocol dispatch were unit
+For the \gls{rs232-interface}, unit tests were harder to implement because the
+hardware used did not provide same-port loopback capabilities. As a result,
+only framing, serialization, and protocol dispatch were unit
 tested. Proper \gls{RS232} testing required the development of the external
 tester described in \autoref{sec:the-external-tester}.
 
@@ -64,10 +64,10 @@ repeatable manner. The setup is quite simple, the generator is connected to
 measurement equipment over a \gls{RF} link, which relays information to the
 tester. The tester then communicates with the generator over a \gls{RS232}
 link, issuing commands and producing responses that are representative of what
-the real equipment would return. This allows the both the \gls{rs232-interface}
+the real equipment would return. This allows both the \gls{rs232-interface}
 and the \gls{sdr-control-system} to be exercised end-to-end, covering message
 framing, serialisation, protocol dispatch, handler invocation, and signal
-generation. Thus allowing the behaviour of the real system to be validated
+generation. This allows the behaviour of the real system to be validated
 under controlled and repeatable conditions, without depending on the
 availability of physical instrumentation.
 
@@ -181,9 +181,8 @@ by external receiving equipment and matches the original \gls{I/Q}
 test vector.
 
 \textbf{Setup:} DTA-2116 \gls{RF} output connected to an Ettus USRP
-X310, used to record the transmitted signal. 
-A \gls{GNSS} \gls{I/Q} signal generated using 
-is used as the input test vector.
+X310, used to record the transmitted signal.
+A representative \gls{GNSS} \gls{I/Q} signal was used as the input test vector.
 
 
 \begin{center}
