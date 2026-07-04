@@ -21,6 +21,22 @@ unfortunately only framing, serialization, and protocol dispatch were unit
 tested. Proper \gls{RS232} testing required the development of the external
 tester described in \autoref{sec:the-external-tester}.
 
+Code coverage for the unit test suites was measured using
+\texttt{gcovr}, generating coverage reports from the instrumented test
+binaries, which were then ingested by a SonarQube instance for
+continuous tracking across commits. This provided visibility into
+coverage trends as new functionality was added throughout the
+internship, and helped identify modules and branches that lacked
+adequate test coverage, particularly around error-handling paths that
+were not always exercised by the otherwise functionality-focused unit
+tests. It should be noted that the coverage figures obtained are
+treated only as an indicator of test thoroughness rather than a target
+pursued for its own sake: a high coverage percentage does not by
+itself guarantee correctness, and some low-level hardware interaction
+paths remained difficult to exercise through unit testing alone, which
+is part of the motivation for the end-to-end testing described in
+\autoref{sec:testing}.
+
 \section{Environment Overview}
 Throughout this chapter, references to ``the computer'', ``the host'' or ``the
 generator'' refer specifically to the machine running the \gls{GNSS} signal
