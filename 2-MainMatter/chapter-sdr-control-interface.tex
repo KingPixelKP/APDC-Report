@@ -22,38 +22,33 @@ transmission.
 \section{Objective and Motivation}
 \label{sec:sdr-objective-and-motivation}
 
-One of the main problems in this internship, whilst developing the
-\gls{sdr-control-system}, was the lack of an easy to use interface. Whilst
-\gls{DTAPI}, the \gls{sdr-control-system} library used in this internship,
-provides a powerful set of instructions to control the \gls{SDR} hardware, its
-interface is not user-friendly, due to its requirement to chain calls
-correctly, the heavy use of macros, manual device state management and it does
-not offer a clean way to manage the \gls{SDR} parameters. To address this
+One of the main challenges during this internship, while developing the
+\gls{sdr-control-system}, was the lack of an easy-to-use interface. While
+\gls{DTAPI}, the vendor library used in this internship, provides a powerful
+set of instructions to control \gls{SDR} hardware, its interface is not
+user-friendly. It requires strict call sequencing, heavy macro usage, and
+manual device state management, and it does not offer a clean way to manage
+\gls{SDR} parameters. To address this
 issue, the \gls{sdr-control-system} was designed to provide a more intuitive
 and user-friendly interface for managing parameters and operations, either by
-providing easy to use abstractions to transmit signals, or by providing
+providing easy-to-use abstractions to transmit signals, or by providing
 synchronization mechanisms between devices.
 
 \section{Design and Implementation}
 \label{sec:sdr-design-and-implementation}
 
-The \gls{sdr-control-system} was implemented using a modular architecture,
-with separate components responsible for device management, signal playback,
-synchronization, communication, and hardware abstraction. Each component has a
-well-defined responsibility, allowing the different parts of the system to
-evolve independently while minimizing the impact of changes across the
-codebase. This modular organization also simplifies integration with external
-systems and facilitates testing by reducing unnecessary dependencies between
-components.
-
-A design goal of the internship was to integrate this system with other
-components, that will be described in \autoref{cha:integration-testing}, to provide a complete solution for \gls{GNSS} signal
-generation. Thus the system was designed with a client-server architecture,
-where the control system acts as a server that listens for commands from client
-applications and executes them accordingly. The communication between the
-server and client is handled through a \gls{gRPC} interface, which allows for
-remote procedure calls and provides a structured way to manage the interactions
-between the different components of the system.
+The \gls{sdr-control-system} was implemented using a modular approach, with
+separate components responsible for device management, signal playback, and
+synchronization. A design goal of the internship was to integrate this
+system with other components that are not described here due to their
+proprietary nature and the scope of this report, to provide a complete solution
+for \gls{GNSS} signal generation. Thus, the system was designed with a
+client-server
+architecture, where the control system acts as a server that listens for
+commands from client applications and executes them accordingly. The
+communication between the server and client is handled through a \gls{gRPC}
+interface, which allows for remote procedure calls and provides a structured
+way to manage the interactions between the different components of the system.
 
 The architecture was also designed with software engineering concerns such as
 maintainability, extensibility, and separation of concerns in mind. Hardware
@@ -63,7 +58,7 @@ higher-level application logic. This abstraction provides a stable interface
 over the vendor SDK while centralizing the complex device state management
 required by the hardware.
 
-To note that an unintended, but useful nonetheless, feature of this
+A useful, though unintended, feature of this
 architecture is that it allows users to create \textit{bash} scripts that can
 interact with the system through the client executable, which can be useful for
 quick testing and automation purposes.
@@ -73,26 +68,23 @@ It is also relevant to note some of the design choices made during the
 implementation of the \gls{sdr-control-system}. The most impactful one is the
 use of \gls{gRPC} for three main reasons: it has proven itself in terms of
 reliability and performance, it provides a clear and strongly typed interface
-for communication between the server and client, and it supports reflection.
-The latter proved particularly valuable during development, enabling automatic
-configuration parsing, simplified debugging, and the discovery of available
-commands and their parameters without additional documentation, reducing the
-barrier to entry for users unfamiliar with the system.
-
-Another important design decision was the adoption of an
-\textit{errors-as-values} model instead of exceptions. Besides avoiding the
-runtime overhead associated with exception handling, this approach makes failure
-explicit in function interfaces, encouraging callers to handle errors
-deliberately and resulting in control flow that is easier to reason about,
-test, and maintain.
-
-Another significant decision was the choice of build system. While CMake\footnote{CMake is a powerful yet complex
-build system.\cite{cmake}} is the standard for C++ projects, XMake was selected due to its more concise build
-configuration, integrated package management, and build cache mechanism, which
-reduced project complexity and improved incremental build performance when
-compared to traditional CMake and Ninja\footnote{Ninja is a
-small build system with a focus on speed.\cite{ninja-build}} based workflows.
-\cite{xmake}\cite{xmake-cache}
+for communication between the server and client, and allows for reflection, the
+latter being one of the most useful features during development, as it not only
+allows for easy debugging and testing, easy configuration parsing, but also
+allows the user to easily discover the available commands and their parameters,
+which is especially useful for users that are not familiar with the system.
+Another quite relevant, but not as impactful design choice was the use of
+errors as values instead of the traditional approach of using exceptions. This
+aided not only in making a more concise interface, but also avoids some of the
+performance pitfalls of exceptions. Another quite impactful decision that
+deviates from the norm was the build system used. Usually the default
+build system is CMake\footnote{CMake is a powerful yet complex build
+  system.\cite{cmake}}, though XMake was chosen. XMake is a more modern and
+user-friendly build system, which allows for a more concise and easier-to-maintain
+build configuration, as well as an extremely easy-to-use package
+manager and faster build times when compared to CMake and Ninja\footnote{Ninja
+  is a small build system with a focus on speed.\cite{ninja-build}}, due to its
+caching mechanism\cite{xmake}\cite{xmake-cache}.
 
 The design described above is the result of the third iteration of the
 \gls{sdr-control-system}. The two earlier attempts, and the reasoning behind
@@ -108,7 +100,7 @@ communication mechanisms or hardware implementations to be introduced with
 minimal changes to the remaining components of the system.
 
 Some of the limitations of the current implementation of the
-\gls{sdr-control-system} are related to the client server architecture. One of
+\gls{sdr-control-system} are related to the client-server architecture. One of
 the main limitations is that it introduces some latency in the communication
 between the server and client, due to a client being created on binary boot,
 which can be an issue for real-time applications, to note that this is only a
@@ -116,23 +108,23 @@ problem due to the client being a \gls{CLI}. It is worth noting, however, that
 this latency concern was not actually encountered in practice, as discussed in
 \autoref{sec:integration}, the gRPC layer was ultimately deemed unnecessary for
 the integration with GMV's proprietary systems, which instead linked the
-\texttt{app} component directly in-process. Additionally, whilst on purpose,
+\texttt{app} component directly in-process. Additionally, while intentional,
 the coupling between the system and \gls{gRPC} is notable. Another limitation
 is that the current implementation does not support all the features of the
-\gls{SDR} hardware, though this cant really be considered a problem as those
+\gls{SDR} hardware, though this cannot really be considered a problem as those
 features are outside the scope of this internship and can be easily added in
 the future if needed.
 
 \section{IQ Signal Generation}
 \label{sec:iq-signal-generation}
 
-Whilst not the main focus of this internship, the \gls{sdr-control-system} is
+While not the main focus of this internship, the \gls{sdr-control-system} is
 designed to integrate with a \gls{GNSS} signal generation system, which is
 responsible for generating the actual \gls{I/Q} samples that are transmitted
-through the \gls{SDR} hardware. Since such component was still unfinished a
+through the \gls{SDR} hardware. Since such a component was still unfinished, a
 simplified model of the signal generation was implemented, which allows for the
-generation of single tone signals with configurable parameters, such as
-frequency, amplitude, phase, Doppler shift and code delay. This simplified
+generation of single-tone signals with configurable parameters, such as
+frequency, amplitude, phase, Doppler shift, and code delay. This simplified
 model was sufficient for the purpose of testing the \gls{sdr-control-system}
 and its integration with the \gls{SDR} hardware, but it is expected that a more
 sophisticated signal generation system will be integrated in the future.
@@ -259,7 +251,7 @@ realistic satellite-to-receiver geometries without requiring an actual moving
 transmitter.
 
 \section{Architecture Diagram}
-Diagram \ref{fig:sdr-control-architecture} illustrates the architecture of the
+Diagram~\ref{fig:sdr-control-architecture} illustrates the architecture of the
 \gls{sdr-control-system}, showing the main components and their interactions.
 The diagram highlights the client-server architecture, the use of \gls{gRPC}
 for communication, and the integration with the \gls{DTAPI} library for
@@ -276,12 +268,12 @@ system.
 
 \section{Functionality and Use Cases}
 \label{sec:sdr-functionality-and-use-cases}
-This section will brief some of the main functionalities of the
+This section briefly describes some of the main functionalities of the
 \gls{sdr-control-system}, as well as some use cases that demonstrate how the
 system can be used in practice. The main functionalities of the system include:
 \begin{itemize}
   \item \textbf{Device management:} the system allows for the management of multiple \gls{SDR} devices, including the ability to list available devices, select a device for use, and monitor device status.
-  \item \textbf{Channel configuration:} the system provides an interface for configuring the parameters of the \gls{SDR} channels, such as frequency, sampling rate, and modulation type, etc..
-  \item \textbf{Signal transmission:} the system allows for the transmission of signals through the \gls{SDR} hardware, including the ability to load \gls{I/Q} sample files and transmit them, or to read directly from a stream of \gls{I/Q} samples and transmit them in real-time.
+  \item \textbf{Channel configuration:} the system provides an interface for configuring the parameters of the \gls{SDR} channels, such as frequency, sampling rate, and modulation type.
+  \item \textbf{Signal transmission:} the system allows for the transmission of signals through the \gls{SDR} hardware, including the ability to load \gls{I/Q} sample files and transmit them, or to read directly from a stream of \gls{I/Q} samples and transmit them in real time.
   \item \textbf{Synchronization:} the system provides mechanisms for synchronizing multiple \gls{SDR} devices, which is essential for applications that require precise timing and coordination between devices, such as \gls{GNSS} signal simulation.
 \end{itemize}
