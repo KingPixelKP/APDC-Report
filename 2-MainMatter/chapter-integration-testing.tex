@@ -17,7 +17,7 @@ generation of \gls{GNSS} signals, the proper handling of configuration
 parameters, and the correct interaction with the underlying \gls{SDR} hardware.
 For the \gls{rs232-interface}, unit tests were harder to implement because the
 hardware used did not provide same-port loopback capabilities. As a result,
-only framing, serialization, and protocol dispatch were unit
+only framing, serialisation, and protocol dispatch were unit
 tested. Proper \gls{RS232} testing required the development of the external
 tester described in \autoref{sec:the-external-tester}.
 
@@ -38,7 +38,7 @@ is part of the motivation for the end-to-end testing described in
 \autoref{sec:testing}.
 
 \section{Environment Overview}
-Throughout this chapter, references to ``the computer'', ``the host'' or ``the
+Throughout this chapter, references to ``the computer'', ``the host'', or ``the
 generator'' refer specifically to the machine running the \gls{GNSS} signal
 generator software stack, which hosts both the \gls{sdr-control-system} and the
 \gls{rs232-interface}, and to which the \gls{SDR} hardware (DTA-2116 PCIe
@@ -53,10 +53,10 @@ signal generator over the \gls{RS232} interface, closing the loop and allowing
 the signal generator to adapt its transmission parameters in response to the
 measured signal quality. In this prototype environment, however, such setup was
 too complex and impractical to maintain for day-to-day development and testing,
-and so a testing component was developed as described in
-\autoref{sec:the-external-tester}, with the external tester component
-simulating the behaviour of the remote receiver and any other measurement
-equipment that would normally be present in a deployed scenario.
+and so a testing component was developed, as described in
+\autoref{sec:the-external-tester}. The external tester simulates the behaviour
+of the remote receiver and any other measurement equipment that would normally
+be present in a deployed scenario.
 \autoref{fig:prototype-test-environment} illustrates this prototype
 environment, showing the generator and the external tester connected via
 the simulated \gls{RF} uplink and the \gls{RS232} feedback loop.

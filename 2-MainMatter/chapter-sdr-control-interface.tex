@@ -14,9 +14,9 @@
 
 This chapter describes the \gls{sdr-control-system} used in this internship.
 The \gls{sdr-control-system} is responsible for managing the communication
-between the \gls{SDR} hardware and the software applications that utilize it.
+between the \gls{SDR} hardware and the software applications that use it.
 It provides an interface for configuring the \gls{SDR} parameters, such as
-Frequency, \gls{RF}-control, and Sampling Rate, as well as handling data
+frequency, \gls{RF} control, and sampling rate, as well as handling data
 transmission.
 
 \section{Objective and Motivation}
@@ -51,38 +51,36 @@ interface, which allows for remote procedure calls and provides a structured
 way to manage the interactions between the different components of the system.
 
 The architecture was also designed with software engineering concerns such as
-maintainability, extensibility, and separation of concerns in mind. Hardware
-specific functionality is encapsulated within the \texttt{dt\_facade}
+maintainability, extensibility, and separation of concerns in mind.
+Hardware-specific functionality is encapsulated within the \texttt{dt\_facade}
 component, preventing low-level \gls{DTAPI} details from leaking into the
 higher-level application logic. This abstraction provides a stable interface
 over the vendor SDK while centralizing the complex device state management
 required by the hardware.
 
-A useful, though unintended, feature of this
-architecture is that it allows users to create \textit{bash} scripts that can
+A useful, though unintended, feature of this architecture is that it allows
+users to create \textit{bash} scripts that can
 interact with the system through the client executable, which can be useful for
 quick testing and automation purposes.
 
 % Design choices
 It is also relevant to note some of the design choices made during the
 implementation of the \gls{sdr-control-system}. The most impactful one is the
-use of \gls{gRPC} for three main reasons: it has proven itself in terms of
-reliability and performance, it provides a clear and strongly typed interface
-for communication between the server and client, and allows for reflection, the
-latter being one of the most useful features during development, as it not only
-allows for easy debugging and testing, easy configuration parsing, but also
-allows the user to easily discover the available commands and their parameters,
-which is especially useful for users that are not familiar with the system.
-Another quite relevant, but not as impactful design choice was the use of
-errors as values instead of the traditional approach of using exceptions. This
-aided not only in making a more concise interface, but also avoids some of the
-performance pitfalls of exceptions. Another quite impactful decision that
-deviates from the norm was the build system used. Usually the default
+use of \gls{gRPC} for three main reasons: it has proven reliability and
+performance, it provides a clear and strongly typed interface for communication
+between server and client, and it enables reflection. Reflection was one of the
+most useful features during development because it supported debugging, testing,
+configuration parsing, and command discovery for users less familiar with the
+system. Another relevant, though less impactful, design choice was the use of
+errors as values instead of exceptions. This helped keep the interface concise
+and avoid some performance pitfalls associated with exceptions. Another decision
+that deviates from the norm was the build system used. Usually, the default
 build system is CMake\footnote{CMake is a powerful yet complex build
   system.\cite{cmake}}, though XMake was chosen. XMake is a more modern and
-user-friendly build system, which allows for a more concise and easier-to-maintain
-build configuration, as well as an extremely easy-to-use package
-manager and faster build times when compared to CMake and Ninja\footnote{Ninja
+user-friendly build system, which allows for a more concise and
+easier-to-maintain build configuration, as well as an extremely easy-to-use
+package manager and faster build times when compared to CMake and
+Ninja\footnote{Ninja
   is a small build system with a focus on speed.\cite{ninja-build}}, due to its
 caching mechanism\cite{xmake}\cite{xmake-cache}.
 
@@ -102,17 +100,18 @@ minimal changes to the remaining components of the system.
 Some of the limitations of the current implementation of the
 \gls{sdr-control-system} are related to the client-server architecture. One of
 the main limitations is that it introduces some latency in the communication
-between the server and client, due to a client being created on binary boot,
-which can be an issue for real-time applications, to note that this is only a
-problem due to the client being a \gls{CLI}. It is worth noting, however, that
-this latency concern was not actually encountered in practice, as discussed in
-\autoref{sec:integration}, the gRPC layer was ultimately deemed unnecessary for
+between the server and client because a client is created on binary startup.
+This can be an issue for real-time applications, although in this case the
+impact is mainly due to the client being a \gls{CLI}. It is worth noting,
+however, that this latency concern was not actually encountered in practice. As
+discussed in \autoref{sec:integration}, the gRPC layer was ultimately deemed
+unnecessary for
 the integration with GMV's proprietary systems, which instead linked the
 \texttt{app} component directly in-process. Additionally, while intentional,
 the coupling between the system and \gls{gRPC} is notable. Another limitation
 is that the current implementation does not support all the features of the
-\gls{SDR} hardware, though this cannot really be considered a problem as those
-features are outside the scope of this internship and can be easily added in
+\gls{SDR} hardware, though this cannot really be considered a problem because
+those features are outside the scope of this internship and can be added in
 the future if needed.
 
 \section{IQ Signal Generation}
