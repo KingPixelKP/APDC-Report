@@ -50,12 +50,7 @@ Several challenges were encountered throughout the internship, spanning both
 technical implementation details and the evolving scope of the project
 itself.
 
-On the technical side, the development of the \gls{rs232-interface} surfaced an issue with the \gls{COBS} implementation, which required correcting an off-by-one error in output buffer
-sizing and an incorrect use of \texttt{pop\_back()} in the decode path,
-both of which only manifested under specific payload lengths and were not
-immediately obvious from initial testing.
-
-Another recurring challenge concerned the \gls{DTAPI} documentation itself.
+A recurring challenge concerned the \gls{DTAPI} documentation itself.
 In practice, some API calls exhibited side effects that were not clearly
 described, and certain behavioural details relevant to integration were either
 incomplete or not explicitly documented. This made debugging and system

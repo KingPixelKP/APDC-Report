@@ -46,9 +46,9 @@ A validação recorreu a testes unitários, acompanhamento de cobertura com gcov
 Uma constatação importante da integração: no percurso de integração com os sistemas proprietários da GMV, a fronteira cliente-servidor gRPC não chegou a ser exercitada, porque o componente de aplicação foi ligado in-process. A camada gRPC continua a funcionar e permanece testável através do percurso CLI, mas não foi exigida por essa via de implantação específica.
 
 ## Slide 12 - Desafios enfrentados
-Destacam-se dois desafios técnicos. Um foi um bug subtil no COBS: um erro de dimensionamento do output por um valor (off-by-one), juntamente com um `pop_back()` incorreto na descodificação, apenas visível para determinados comprimentos de payload. O segundo foi ao nível de hardware/driver e cablagem: o driver genérico 8250 revelou-se insuficiente para a placa WCH CH382, pelo que foi necessário usar o driver do fabricante, e a ausência inicial de um adaptador null-modem causou um desencontro DTE-para-DTE entre TX e TX.
+Destacam-se dois desafios técnicos. O primeiro foi ao nível da DTAPI: em alguns pontos, a documentação não descrevia totalmente o comportamento real das funções, incluindo side effects não expectáveis, o que obrigou a validar comportamento por teste direto em hardware. O segundo foi ao nível de hardware/driver e cablagem: o driver genérico 8250 revelou-se insuficiente para a placa WCH CH382, pelo que foi necessário usar o driver do fabricante, e a ausência inicial de um adaptador null-modem causou um desencontro DTE-para-DTE entre TX e TX.
 
-Ambos os problemas reforçaram o valor de testes sistemáticos com hardware real integrado no processo.
+Estes problemas reforçaram o valor de testes sistemáticos com hardware real integrado no processo.
 
 ## Slide 13 - Conclusão
 Para concluir, o estágio resultou em dois sistemas complementares: uma abstração habilitada para gRPC sobre a DTAPI para controlo SDR, e uma camada de protocolo RS-232 leve e extensível. Em conjunto, estes sistemas colmatam a lacuna entre APIs de hardware de baixo nível e as necessidades de automação programática em fluxos de trabalho de transmissão de sinais GNSS.
