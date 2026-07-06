@@ -1110,8 +1110,8 @@ async function main() {
     const ch = [
       [
         "bug",
-        "COBS off-by-one",
-        "An output buffer sizing error and an incorrect pop_back() in the decode path — only manifesting at specific payload lengths.",
+        "DTAPI quirks",
+        "DTAPI documentation isn't always accurate; some functions have unexpected side effects. Some don't show complete error information.",
       ],
       [
         "usb",
