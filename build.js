@@ -55,7 +55,7 @@ async function main() {
   let pres = new pptxgen();
   pres.layout = "LAYOUT_WIDE"; // 13.3 x 7.5
   pres.author = "Gabriel Matias Falcão";
-  pres.title = "Internship Defense — SDR Control & RS-232 Interface (GMV)";
+  pres.title = "Internship Defense — SDR Control & PPP over RS-232 (GMV)";
 
   const W = 13.333,
     H = 7.5;
@@ -148,7 +148,7 @@ async function main() {
       color: TEXT_MUTED,
       align: "right",
     });
-    slide.addText("GMV — SDR Control & RS-232 Interface", {
+    slide.addText("GMV — SDR Control & PPP over RS-232", {
       x: 0.5,
       y: H - 0.45,
       w: 5,
@@ -236,7 +236,7 @@ async function main() {
           options: { bold: true, breakLine: true },
         },
         {
-          text: "Bachelor in Computer Science — NOVA FCT  |  Internship at GMV",
+          text: "Bachelor in Computer Science — NOVA FCT  |  Initial curricular stage + continuation at GMV",
           options: {},
         },
       ],
@@ -351,8 +351,8 @@ async function main() {
       ],
       [
         "usb",
-        "RS-232 has no standard protocol",
-        "Framing, message structure and field encoding are entirely bespoke — every integration reinvents the same byte-level logic.",
+        "RS-232 is only a physical link",
+        "The serial interface solves transport at the electrical level, but a robust high-level control path still has to be carried across it.",
       ],
     ];
     let y = 2.0;
@@ -413,8 +413,8 @@ async function main() {
       [
         "plug",
         "Phase 3",
-        "RS-232 Communication",
-        "A serial communication layer for exchanging commands and data with external equipment.",
+        "RS-232 Connectivity",
+        "A serial connectivity layer for integrating external equipment and exposing the control plane across that link.",
       ],
     ];
     let x = 0.7,
@@ -484,75 +484,101 @@ async function main() {
     s.background = { color: WHITE };
     titleBlock(s, "Scope Evolution", "Requirements rarely stay fixed");
 
+    const scopeCards = [
+      {
+        x: 0.7,
+        y: 2.0,
+        w: 4.0,
+        h: 3.0,
+        fill: CARD_TINT,
+        icon: "warn",
+        title: "RS-485 to RS-232",
+        color: TEXT_DARK,
+        bodyColor: TEXT_MUTED,
+        body: "The proposal mentioned RS-485, but the real equipment used RS-232 from the outset. This was identified early and had minimal design impact.",
+      },
+      {
+        x: 4.95,
+        y: 2.0,
+        w: 4.0,
+        h: 3.0,
+        fill: CARD_TINT,
+        icon: "net",
+        title: "PPP replaced custom serial protocol",
+        color: TEXT_DARK,
+        bodyColor: TEXT_MUTED,
+        body: "A bespoke RS-232 application protocol was dropped in favour of PPP over the serial link, so the existing gRPC control plane could run over IP unchanged.",
+      },
+      {
+        x: 9.2,
+        y: 2.0,
+        w: 3.4,
+        h: 3.0,
+        fill: MAROON,
+        icon: "branch",
+        title: "Continuation at GMV",
+        color: WHITE,
+        bodyColor: "EBD9DF",
+        body: "Some final architectural decisions were completed after the curricular stage, once the work continued directly under GMV.",
+      },
+    ];
+    scopeCards.forEach((c) => {
+      s.addShape(pres.shapes.ROUNDED_RECTANGLE, {
+        x: c.x,
+        y: c.y,
+        w: c.w,
+        h: c.h,
+        rectRadius: 0.08,
+        fill: { color: c.fill },
+      });
+      iconCircle(s, c.icon, c.x + 0.35, c.y + 0.35, 0.75, WHITE, 0.55);
+      s.addText(c.title, {
+        x: c.x + 0.35,
+        y: c.y + 1.3,
+        w: c.w - 0.55,
+        h: 0.5,
+        fontFace: FONT_HEAD,
+        fontSize: 16,
+        bold: true,
+        color: c.color,
+        margin: 0,
+      });
+      s.addText(c.body, {
+        x: c.x + 0.35,
+        y: c.y + 1.85,
+        w: c.w - 0.55,
+        h: 1.0,
+        fontFace: FONT_BODY,
+        fontSize: 12.25,
+        color: c.bodyColor,
+        margin: 0,
+        lineSpacingMultiple: 1.2,
+      });
+    });
     s.addShape(pres.shapes.ROUNDED_RECTANGLE, {
       x: 0.7,
-      y: 2.1,
-      w: 5.7,
-      h: 3.9,
-      rectRadius: 0.08,
-      fill: { color: CARD_TINT },
+      y: 5.35,
+      w: 11.9,
+      h: 0.75,
+      rectRadius: 0.05,
+      fill: { color: "F2E8EB" },
+      line: { color: LINE_GREY, width: 1 },
     });
-    iconCircle(s, "warn", 1.1, 2.5, 0.8, WHITE, 0.55);
-    s.addText("Protocol misnomer", {
-      x: 1.1,
-      y: 3.45,
-      w: 4.9,
-      h: 0.5,
-      fontFace: FONT_HEAD,
-      fontSize: 17,
-      bold: true,
-      color: TEXT_DARK,
-      margin: 0,
-    });
-    s.addText(
-      "Original proposal referred to RS-485; the external equipment actually used RS-232 from the outset. Identified early, before protocol-specific work began — no design impact.",
-      {
-        x: 1.1,
-        y: 4.0,
-        w: 4.9,
-        h: 1.9,
-        fontFace: FONT_BODY,
-        fontSize: 13,
-        color: TEXT_MUTED,
-        margin: 0,
-        lineSpacingMultiple: 1.25,
-      },
-    );
-
-    s.addShape(pres.shapes.ROUNDED_RECTANGLE, {
-      x: 6.9,
-      y: 2.1,
-      w: 5.7,
-      h: 3.9,
-      rectRadius: 0.08,
-      fill: { color: MAROON },
-    });
-    iconCircle(s, "branch", 7.3, 2.5, 0.8, WHITE, 0.55);
-    s.addText("Unplanned integration", {
-      x: 7.3,
-      y: 3.45,
-      w: 4.9,
-      h: 0.5,
-      fontFace: FONT_HEAD,
-      fontSize: 17,
-      bold: true,
-      color: WHITE,
-      margin: 0,
-    });
-    s.addText(
-      "As components matured, integration with existing proprietary GMV systems became necessary — not part of the original scope, and the most effort-intensive change to the plan.",
-      {
-        x: 7.3,
-        y: 4.0,
-        w: 4.9,
-        h: 1.9,
-        fontFace: FONT_BODY,
-        fontSize: 13,
-        color: "EBD9DF",
-        margin: 0,
-        lineSpacingMultiple: 1.25,
-      },
-    );
+    //s.addText(
+    //  "The presentation therefore reflects the consolidated final architecture, not only the first contractual stage.",
+    //  {
+    //    x: 0.95,
+    //    y: 5.55,
+    //    w: 11.3,
+    //    h: 0.25,
+    //    fontFace: FONT_BODY,
+    //    fontSize: 12.5,
+    //    italic: true,
+    //    color: TEXT_MUTED,
+    //    margin: 0,
+    //    align: "center",
+    //  },
+    //);
     footer(s);
   }
 
@@ -730,13 +756,13 @@ async function main() {
       ],
       [
         "tools",
-        "XMake build system",
-        "More concise configuration, simpler package management, and faster cached builds than CMake/Ninja.",
+        "CMake build system",
+        "Easier integration with surrounding toolchains, test workflows, and packaging in a conventional C++ environment.",
       ],
       [
         "layers",
-        "Boost.PFR serialisation",
-        "Automatic struct reflection for serialisation — no manual parsing boilerplate, no annotation macros.",
+        "Reuse standard stacks",
+        "PPP over RS-232 creates an IP link, allowing the same gRPC interface to be reused instead of maintaining a second custom protocol.",
       ],
     ];
     let x = 0.7,
@@ -805,7 +831,6 @@ async function main() {
       rectRadius: 0.08,
       fill: { color: CARD_TINT },
     });
-    1;
     footer(s);
   }
 
@@ -816,7 +841,7 @@ async function main() {
     titleBlock(
       s,
       "RS-232 Interface",
-      "Protocol registration over a serial link",
+      "PPP over RS-232 carrying an IP channel",
     );
 
     function node(x, y, w, h, label, fill, tcolor) {
@@ -853,20 +878,14 @@ async function main() {
       });
     }
 
-    node(0.7, 2.2, 2.6, 0.8, "Registry", CARD_TINT, TEXT_DARK);
-    node(0.7, 3.6, 2.6, 0.8, "Reader", MAROON, WHITE);
-    node(0.7, 5.0, 2.6, 0.8, "Writer", MAROON, WHITE);
-    node(4.4, 3.6, 2.8, 0.8, "Serializer\n(Boost.PFR)", CARD_TINT, TEXT_DARK);
-    node(4.4, 5.0, 2.8, 0.8, "COBS Encoder /\nDecoder", CARD_TINT, TEXT_DARK);
+    node(0.7, 2.2, 2.9, 0.9, "gRPC Client /\nServer", CARD_TINT, TEXT_DARK);
+    node(0.7, 3.6, 2.9, 0.9, "IP Stack", MAROON, WHITE);
+    node(0.7, 5.0, 2.9, 0.9, "PPP Endpoint", CARD_TINT, TEXT_DARK);
+    node(4.4, 5.0, 2.8, 0.9, "RS-232 Serial\nPort", TEAL, WHITE);
 
-    arrow(2.0, 3.0, 2.0, 3.6);
-    arrow(2.0, 4.4, 2.0, 5.0);
-
-    arrow(3.3, 4.0, 4.4, 4.0);
-    arrow(3.3, 4.0, 4.4, 5.4);
-
-    arrow(3.3, 5.4, 4.4, 4.0);
-    arrow(3.3, 5.4, 4.4, 5.4);
+    arrow(2.15, 3.1, 2.15, 3.6);
+    arrow(2.15, 4.5, 2.15, 5.0);
+    arrow(3.6, 5.45, 4.4, 5.45);
 
     s.addShape(pres.shapes.ROUNDED_RECTANGLE, {
       x: 8.1,
@@ -890,19 +909,19 @@ async function main() {
     s.addText(
       [
         {
-          text: "Declare a C++ struct → register a handler, no core changes needed",
+          text: "RS-232 is kept as the physical transport only",
           options: { bullet: true, breakLine: true },
         },
         {
-          text: "Boost.PFR auto-derives memory layout for serialisation",
+          text: "PPP creates a point-to-point IP link over the serial byte stream",
           options: { bullet: true, breakLine: true },
         },
         {
-          text: "COBS framing for reliable packet delimitation",
+          text: "The existing gRPC control plane then runs unchanged over that link",
           options: { bullet: true, breakLine: true },
         },
         {
-          text: "Lightweight — no gRPC-level overhead on a serial link",
+          text: "Less duplicated protocol logic, easier testing and debugging",
           options: { bullet: true },
         },
       ],
@@ -1039,7 +1058,7 @@ async function main() {
       margin: 0,
     });
     s.addText(
-      "Simulates the remote receiver over RS-232, exercising both systems end-to-end without needing full deployment hardware.",
+      "Simulates the remote receiver over PPP on top of RS-232, exercising the serial link, IP transport and gRPC control path end-to-end.",
       {
         x: 1.05,
         y: 3.2,
@@ -1089,7 +1108,7 @@ async function main() {
       fill: { color: MAROON },
     });
     iconCircle(s, "exchange", 6.95, 2.3, 0.75, WHITE, 0.55);
-    s.addText("A finding worth noting", {
+    s.addText("Adopted integration path", {
       x: 7.85,
       y: 2.4,
       w: 4.6,
@@ -1101,7 +1120,7 @@ async function main() {
       margin: 0,
     });
     s.addText(
-      "During integration with GMV's proprietary systems, the gRPC client-server boundary was not exercised — the proprietary system links the app component directly, in-process.",
+      "Rather than maintain a bespoke application protocol over the serial link, the final system establishes PPP over RS-232 and reuses the existing gRPC client-server interface over the resulting IP channel.",
       {
         x: 6.95,
         y: 3.2,
@@ -1115,7 +1134,7 @@ async function main() {
       },
     );
     s.addText(
-      "The gRPC layer remains functional and independently testable through the CLI client — it just wasn't the path this particular integration needed.",
+      "This keeps the control surface transport-agnostic: once the lower layer looks like a network link, the higher layers remain unchanged.",
       {
         x: 6.95,
         y: 4.8,
@@ -1208,7 +1227,7 @@ async function main() {
       ],
       [
         "check",
-        "RS-232 Interface — a lightweight, extensible protocol layer using Boost.PFR and COBS.",
+        "RS-232 Interface — PPP over serial providing a standard IP channel for the same gRPC control plane.",
       ],
       [
         "bulb",
