@@ -21,20 +21,35 @@ of unhandled exceptions or overlooked error conditions.
 Though it must be noted that this approach can lead to more verbose code at the call site, as it requires explicit checks for success or failure.
 
 
-\section{Compile-Time Reflection and Serialisation}
+\section{Reuse of Standard Protocol Stacks}
 \label{sec:design-patterns:reflection}
-To facilitate the serialisation and deserialisation of arbitrary C++ structs without requiring manual boilerplate code or annotation macros, the design uses compile-time reflection techniques.
-The Boost.PFR library is used for the general case of aggregate types, allowing the system to automatically determine the memory layout of a struct and perform serialisation or deserialisation accordingly.
-For non-aggregate types that do not fit the reflection model provided by Boost.PFR (e.g., vectors, maps, or other complex types), a template specialization of a \texttt{CustomSerde<T>} struct is provided as an "escape hatch," allowing developers to define custom serialisation and deserialisation logic for those types.
-This approach ensures that the system can handle a wide range of data structures while maintaining flexibility and extensibility, enabling easy adaptation to different command sets as needed.
+One of the most important architectural decisions made during the work was to
+avoid inventing a project-specific application protocol for the serial link
+once it became clear that the existing gRPC control surface already captured
+the required operations well.
+
+Instead, the serial channel was treated as a transport problem. By carrying
+\gls{PPP} over \gls{RS232}, the system obtains a conventional point-to-point IP
+link, after which the already existing gRPC interface can be reused unchanged.
+This pushes responsibilities such as framing, packet transport, and network
+bring-up into mature, standardized layers rather than custom project code.
+
+The practical effect is a simpler architecture: fewer bespoke parsing rules,
+less duplicated protocol logic, and better interoperability with standard
+networking and diagnostic tooling.
 
 
-\section{Protocol Registration as a Type-Erased Command Dispatcher}
+\section{Transport-Agnostic Control Interface}
 \label{sec:design-patterns:registry}
-The RS-232 Interface employs a type-erased command dispatcher pattern to manage the registration and handling of different message types. 
-This design allows for the dynamic addition of new message types without requiring modifications to the core system, promoting extensibility and maintainability.
-Not only does this pattern enable the system to accommodate new message types as they arise, 
-but it also decouples the message handling logic from the core processing loop, allowing for cleaner code organization and separation of concerns.
+The final design treats the control API and the underlying transport as
+separate concerns. The application-level contract is defined once through gRPC,
+while the transport may be a conventional network connection or the
+\gls{PPP}-backed serial path described in \autoref{cha:rs232-interface}.
+
+This separation proved more valuable than maintaining different command formats
+for different media. Once the lower layer exposes an IP channel, the upper
+layer can remain unchanged, which reduces implementation effort and avoids
+fragmenting the operational model seen by users and integrators.
 
 
 
@@ -95,7 +110,6 @@ requirements imposed by GMV's pre-existing systems), but pursuing
 generality \emph{pre-emptively}, ahead of any concrete requirement
 for it, incurred a cost with no corresponding benefit in the second
 iteration. The same tension resurfaces in
-\autoref{sec:integration}, where the gRPC layer --- itself a
-generalisation in service of a remote-control requirement that the
-final integration path did not end up needing --- went unused once
-the proprietary system was integrated in-process.
+\autoref{sec:integration}, where the temptation to add another
+special-case protocol for the serial path was ultimately rejected in favour of
+reusing the already existing gRPC layer over a \gls{PPP}-backed link.

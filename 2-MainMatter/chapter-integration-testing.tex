@@ -15,11 +15,12 @@ ensuring that each component behaved as expected under a variety of conditions.
 For the \gls{sdr-control-system}, unit tests were created to verify the correct
 generation of \gls{GNSS} signals, the proper handling of configuration
 parameters, and the correct interaction with the underlying \gls{SDR} hardware.
-For the \gls{rs232-interface}, unit tests were harder to implement because the
-hardware used did not provide same-port loopback capabilities. As a result,
-only framing, serialisation, and protocol dispatch were unit
-tested. Proper \gls{RS232} testing required the development of the external
-tester described in \autoref{sec:the-external-tester}.
+For the \gls{rs232-interface}, unit testing was inherently more limited because
+correctness depends not only on the application code, but also on serial
+hardware behaviour, operating-system networking support, and peer
+configuration. As a result, the most meaningful validation of the serial path
+was performed through end-to-end tests using the external tester described in
+\autoref{sec:the-external-tester}.
 
 Code coverage for the unit test suites was measured using
 \texttt{gcovr}, generating coverage reports from the instrumented test
@@ -49,11 +50,11 @@ In a deployed scenario, the generator would be placed in a loopback, over a
 \gls{RF} uplink to a remote receiver that would measure the transmitted signal,
 and calculate any needed adjustments to the signal generator's configuration.
 That remote receiver would then communicate those adjustments back to the
-signal generator over the \gls{RS232} interface, closing the loop and allowing
-the signal generator to adapt its transmission parameters in response to the
-measured signal quality. In this prototype environment, however, such setup was
-too complex and impractical to maintain for day-to-day development and testing,
-and so a testing component was developed, as described in
+signal generator over the \gls{RS232} link. In the final architecture, that
+serial link carries \gls{PPP}, allowing the control path to operate over IP and
+gRPC even when the physical medium is serial. In this prototype environment,
+however, such setup was too complex and impractical to maintain for day-to-day
+development and testing, and so a testing component was developed, as described in
 \autoref{sec:the-external-tester}. The external tester simulates the behaviour
 of the remote receiver and any other measurement equipment that would normally
 be present in a deployed scenario.
@@ -78,47 +79,38 @@ normally be present in a deployed scenario. It is used to validate the
 \gls{rs232-interface} and the \gls{sdr-control-system} in a controlled and
 repeatable manner. The setup is quite simple, the generator is connected to
 measurement equipment over a \gls{RF} link, which relays information to the
-tester. The tester then communicates with the generator over a \gls{RS232}
-link, issuing commands and producing responses that are representative of what
-the real equipment would return. This allows both the \gls{rs232-interface}
-and the \gls{sdr-control-system} to be exercised end-to-end, covering message
-framing, serialisation, protocol dispatch, handler invocation, and signal
-generation. This allows the behaviour of the real system to be validated
-under controlled and repeatable conditions, without depending on the
-availability of physical instrumentation.
+tester. The tester then communicates with the generator over a
+\gls{PPP}-over-\gls{RS232} link, issuing gRPC requests and observing responses
+that are representative of what the real equipment would trigger. This allows
+both the \gls{rs232-interface} and the \gls{sdr-control-system} to be
+exercised end-to-end, covering serial link configuration, \gls{PPP} transport,
+network reachability, gRPC invocation, and signal generation. This allows the
+behaviour of the real system to be validated under controlled and repeatable
+conditions, without depending on the availability of physical instrumentation.
 
 
 \section{Integration}
 \label{sec:integration}
 
-During integration with the existing proprietary systems at GMV, it
-became apparent that the gRPC client-server boundary described in
-\autoref{sec:sdr-design-and-implementation}, while functioning correctly and
-as designed, was not exercised in the final integration. The
-proprietary system integrating with the \gls{sdr-control-system}
-links the \texttt{app} component directly as a library and invokes
-it in-process, rather than communicating with it through the gRPC
-server. The gRPC server is implemented as a separate module within
-the system, and in this integration context that module is simply
-not built into the resulting binary, making the client-server hop
-entirely absent from this deployment path rather than merely unused
-at runtime.
+During integration with the existing proprietary systems at GMV, the original
+idea of maintaining a dedicated application protocol on top of \gls{RS232} was
+reconsidered. Once the serial path was understood primarily as a transport
+constraint rather than an application constraint, it became more attractive to
+reuse the already existing gRPC interface instead of maintaining two parallel
+control planes.
 
-This does not retroactively invalidate the architectural decision
-described in \autoref{sec:sdr-design-and-implementation}: the gRPC layer
-remains functional and independently testable through the CLI
-client (\autoref{sec:sdr-functionality-and-use-cases}), and would be
-exercised by any future integration that requires the
-\gls{sdr-control-system} to be controlled remotely or from a
-separate process. The finding instead reflects a mismatch between
-the generality assumed at design time, driven by the original
-goal of remote, multi-client control
-(\autoref{sec:sdr-objective-and-motivation}), and the specific
-integration constraints of the proprietary system actually
-encountered, which favoured direct, in-process linkage over
-out-of-process communication. This mirrors, at a smaller scale, the
-broader generalisation lesson discussed in
-\autoref{sec:design-patterns:sdr-iterations}.
+The adopted solution was to establish a \gls{PPP} link over \gls{RS232},
+thereby converting the serial connection into a standard point-to-point IP
+channel. The gRPC client-server boundary described in
+\autoref{sec:sdr-design-and-implementation} therefore remained relevant and was
+exercised through that channel rather than being bypassed. This reduced custom
+protocol code, aligned the serial integration path with the rest of the system,
+and allowed existing networking tools and workflows to be reused.
+
+This change also illustrates a useful design lesson. The important abstraction
+was not that \gls{RS232} should have its own bespoke command language, but that
+the control interface should be transport-agnostic. Once the serial link was
+made to look like an IP network, the higher layers could remain unchanged.
 
 \section{Testing}
 \label{sec:testing}

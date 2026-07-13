@@ -9,10 +9,11 @@
 \chapter{Introduction}
 \label{cha:introduction}
 
-This first chapter serves as a brief introduction to the internship conducted
-within the scope of \gls{CDA} at \gls{GMV}. It outlines the context and
-motivation for the work carried out, the problem being addressed, the proposed
-solution, and the objectives defined for the internship.
+This first chapter serves as a brief introduction to the work initiated within
+the scope of \gls{CDA} at \gls{GMV} and later continued directly under
+\gls{GMV}. It outlines the context and motivation for the work carried out, the
+problem being addressed, the proposed solution, and the objectives defined for
+the internship and its immediate continuation.
 
 \section{Context and Motivation}
 
@@ -54,10 +55,11 @@ engineer setting up a test scenario and the low-level reality of the hardware
 API — is the central motivation for the work developed in this internship.
 
 Additionally, \gls{RS232} is a standard for serial communication widely used in
-industrial and laboratory instrumentation. In the context of this internship,
-it provides the communication channel between the developed system and external
-equipment, enabling remote command dispatch and status
-monitoring.\cite{wikipediaRS232}
+industrial and laboratory instrumentation. In the context of this work, it
+provides the physical communication channel between the developed system and
+external equipment. Rather than carrying a bespoke application protocol, the
+serial link is used to transport \gls{PPP}, thereby creating an IP channel over
+which the higher-level control interface can operate.\cite{wikipediaRS232}
 
 \section{Problem}
 
@@ -83,7 +85,10 @@ The internship aimed to address this gap by developing a C++ abstraction layer
 over the \gls{DTAPI}, exposed through a \gls{gRPC} interface, to enable
 programmatic and remotely accessible control of \gls{SDR} hardware for
 \gls{GNSS} signal transmission. A secondary objective was the development of an
-\gls{RS232} communication layer for integration with external equipment.
+\gls{RS232}-based communication path for integration with external equipment.
+In the final architecture, this took the form of a \gls{PPP} link over the
+serial channel, allowing the same gRPC interface to be reused over a standard
+IP transport.
 
 It should be noted that the scope of the internship evolved throughout its
 duration, as described in \autoref{sec:scope-evolution}. The phases outlined
@@ -102,11 +107,11 @@ Development of a parameter management system enabling users to configure and
 manage \gls{SDR} transmission parameters efficiently, without resorting to
 direct low-level API calls.
 
-\emph{Phase 3 --- \gls{RS232} Communication:}
+\emph{Phase 3 --- \gls{RS232} Connectivity:}
 
-Design and implementation of an \gls{RS232} communication layer for exchange of
-commands and data with external equipment, including interface configuration,
-command dispatch, and response handling.
+Design and implementation of an \gls{RS232}-based connectivity layer for
+integration with external equipment, including serial interface configuration,
+\gls{PPP} link establishment, and validation of the resulting IP channel.
 
 \section{Objectives}
 
@@ -116,12 +121,14 @@ The main objectives of this internship were:
       \item Acquire working knowledge of the target \gls{SDR} hardware architecture and its
             vendor API.
       \item Understand the \gls{RS232} communication standard and its application in
-            instrument control.
+            instrument control, as well as the use of \gls{PPP} over serial
+            links.
       \item Implement C++ modules for \gls{SDR} control via the \gls{DTAPI}, exposing a
             clean and programmatic interface through \gls{gRPC}.
       \item Develop a parameter management interface for test scenario configuration.
-      \item Implement an \gls{RS232} communication layer for exchange of commands and data
-            with external equipment.
+      \item Implement an \gls{RS232}-based communication path that allows
+            external equipment to reach the control interface through a
+            \gls{PPP}-backed IP channel.
       \item Validate the overall system functionality through functional and integration
             testing.
       \item Produce technical documentation and a final report covering the developed
@@ -164,9 +171,10 @@ not explicitly represented in either table.
             configuration interface; integration with \gls{SDR} control modules  &
             4 weeks                                                              & Apr 29 -- May 26                    \\
             \hline
-            \gls{RS232} Communication                                            &
-            Design and implementation of an \gls{RS232} communication layer for
-            exchange of commands and data with external equipment                &
+            \gls{RS232} Connectivity                                             &
+            Design and implementation of an \gls{RS232}-based connectivity path
+            for external equipment, including \gls{PPP} link bring-up and IP
+            communication validation                                             &
             3 weeks                                                              & May 27 -- Jun 16                    \\
             \hline
             Integration, Testing \& Documentation                                &
@@ -199,9 +207,10 @@ not explicitly represented in either table.
             management interface                                                                     &
             6.5 weeks                                                                                & Mar 18 -- May 2                                                                                                                                                   \\
             \hline
-            \gls{RS232} Communication                                                                &
-            Design and implementation of an \gls{RS232} communication layer for
-            exchange of commands and data with external equipment                                    &
+            \gls{RS232} Connectivity                                                                &
+            Design and implementation of an \gls{RS232}-based connectivity path,
+            including \gls{PPP} link establishment and gRPC communication over the
+            resulting IP channel                                                                     &
             1 week                                                                                   & May 3 -- May 9                                                                                                                                                    \\
             \hline
             Integration with Proprietary Systems \& Documentation                                    &
@@ -218,7 +227,7 @@ not explicitly represented in either table.
 \section{Scope Evolution}
 \label{sec:scope-evolution}
 
-The scope of the internship evolved in two notable ways relative to the
+The scope of the internship evolved in three notable ways relative to the
 original plan.
 
 The first was a minor protocol change: the serial communication interface was
@@ -226,15 +235,46 @@ originally specified in the internship proposal as \gls{RS485}, but the
 external equipment in use at \gls{GMV} communicated over \gls{RS232}. This
 discrepancy arose from miscommunication between the involved parties and was
 identified early in the implementation phase. As \gls{RS232} and \gls{RS485}
-share similar framing and command structures, the impact on the implementation
-was minimal, requiring only adjustments to the physical layer configuration.
+serve similar serial-communication roles at the physical layer, the impact on
+the implementation was minimal, requiring only adjustments to the electrical
+and interface configuration.
 
-The second change was more significant in terms of effort. As the developed
+The second change concerned the communication architecture carried by the
+serial link. An early implementation explored a custom application protocol on
+top of \gls{RS232}; however, as integration requirements became clearer, that
+approach was replaced by a \gls{PPP} link over the same physical medium. This
+allowed the system to expose the existing gRPC control interface over a
+standard IP channel, reducing duplicated protocol logic and aligning the serial
+integration path with the rest of the software architecture.
+
+The third change was more significant in terms of effort. As the developed
 components matured, it became necessary to integrate them with existing
 proprietary systems at \gls{GMV} that had not been part of the original scope.
-This integration work was not planned at the outset and
-resulted in additional unplanned effort, reflected in the actual work plan in
+This integration work was not planned at the outset and resulted in additional
+unplanned effort, reflected in the actual work plan in
 Table~\ref{tab:actual_work_plan_schedule}. The nature of these systems is
 confidential and will not be described in detail in this report; their
 existence is acknowledged where relevant to explain architectural decisions
-made during the internship.
+made during the work.
+
+\section{Continuation Beyond the Curricular Stage}
+\label{sec:continuation-context}
+
+This report is formally rooted in the curricular internship established between
+\gls{GMV} and \gls{FCT}. However, because the initial objectives were reached
+ahead of schedule, the work transitioned naturally into a continuation phase
+carried out directly under \gls{GMV}, outside the university contract.
+
+Some of the technical decisions described in this report, most notably the
+migration to CMake, the replacement of the custom \gls{RS232} protocol with a
+\gls{PPP}-based link, and the consolidation of gRPC over that resulting IP
+channel, belong to that continuation period or were finalized there. They are
+included because they superseded intermediate solutions developed during the
+curricular stage and therefore better represent the final engineering outcome
+of the project.
+
+For that reason, this document distinguishes between contractual context and
+technical outcome: the internship provides the academic framing and original
+work plan, while the architecture described in the following chapters
+corresponds to the consolidated solution reached across the internship and its
+immediate continuation.

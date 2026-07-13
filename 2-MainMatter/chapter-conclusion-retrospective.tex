@@ -1,16 +1,16 @@
 \typeout{NT FILE chapter-conclusion-retrospective.tex}%
 \chapter{Conclusion and Retrospective}
 \label{cha:conclusion-retrospective}
-This chapter summarizes the work conducted during this internship, highlighting
-the key achievements, challenges faced, and lessons learned. It also provides a
-retrospective analysis of the project, reflecting on the development process
-and the overall impact of the work.
+This chapter summarizes the work conducted during the internship and its
+continuation, highlighting the key achievements, challenges faced, and lessons
+learned. It also provides a retrospective analysis of the project, reflecting
+on the development process and the overall impact of the work.
 
 \section{Summary of Achievements}
 
-The work carried out during this internship resulted in two complementary
-software systems, designed and implemented in C++ over the course of the
-internship period.
+The work carried out during the internship and its continuation resulted in two
+complementary software systems, designed and implemented in C++ over the
+course of the project.
 
 The \gls{sdr-control-system} provides a higher-level abstraction over the
 \gls{DTAPI}, exposing device management, channel configuration, and signal
@@ -25,21 +25,19 @@ capabilities, additionally enables interactive use through a \gls{CLI}
 client, lowering the barrier for engineers unfamiliar with the underlying
 hardware to issue commands and inspect available functionality.
 
-The \gls{rs232-interface} provides a lightweight communication layer over
-\gls{RS232}, built around a protocol registration model that allows new
-message types and handlers to be declared without modifying the core of the
-system. Its design, relying on Boost.PFR for automatic struct serialisation
-and \gls{COBS} for packet framing, achieves a level of extensibility and
-ease of use comparable to that provided by \gls{gRPC} in the
-\gls{sdr-control-system}, while remaining lightweight enough to be
-appropriate for a low-level serial link.
+The \gls{rs232-interface} provides a lightweight connectivity layer over
+\gls{RS232}, using \gls{PPP} to turn the serial connection into a standard
+point-to-point IP channel. This allowed the same gRPC interface used by the
+\gls{sdr-control-system} to be reused over the serial path, eliminating the
+need for a separate bespoke command protocol and keeping the architecture more
+uniform across deployment scenarios.
 
 Both systems share a consistent set of design principles established during
-the internship: the use of errors as values rather than exceptions, the
-adoption of XMake as the build system, and a preference for minimal,
-composable abstractions over heavier frameworks where the simpler approach
-was sufficient. Beyond the two systems themselves, the work also included
-their integration with existing proprietary systems at \gls{GMV}, as described in
+the work: the use of errors as values rather than exceptions, the adoption of
+CMake as the build system, and a preference for minimal, composable
+abstractions over heavier frameworks where the simpler approach was
+sufficient. Beyond the two systems themselves, the work also included their
+integration with existing proprietary systems at \gls{GMV}, as described in
 \autoref{cha:integration-testing}, validated through a combination of unit
 testing, code coverage analysis, and the external tester component developed
 to simulate measurement equipment in the prototype environment.
@@ -71,27 +69,29 @@ the transmit and receive lines between the two devices.
 
 \section{Conclusion}
 
-The internship achieved its core objectives: a \gls{gRPC}-based abstraction
-over the \gls{DTAPI} was designed and implemented, providing a programmatic
-and remotely accessible interface for \gls{SDR}-based \gls{GNSS} signal
-transmission, and a complementary \gls{RS232} communication layer was
-developed to support integration with external equipment. Together, these
-systems address the gap identified in \autoref{cha:state-of-the-art} between
-low-level, hardware-specific vendor APIs and the higher-level, programmatic
-control required for automated and remotely operated test workflows.
+The internship and its continuation achieved their core objectives: a
+\gls{gRPC}-based abstraction over the \gls{DTAPI} was designed and
+implemented, providing a programmatic and remotely accessible interface for
+\gls{SDR}-based \gls{GNSS} signal transmission, and a complementary
+\gls{RS232}-based connectivity layer was developed to support integration with
+external equipment. By carrying \gls{PPP} over the serial link and reusing the
+same gRPC contract over the resulting IP channel, the final system addressed
+the gap identified in \autoref{cha:state-of-the-art} between low-level,
+hardware-specific vendor APIs and the higher-level, programmatic control
+required for automated and remotely operated test workflows.
 
-Beyond the specific technical deliverables, the internship provided practical
+Beyond the specific technical deliverables, the work provided practical
 exposure to the realities of developing software against real, professional
-hardware. The need to adapt the original work plan in
-response to a changed protocol requirement and an expanded integration scope
-also reflected a broader lesson about software engineering in a professional
-context: that requirements and scope are rarely fixed in advance, and that
-designing systems with extensibility and clear interfaces in mind, as was
-done throughout this work, pays off when that flexibility is inevitably
-required.
+hardware. The need to adapt the original work plan in response to a changed
+protocol requirement, an evolved transport architecture, and an expanded
+integration scope also reflected a broader lesson about software engineering in
+a professional context: requirements and boundaries are rarely fixed in
+advance, and designing systems with clear interfaces pays off when that
+flexibility is inevitably required.
 
-Overall, the work developed during this internship represents a meaningful and
-reusable contribution within \gls{GMV}, providing a foundation
+Overall, the work developed during the internship and its continuation
+represents a meaningful and reusable contribution within \gls{GMV}, providing a
+foundation
 that can be extended to support additional \gls{SDR} hardware features,
-additional \gls{RS232}-based protocols, or further integration with other
-systems, beyond what was required within the scope of this internship.
+additional serial deployment scenarios, or further integration with other
+systems, beyond what was required within the scope of the original internship.

@@ -2,10 +2,9 @@
 \chapter{RS-232 Interface}
 \label{cha:rs232-interface}
 
-This chapter describes the \gls{rs232-interface} developed during this
-internship. It begins with a brief introduction to the \gls{RS232} standard,
-followed by a description of the objectives, design, and implementation of the
-interface.
+This chapter describes the \gls{rs232-interface} developed during this work. It
+begins with a brief introduction to the \gls{RS232} standard, followed by a
+description of the objectives, design, and implementation of the interface.
 
 \section{RS-232 Standard}
 
@@ -26,11 +25,12 @@ applications.
 
 \section{Objective and Motivation}
 
-The \gls{GNSS} signal generation system developed in this internship must be
+The \gls{GNSS} signal generation system developed in this work must be
 controllable by a remote controller or computer, which issues commands and
 receives status information at runtime. \gls{RS232} was selected as the
-communication channel for this purpose, given its ubiquity in instrumentation
-environments and the straightforward point-to-point topology it provides.
+physical communication channel for this purpose, given its ubiquity in
+instrumentation environments and the straightforward point-to-point topology it
+provides.
 
 Beyond this general suitability, the choice of \gls{RS232} was in practice
 dictated by an external constraint: the system needed to be integrated with
@@ -44,54 +44,49 @@ required from the outset. RS-232 was therefore not purely a design preference,
 but a constraint imposed by the pre-existing environment the system had to
 integrate with.
 
-The objective of the \gls{rs232-interface} is therefore to provide a
-lightweight, flexible communication layer that supports both the transmission
-of commands from a remote controller and the reception of status data in
-response. A key design requirement was that the interface should allow new
-protocols to be declared and registered without modifying the core of the
-system, enabling easy adaptation to different command sets as needed.
+The objective of the \gls{rs232-interface} is therefore not to define yet
+another command protocol, but to turn the available serial connection into a
+standards-based transport that higher-level software can reuse. In the final
+architecture, \gls{RS232} carries \gls{PPP}, which creates a point-to-point IP
+link between the communicating systems. Once that link is established, the
+existing gRPC control interface can operate unchanged over ordinary sockets.
+
+This approach has two main advantages. First, it removes the need to maintain
+a second application-layer protocol alongside gRPC. Second, it allows standard
+networking and debugging tools to be reused, making the serial integration path
+behave much more like any other IP-based deployment.
 
 \section{Design and Implementation}
 
-The \gls{rs232-interface} was implemented using an event-driven architecture,
-where the system listens for incoming data on the \gls{RS232} bus and
-dispatches it to the appropriate handler based on the message type received.
+The \gls{rs232-interface} was implemented as a layered transport path. At the
+lowest level, the serial device is configured with the required electrical and
+\texttt{termios} parameters. On top of that, \gls{PPP} is established to
+encapsulate IP packets over the serial byte stream. Once the link is active,
+the communicating peers exchange traffic using ordinary IP networking, and the
+gRPC client and server operate above that layer without requiring any
+serial-specific application logic.
 
-The interface is designed around a protocol registration model: a user declares
-a C++ struct representing a protocol message and registers a corresponding
-handler function that is invoked whenever a message of that type is received,
-though additional configuration is required and is omitted here for brevity.
-This allows new protocols to be added without modifying the core of the system,
-providing a flexible and extensible communication layer.
-
-Message serialisation relies on the Boost.PFR library\footnote{Boost.PFR is a
-      C++14 library that provides basic struct reflection without requiring any macro
-      or annotation boilerplate.\cite{boost-pfr}}, which enables the system to
-automatically determine the memory layout of a message struct and serialise or
-deserialise it accordingly, without manual parsing code. This achieves an
-effect similar to the reflection capabilities provided by \gls{gRPC} in the
-\gls{sdr-control-system}, but without the overhead that a \gls{gRPC} layer
-would introduce for a low-level serial interface. Messages are framed using
-\gls{COBS} encoding, which provides reliable packet delimitation over the byte
-stream without requiring reserved byte values in the payload.
+This design intentionally delegates framing, packet integrity, and network
+bring-up to mature, well-understood protocol layers instead of reimplementing
+those concerns in project-specific code. The \gls{RS232} component therefore
+focuses on link establishment, peer configuration, and operational reliability
+rather than on custom message parsing.
 
 In line with the design choices made in the \gls{sdr-control-system}, the
-\gls{rs232-interface} uses errors as values rather than exceptions, and is
-built with the XMake build system. The library was intentionally kept minimal:
-it provides only the components necessary to read, write, and register protocol
-handlers, leaving higher-level concerns such as continuous polling loops or
-protocol composition to be implemented by the user on top of the library if
-required.
+\gls{rs232-interface} uses errors as values rather than exceptions, and the
+surrounding project is built with CMake.\cite{cmake} The resulting solution was
+kept deliberately small: once the serial and \gls{PPP} layers are configured
+correctly, higher-level behaviour is almost entirely inherited from the already
+existing IP and gRPC stack.
 
 \section{Architecture Diagram}
 
 Diagram~\ref{fig:rs232-interface-architecture} illustrates the architecture of
-the \gls{rs232-interface}. The \texttt{Registry} component is responsible for
-maintaining the association between message types and their handlers. The
-\texttt{Reader} and \texttt{Writer} components handle the reception and
-transmission of data on the \gls{RS232} bus, respectively. Both rely on the
-\texttt{Serializer} for message serialisation and deserialisation, and on the
-\gls{COBS} encoder/decoder for packet framing.
+the \gls{rs232-interface}. The serial device driver provides access to the
+physical \gls{RS232} link. Above it, a \gls{PPP} endpoint encapsulates and
+decapsulates IP packets. The IP layer then exposes an ordinary network
+interface to the gRPC client and server, allowing the same application
+protocols used on other network transports to be reused unchanged.
 
 \begin{figure}[htbp]
       \centering
@@ -105,25 +100,21 @@ transmission of data on the \gls{RS232} bus, respectively. Both rely on the
 The \gls{rs232-interface} provides the following core functionalities:
 
 \begin{itemize}
-      \item \textbf{Protocol registration:} users register C++ structs as
-            protocol messages along with a handler function, which is
-            automatically invoked upon receipt of a matching message.
-      \item \textbf{Command reception:} the interface receives commands issued
-            by a remote controller over the \gls{RS232} bus, deserialises them,
-            and dispatches them to the registered handler.
-      \item \textbf{Status transmission:} the interface serialises and transmits
-            response data back to the remote controller, enabling two-way
-            communication.
-      \item \textbf{COBS framing:} all messages are framed using \gls{COBS}
-            encoding, ensuring reliable packet delimitation over the serial byte
-            stream.
+      \item \textbf{Serial link configuration:} the interface configures and
+            validates the \gls{RS232} channel used by the communicating peers.
+      \item \textbf{\gls{PPP} link establishment:} the interface brings up a
+            point-to-point IP connection over the serial medium.
+      \item \textbf{IP transport for control traffic:} once the link is active,
+            control and status messages flow as ordinary network traffic rather
+            than through a bespoke serial protocol.
+      \item \textbf{Reuse of the gRPC control plane:} the same gRPC contract
+            used elsewhere in the system can be transported through the
+            resulting IP channel without modification.
 \end{itemize}
 
-A typical use case involves a remote controller sending a command struct over
-the \gls{RS232} bus — for example, requesting the start of signal generation or
-issuing a configuration update. The \gls{rs232-interface} receives the framed
-packet, decodes it using the \gls{COBS} decoder, deserialises the payload into
-the corresponding C++ struct using Boost.PFR, and invokes the registered
-handler. The handler processes the command and may write a response back
-through the \texttt{Writer}, which serialises and re-encodes the response
-before transmitting it.
+A typical use case involves a remote controller establishing the \gls{PPP} link
+over \gls{RS232}, obtaining reachability to the generator through the resulting
+point-to-point network interface, and then issuing gRPC requests to the control
+service. From the perspective of the application layer, the interaction is the
+same as on any other IP network; the fact that the underlying transport is a
+serial link is largely hidden below the network layer.
