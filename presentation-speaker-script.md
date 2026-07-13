@@ -42,9 +42,9 @@ Isto evita manter um segundo protocolo aplicacional, reduz código específico d
 
 ## Slide 10 - Integração e testes
 
-A validação recorreu a testes unitários, acompanhamento de cobertura com gcovr e tendências no SonarQube, e testes de hardware end-to-end num ambiente prototípico, usando um componente externo de teste. Foram executados três casos de teste principais com equipamento real: configuração de potência com um Rohde & Schwarz NRQ6, configuração de frequência com um contador de frequência, e gravação de sinal com um Ettus USRP X310.
+Nesta fase, quero destacar apenas dois elementos da validação: os testes unitários e o componente externo de teste. Os testes unitários ajudaram a verificar comportamento localmente, isolar regressões e dar confiança durante a evolução da implementação.
 
-Uma constatação importante da integração foi que não valia a pena manter um protocolo série separado quando a necessidade real era apenas transportar o canal de controlo até ao outro lado da ligação. A solução adotada foi, por isso, usar PPP sobre RS-232 e fazer o gRPC atravessar esse canal IP ponto-a-ponto.
+Em complemento, o componente externo de teste simula o recetor remoto sobre PPP em cima de RS-232, exercitando de ponta a ponta a ligação série, o transporte IP e o caminho de controlo por gRPC. Em conjunto, estes dois níveis deram cobertura tanto ao comportamento interno dos componentes como ao funcionamento integrado do sistema.
 
 ## Slide 11 - Desafios enfrentados
 

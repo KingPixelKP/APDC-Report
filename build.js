@@ -1031,11 +1031,11 @@ async function main() {
   //  footer(s);
   //}
 
-  // ================= SLIDE 10 — INTEGRATION & TESTING =================
+  // ================= SLIDE 10 — EXTERNAL TESTER & UNIT TESTS =================
   {
     let s = pres.addSlide();
     s.background = { color: WHITE };
-    titleBlock(s, "Integration & Testing", "Validated against real hardware");
+    titleBlock(s, "Testing", "External tester and unit tests");
 
     s.addShape(pres.shapes.ROUNDED_RECTANGLE, {
       x: 0.7,
@@ -1071,33 +1071,21 @@ async function main() {
         lineSpacingMultiple: 1.25,
       },
     );
-
-    const tests = [
-      "Test 1 — Power configuration (Rohde & Schwarz NRQ6)",
-      "Test 2 — Frequency configuration (frequency counter)",
-      "Test 3 — Signal recording (Ettus USRP X310)",
-    ];
-    let ty = 4.4;
-    tests.forEach((t) => {
-      s.addShape(pres.shapes.OVAL, {
+    s.addText(
+      "Covers the full path in a realistic setup, so integration problems appear before deployment.",
+      {
         x: 1.05,
-        y: ty + 0.06,
-        w: 0.12,
-        h: 0.12,
-        fill: { color: TEAL },
-      });
-      s.addText(t, {
-        x: 1.3,
-        y: ty - 0.1,
-        w: 4.8,
-        h: 0.4,
+        y: 4.45,
+        w: 5.0,
+        h: 1.0,
         fontFace: FONT_BODY,
         fontSize: 12.5,
         color: TEXT_DARK,
         margin: 0,
-      });
-      ty += 0.55;
-    });
+        italic: true,
+        lineSpacingMultiple: 1.2,
+      },
+    );
 
     s.addShape(pres.shapes.ROUNDED_RECTANGLE, {
       x: 6.6,
@@ -1107,8 +1095,8 @@ async function main() {
       rectRadius: 0.08,
       fill: { color: MAROON },
     });
-    iconCircle(s, "exchange", 6.95, 2.3, 0.75, WHITE, 0.55);
-    s.addText("Adopted integration path", {
+    iconCircle(s, "check", 6.95, 2.3, 0.75, WHITE, 0.55);
+    s.addText("Unit tests", {
       x: 7.85,
       y: 2.4,
       w: 4.6,
@@ -1120,12 +1108,12 @@ async function main() {
       margin: 0,
     });
     s.addText(
-      "Rather than maintain a bespoke application protocol over the serial link, the final system establishes PPP over RS-232 and reuses the existing gRPC client-server interface over the resulting IP channel.",
+      "Verify smaller pieces of logic in isolation, making regressions easier to catch and debug during development.",
       {
         x: 6.95,
         y: 3.2,
         w: 5.4,
-        h: 1.4,
+        h: 1.1,
         fontFace: FONT_BODY,
         fontSize: 13,
         color: "EBD9DF",
@@ -1134,10 +1122,10 @@ async function main() {
       },
     );
     s.addText(
-      "This keeps the control surface transport-agnostic: once the lower layer looks like a network link, the higher layers remain unchanged.",
+      "Together with the external tester, they provide both component-level confidence and end-to-end validation.",
       {
         x: 6.95,
-        y: 4.8,
+        y: 4.7,
         w: 5.4,
         h: 1.3,
         fontFace: FONT_BODY,
