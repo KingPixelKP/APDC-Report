@@ -2,6 +2,7 @@ const pptxgen = require("pptxgenjs");
 const React = require("react");
 const ReactDOMServer = require("react-dom/server");
 const sharp = require("sharp");
+const fs = require("fs");
 const {
   FaSatelliteDish,
   FaMicrochip,
@@ -88,6 +89,19 @@ async function main() {
   for (const [key, comp, color] of want)
     icons[key] = await iconPng(comp, color, 256);
 
+  // Load GMV logo: prefer PNG if present, otherwise try PDF.
+  let gmvLogo = null;
+  const GMV_PNG_PATH = "5-Figures/gmv-logo.png";
+  try {
+    if (fs.existsSync(GMV_PNG_PATH)) {
+      const buf = await sharp(GMV_PNG_PATH).png().toBuffer();
+      gmvLogo = "image/png;base64," + buf.toString("base64");
+    } 
+  } catch (e) {
+    console.warn("Could not load GMV logo:", e.message);
+    gmvLogo = null;
+  }
+
   // helper: icon in colored circle
   function iconCircle(slide, iconKey, x, y, d, circleColor, iconScale = 0.55) {
     slide.addShape(pres.shapes.OVAL, {
@@ -109,6 +123,21 @@ async function main() {
 
   let slideNumber = 1;
   function footer(slide) {
+    // add GMV logo if available (left of the slide number)
+    if (gmvLogo) {
+      try {
+        slide.addImage({
+          data: gmvLogo,
+          x: W - 1.6,
+          y: H - 0.57,
+          w: 0.8,
+          h: 0.35,
+        });
+      } catch (e) {
+        /* ignore image failures */
+      }
+    }
+
     slide.addText(`${slideNumber}`, {
       x: W - 0.7,
       y: H - 0.45,
@@ -129,6 +158,7 @@ async function main() {
       color: TEXT_MUTED,
       align: "left",
     });
+    slideNumber++;
   }
 
   function titleBlock(slide, kicker, title, opts = {}) {
@@ -774,7 +804,8 @@ async function main() {
       h: 4.3,
       rectRadius: 0.08,
       fill: { color: CARD_TINT },
-    });1
+    });
+    1;
     footer(s);
   }
 
@@ -830,7 +861,7 @@ async function main() {
 
     arrow(2.0, 3.0, 2.0, 3.6);
     arrow(2.0, 4.4, 2.0, 5.0);
-    
+
     arrow(3.3, 4.0, 4.4, 4.0);
     arrow(3.3, 4.0, 4.4, 5.4);
 
@@ -890,96 +921,96 @@ async function main() {
     footer(s);
   }
 
-  // ================= SLIDE 9 — THREE ITERATIONS =================
-  {
-    let s = pres.addSlide();
-    s.background = { color: WHITE };
-    titleBlock(s, "Three Iterations", "Learning by narrowing the scope");
-
-    const iters = [
-      [
-        "v1",
-        "Reuse third-party program",
-        "Abandoned — assumptions about threading and API extensibility didn't fit this use case.",
-        CARD_TINT,
-        TEXT_DARK,
-        MAROON,
-      ],
-      [
-        "v2",
-        "Fully general rewrite",
-        "Abandoned — supported modulation types were never required; generality cost more than it gave.",
-        CARD_TINT,
-        TEXT_DARK,
-        MAROON,
-      ],
-      [
-        "v3",
-        "Scoped to DTA-2115B/2116",
-        "Adopted — narrowing to actual requirements made the system simpler to implement, test and reason about.",
-        MAROON,
-        WHITE,
-        TEAL,
-      ],
-    ];
-    let x = 0.7,
-      gap = 0.4,
-      cw = (W - 1.4 - gap * 2) / 3;
-    iters.forEach(([tag, h, body, fill, tcolor, tagColor], i) => {
-      const cx = x + i * (cw + gap);
-      s.addShape(pres.shapes.ROUNDED_RECTANGLE, {
-        x: cx,
-        y: 2.0,
-        w: cw,
-        h: 4.3,
-        rectRadius: 0.08,
-        fill: { color: fill },
-      });
-      s.addText(tag, {
-        x: cx + 0.35,
-        y: 2.25,
-        w: cw - 0.7,
-        h: 0.6,
-        fontFace: FONT_HEAD,
-        fontSize: 26,
-        bold: true,
-        color: tagColor,
-        margin: 0,
-      });
-      s.addText(h, {
-        x: cx + 0.35,
-        y: 2.95,
-        w: cw - 0.7,
-        h: 0.8,
-        fontFace: FONT_HEAD,
-        fontSize: 16,
-        bold: true,
-        color: tcolor,
-        margin: 0,
-      });
-      s.addText(body, {
-        x: cx + 0.35,
-        y: 3.75,
-        w: cw - 0.7,
-        h: 2.3,
-        fontFace: FONT_BODY,
-        fontSize: 12.5,
-        color: i === 2 ? "EBD9DF" : TEXT_MUTED,
-        margin: 0,
-        lineSpacingMultiple: 1.25,
-      });
-      if (i < 2) {
-        s.addShape(pres.shapes.LINE, {
-          x: cx + cw + 0.04,
-          y: 4.1,
-          w: 0.32,
-          h: 0,
-          line: { color: TEXT_MUTED, width: 1.5, endArrowType: "triangle" },
-        });
-      }
-    });
-    footer(s);
-  }
+  //// ================= SLIDE 9 — THREE ITERATIONS =================
+  //{
+  //  let s = pres.addSlide();
+  //  s.background = { color: WHITE };
+  //  titleBlock(s, "Three Iterations", "Learning by narrowing the scope");
+  //
+  //  const iters = [
+  //    [
+  //      "v1",
+  //      "Reuse third-party program",
+  //      "Abandoned — assumptions about threading and API extensibility didn't fit this use case.",
+  //      CARD_TINT,
+  //      TEXT_DARK,
+  //      MAROON,
+  //    ],
+  //    [
+  //      "v2",
+  //      "Fully general rewrite",
+  //      "Abandoned — supported modulation types were never required; generality cost more than it gave.",
+  //      CARD_TINT,
+  //      TEXT_DARK,
+  //      MAROON,
+  //    ],
+  //    [
+  //      "v3",
+  //      "Scoped to DTA-2115B/2116",
+  //      "Adopted — narrowing to actual requirements made the system simpler to implement, test and reason about.",
+  //      MAROON,
+  //      WHITE,
+  //      TEAL,
+  //    ],
+  //  ];
+  //  let x = 0.7,
+  //    gap = 0.4,
+  //    cw = (W - 1.4 - gap * 2) / 3;
+  //  iters.forEach(([tag, h, body, fill, tcolor, tagColor], i) => {
+  //    const cx = x + i * (cw + gap);
+  //    s.addShape(pres.shapes.ROUNDED_RECTANGLE, {
+  //      x: cx,
+  //      y: 2.0,
+  //      w: cw,
+  //      h: 4.3,
+  //      rectRadius: 0.08,
+  //      fill: { color: fill },
+  //    });
+  //    s.addText(tag, {
+  //      x: cx + 0.35,
+  //      y: 2.25,
+  //      w: cw - 0.7,
+  //      h: 0.6,
+  //      fontFace: FONT_HEAD,
+  //      fontSize: 26,
+  //      bold: true,
+  //      color: tagColor,
+  //      margin: 0,
+  //    });
+  //    s.addText(h, {
+  //      x: cx + 0.35,
+  //      y: 2.95,
+  //      w: cw - 0.7,
+  //      h: 0.8,
+  //      fontFace: FONT_HEAD,
+  //      fontSize: 16,
+  //      bold: true,
+  //      color: tcolor,
+  //      margin: 0,
+  //    });
+  //    s.addText(body, {
+  //      x: cx + 0.35,
+  //      y: 3.75,
+  //      w: cw - 0.7,
+  //      h: 2.3,
+  //      fontFace: FONT_BODY,
+  //      fontSize: 12.5,
+  //      color: i === 2 ? "EBD9DF" : TEXT_MUTED,
+  //      margin: 0,
+  //      lineSpacingMultiple: 1.25,
+  //    });
+  //    if (i < 2) {
+  //      s.addShape(pres.shapes.LINE, {
+  //        x: cx + cw + 0.04,
+  //        y: 4.1,
+  //        w: 0.32,
+  //        h: 0,
+  //        line: { color: TEXT_MUTED, width: 1.5, endArrowType: "triangle" },
+  //      });
+  //    }
+  //  });
+  //  footer(s);
+  //}
 
   // ================= SLIDE 10 — INTEGRATION & TESTING =================
   {
